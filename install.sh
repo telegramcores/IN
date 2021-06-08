@@ -45,7 +45,7 @@ ntpd -q -g
 echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
 
 URL='https://mirror.yandex.ru/gentoo-distfiles/releases/amd64/autobuilds'
-STAGE3=$(wget $URL/latest-stage3-amd64.txt -qO - | grep -v '#')
+STAGE3=$(wget $URL/latest-stage3-amd64.txt -qO - | grep -v '#' | grep -E '^* ')
 wget $URL/$STAGE3
 tar xpf stage3-*.tar.* --xattrs-include='*.*' --numeric-owner
 
