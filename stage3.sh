@@ -38,7 +38,9 @@ pushd /mnt/gentoo
                                                     awk '{print $1}')"
 
     wget "${URL_TO_STAGE_FILES}"
-
+    URL='http://mirror.yandex.ru/gentoo-distfiles/releases/amd64/autobuilds' 
+    STAGE3=$(wget $URL/latest-stage3-amd64.txt -qO - | grep -v '#')
+    wget $URL/$STAGE3
     tar xpf stage3-*.tar.* --xattrs-include='*.*' --numeric-owner
 
     # adding -march=native flag
