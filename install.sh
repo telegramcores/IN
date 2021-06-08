@@ -15,4 +15,16 @@ parted -a optimal --script $disk mkpart primary 1MiB 3MiB
 parted -a optimal --script $disk name 1 grub
 parted -a optimal --script $disk set 1 bios_grub on
 
+echo "---create sda2 boot ---"
+parted -a optimal --script $disk mkpart primary 3MiB 259MiB
+parted -a optimal --script $disk name 2 boot
+parted -a optimal --script $disk set 2 boot on
+
+echo "---create sda3 LVM ---"
+parted -a optimal --script $disk mkpart primary 259MiB -1
+parted -a optimal --script $disk name 3 lvm01
+parted -a optimal --script $disk set 3 lvm on
+
+
+
 
