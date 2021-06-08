@@ -64,3 +64,19 @@ mount --rbind       /sys  sys
 mount --make-rslave       sys
 mount --rbind       /dev  dev
 mount --make-rslave       dev
+
+echo "--- inside chroot ---"
+chroot_dir=/mnt/gentoo
+chroot $chroot_dir source('/etc/profile')
+chroot $chroot_dir mount /dev/sda2 /boot
+chroot $chroot_dir echo 'EMERGE_DEFAULT_OPTS="--jobs --quiet-build=y"' >> /etc/portage/make.conf
+chroot $chroot_dir emerge-webrsync
+chroot $chroot_dir emerge --oneshot sys-apps/portage
+chroot $chroot_dir emerge app-portage/gentoolkit
+chroot $chroot_dir emerge app-portage/cpuid2cpuflags
+chroot $chroot_dir echo "*/* $(cpuid2cpuflags)" > /etc/portage/package.use/00cpu-flags
+chroot $chroot_dir emerge --update --deep --newuse @world
+
+
+
+
