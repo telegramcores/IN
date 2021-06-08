@@ -29,6 +29,9 @@ parted -a optimal --script $disk set 3 lvm on
 pvcreate -ff /dev/sda3
 vgcreate $lvm_group_name /dev/sda3
 
+lvcreate -y -L 4096M -n swap $lvm_group_name
+lvcreate -y -l 100%VG -n rootfs $lvm_group_name
+
 
 
 
