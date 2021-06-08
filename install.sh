@@ -82,7 +82,7 @@ emerge app-editors/vim
 echo "{boot_device} /boot fat32 defaults 0 2" >> /etc/fstab
 echo 'ACCEPT_LICENSE="*"'     >> /etc/portage/make.conf
 echo 'USE="abi_x86_64"' >> /etc/portage/make.conf
-echo "tmpfs /var/tmp/portage tmpfs size=4G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
+echo "tmpfs /var/tmp/portage tmpfs size=12G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
 
 emerge sys-kernel/gentoo-sources
 emerge sys-kernel/linux-firmware
