@@ -26,5 +26,9 @@ parted -a optimal --script $disk name 3 lvm01
 parted -a optimal --script $disk set 3 lvm on
 
 
+pvcreate -ff /dev/sda3
+vgcreate $lvm_group_name /dev/sda3
+
+
 
 
