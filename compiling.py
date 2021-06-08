@@ -2,7 +2,7 @@ import sys
 import select
 
 from utils import call_cmd_and_print_cmd, source
-import environment_install as env_install
+#import environment_install as env_install
 
 def compile(boot_device: str):
     #Пока отключу полное обновление системы
@@ -75,6 +75,6 @@ def configuring():
     call_cmd_and_print_cmd('emerge -gK sys-boot/os-prober')
 
 
-def install_env():
-    env_install.env_install()
+#def install_env():
+    #env_install.env_install()
 
