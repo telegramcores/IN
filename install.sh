@@ -47,9 +47,22 @@ echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
 URL='https://mirror.yandex.ru/gentoo-distfiles/releases/amd64/autobuilds'
 STAGE3=$(wget $URL/latest-stage3-amd64.txt -qO - | grep -v '#' | awk '{print $1;}')
 wget $URL/$STAGE3
+echo "--- extract Stage3 ---"
 tar xpf stage3-*.tar.* --xattrs-include='*.*' --numeric-owner
 
+sed -i '/COMMON_FLAGS=/ s/\("[^"]*\)"/\1 -march=native"/' etc/portage/make.conf
 
+mkdir --parents etc/portage/repos.conf
+cp usr/share/portage/config/repos.conf etc/portage/repos.conf/gentoo.conf
+
+cp --dereference /etc/resolv.conf etc/
+
+    # mounting livecd folders
+mount --types proc  /proc proc
+mount --rbind       /sys  sys
+mount --make-rslave       sys
+mount --rbind       /dev  dev
+mount --make-rslave       dev
 
 
 
