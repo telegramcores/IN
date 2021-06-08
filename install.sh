@@ -67,7 +67,7 @@ mount --make-rslave       dev
 
 echo "--- inside chroot ---"
 chroot_dir=/mnt/gentoo
-chroot $chroot_dir source('/etc/profile')
+chroot $chroot_dir source /etc/profile
 chroot $chroot_dir mount /dev/sda2 /boot
 chroot $chroot_dir echo 'EMERGE_DEFAULT_OPTS="--jobs --quiet-build=y"' >> /etc/portage/make.conf
 chroot $chroot_dir emerge-webrsync
