@@ -69,7 +69,7 @@ echo "--- inside chroot ---"
 chroot_dir=/mnt/gentoo
 chroot $chroot_dir source /etc/profile
 chroot $chroot_dir mount /dev/sda2 /boot
-chroot $chroot_dir echo 'EMERGE_DEFAULT_OPTS="--jobs --quiet-build=y"' >> /etc/portage/make.conf
+chroot $chroot_dir echo 'EMERGE_DEFAULT_OPTS="--jobs --quiet-build=y"' >> $chroot_dir/etc/portage/make.conf
 chroot $chroot_dir emerge-webrsync
 chroot $chroot_dir emerge --oneshot sys-apps/portage
 chroot $chroot_dir emerge app-portage/gentoolkit
@@ -77,6 +77,48 @@ chroot $chroot_dir emerge app-portage/cpuid2cpuflags
 chroot $chroot_dir echo "*/* $(cpuid2cpuflags)" > /etc/portage/package.use/00cpu-flags
 chroot $chroot_dir emerge --update --deep --newuse @world
 
+chroot $chroot_dir echo "app-editors/vim X python vim-pager perl terminal" >> $chroot_dir/etc/portage/package.use/vim
+emerge app-editors/vim
+echo "{boot_device} /boot fat32 defaults 0 2" >> /etc/fstab
+echo 'ACCEPT_LICENSE="*"'     >> /etc/portage/make.conf
+echo 'USE="abi_x86_64"' >> /etc/portage/make.conf
+echo "tmpfs /var/tmp/portage tmpfs size=4G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
 
+emerge sys-kernel/gentoo-sources
+emerge sys-kernel/linux-firmware
+emerge --autounmask-write sys-kernel/genkernel
+echo -5 | etc-update
+emerge sys-kernel/genkernel
+genkernel --lvm --mountboot --busybox all
+
+echo hostname="gentoo" > /etc/conf.d/hostname
+blkid | grep 'boot' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t /boot \t swap \t sw \t 0 \t 0@'
+blkid | grep 'swap' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t none \t swap \t sw \t 0 \t 0@' >> /etc/fstab
+blkid | grep 'ext4' | grep 'rootfs' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t / \t ext4 \t noatime \t 0 \t 1@'>> /etc/fstab
+pushd /etc/init.d && ln -s net.lo net.eth0 && rc-update add net.eth0 default && popd
+emerge app-admin/sysklogd
+rc-update add sysklogd default
+emerge sys-process/cronie
+rc-update add cronie default
+emerge sys-apps/mlocate
+emerge sys-fs/e2fsprogs
+emerge net-misc/dhcpcd
+emerge net-wireless/iw
+emerge net-wireless/wpa_supplicant
+emerge tmux
+emerge htop
+emerge app-misc/mc
+emerge sys-boot/os-prober
+echo 'GRUB_PLATFORMS="emu efi-32 efi-64 pc"' >> /etc/portage/make.conf
+emerge sys-boot/grub:2
+echo 'GRUB_CMDLINE_LINUX="dolvm"' >> /etc/default/grub
+grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot --removable
+grub-mkconfig -o /boot/grub/grub.cfg
+emerge --autounmask-write sys-boot/os-prober
+echo -5 | etc-update
+emerge sys-boot/os-prober
+rc-update add dhcpcd default
+rc-update add lvmetad boot
+passwd
 
 
