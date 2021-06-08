@@ -74,28 +74,28 @@ chroot $chroot_dir emerge-webrsync
 chroot $chroot_dir emerge --oneshot sys-apps/portage
 chroot $chroot_dir emerge app-portage/gentoolkit
 chroot $chroot_dir emerge app-portage/cpuid2cpuflags
-chroot $chroot_dir echo "*/* $(cpuid2cpuflags)" > /etc/portage/package.use/00cpu-flags
+chroot $chroot_dir echo "*/* $(cpuid2cpuflags)" > $chroot_dir/etc/portage/package.use/00cpu-flags
 chroot $chroot_dir emerge --update --deep --newuse @world
 
 chroot $chroot_dir echo "app-editors/vim X python vim-pager perl terminal" >> $chroot_dir/etc/portage/package.use/vim
-emerge app-editors/vim
-echo "{boot_device} /boot fat32 defaults 0 2" >> /etc/fstab
-echo 'ACCEPT_LICENSE="*"'     >> /etc/portage/make.conf
-echo 'USE="abi_x86_64"' >> /etc/portage/make.conf
-echo "tmpfs /var/tmp/portage tmpfs size=12G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
+chroot $chroot_dir emerge app-editors/vim
+chroot $chroot_dir echo "/dev/sda2 /boot fat32 defaults 0 2" >> $chroot_dir/etc/fstab
+chroot $chroot_dir echo 'ACCEPT_LICENSE="*"'     >> $chroot_dir/etc/portage/make.conf
+chroot $chroot_dir echo 'USE="abi_x86_64"' >> $chroot_dir/etc/portage/make.conf
+chroot $chroot_dir echo "tmpfs /var/tmp/portage tmpfs size=12G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> $chroot_dir/etc/fstab
 
-emerge sys-kernel/gentoo-sources
-emerge sys-kernel/linux-firmware
-emerge --autounmask-write sys-kernel/genkernel
-echo -5 | etc-update
-emerge sys-kernel/genkernel
-genkernel --lvm --mountboot --busybox all
+chroot $chroot_dir emerge sys-kernel/gentoo-sources
+chroot $chroot_dir emerge sys-kernel/linux-firmware
+chroot $chroot_dir emerge --autounmask-write sys-kernel/genkernel
+chroot $chroot_dir echo -5 | etc-update
+chroot $chroot_dir emerge sys-kernel/genkernel
+chroot $chroot_dir genkernel --lvm --mountboot --busybox all
 
-echo hostname="gentoo" > /etc/conf.d/hostname
-blkid | grep 'boot' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t /boot \t swap \t sw \t 0 \t 0@'
-blkid | grep 'swap' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t none \t swap \t sw \t 0 \t 0@' >> /etc/fstab
-blkid | grep 'ext4' | grep 'rootfs' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t / \t ext4 \t noatime \t 0 \t 1@'>> /etc/fstab
-pushd /etc/init.d && ln -s net.lo net.eth0 && rc-update add net.eth0 default && popd
+chroot $chroot_dir echo hostname="gentoo" > $chroot_dir/etc/conf.d/hostname
+chroot $chroot_dir blkid | grep 'boot' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t /boot \t swap \t sw \t 0 \t 0@'
+chroot $chroot_dir blkid | grep 'swap' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t none \t swap \t sw \t 0 \t 0@' >> $chroot_dir/etc/fstab
+chroot $chroot_dir blkid | grep 'ext4' | grep 'rootfs' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t / \t ext4 \t noatime \t 0 \t 1@'>> $chroot_dir/etc/fstab
+chroot $chroot_dir pushd $chroot_dir/etc/init.d && ln -s net.lo net.eth0 && rc-update add net.eth0 default && popd
 emerge app-admin/sysklogd
 rc-update add sysklogd default
 emerge sys-process/cronie
