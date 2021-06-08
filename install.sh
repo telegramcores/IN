@@ -48,7 +48,7 @@ URL='https://mirror.yandex.ru/gentoo-distfiles/releases/amd64/autobuilds'
 STAGE3=$(wget $URL/latest-stage3-amd64.txt -qO - | grep -v '#' | awk '{print $1;}')
 wget $URL/$STAGE3
 echo "--- extract Stage3 ---"
-tar xpf stage3-*.tar.* --xattrs-include='*.*' --numeric-owner
+tar xpf stage3-*.tar.* --xattrs-include='*.*' --numeric-owner -C /mnt/gentoo
 
 sed -i '/COMMON_FLAGS=/ s/\("[^"]*\)"/\1 -march=native"/' etc/portage/make.conf
 
@@ -63,6 +63,8 @@ mount --rbind       /sys  sys
 mount --make-rslave       sys
 mount --rbind       /dev  dev
 mount --make-rslave       dev
+
+cp install.sh /mnt/gentoo
 
 
 
