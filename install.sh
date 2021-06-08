@@ -27,14 +27,14 @@ parted -a optimal --script $disk set 3 lvm on
 
 
 pvcreate -ff /dev/sda3
-vgcreate $lvm_group_name /dev/sda3
+vgcreate vg01 /dev/sda3
 
-lvcreate -y -L 4096M -n swap $lvm_group_name
-lvcreate -y -l 100%VG -n rootfs $lvm_group_name
+lvcreate -y -L 4096M -n swap vg01
+lvcreate -y -l 100%VG -n rootfs vg01
 
 mkfs.fat -F 32 /dev/sda2
-mkfs.ext4 /dev/$lvm_group_name/rootfs
-mkswap /dev/$lvm_group_name/swap
+mkfs.ext4 /dev/vg01/rootfs
+mkswap /dev/vg01/swap
 
 
 
