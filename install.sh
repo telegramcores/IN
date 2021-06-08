@@ -32,6 +32,12 @@ vgcreate $lvm_group_name /dev/sda3
 lvcreate -y -L 4096M -n swap $lvm_group_name
 lvcreate -y -l 100%VG -n rootfs $lvm_group_name
 
+mkfs.fat -F 32 sda2
+mkfs.ext4 /dev/$lvm_group_name/rootfs
+mkswap /dev/$lvm_group_name/swap
+
+
+
 
 
 
