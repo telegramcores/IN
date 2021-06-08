@@ -21,7 +21,7 @@ parted -a optimal --script $disk name 2 boot
 parted -a optimal --script $disk set 2 boot on
 
 echo "---create sda3 LVM ---"
-parted -a optimal -- $disk unit MB mkpart primary 259 -0
+parted -s -- $disk unit MB mkpart primary 259 -0
 parted -a optimal --script $disk name 3 lvm01
 parted -a optimal --script $disk set 3 lvm on
 
