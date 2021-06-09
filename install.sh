@@ -51,7 +51,7 @@ wget $URL/$STAGE3
 echo "--- extract Stage3 ---"
 tar xpf stage3-*.tar.* --xattrs-include='*.*' --numeric-owner
 
-sed -i '/COMMON_FLAGS=/ s/\("[^"]*\)"/\1 -march=native"/' etc/portage/make.conf
+sed -i '/COMMON_FLAGS=/ s/\("[^"]*\)"/\1 -march=skylake"/' etc/portage/make.conf
 
 mkdir --parents etc/portage/repos.conf
 cp usr/share/portage/config/repos.conf etc/portage/repos.conf/gentoo.conf
@@ -74,7 +74,7 @@ chroot $chroot_dir emerge-webrsync
 chroot $chroot_dir emerge --oneshot sys-apps/portage
 chroot $chroot_dir emerge app-portage/gentoolkit
 chroot $chroot_dir emerge app-portage/cpuid2cpuflags
-chroot $chroot_dir cpuid2cpuflags > $chroot_dir/etc/portage/package.use/00cpu-flags
+chroot $chroot_dir cpuid2cpuflags | sed 's/: /="/' | sed -e '$s/$/"/' >> $chroot_dir/etc/portage/make.conf
 chroot $chroot_dir emerge --update --deep --newuse @world
 
 << ////
