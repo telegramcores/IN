@@ -69,7 +69,8 @@ echo "--- inside chroot ---"
 chroot_dir=/mnt/gentoo
 chroot $chroot_dir source /etc/profile
 chroot $chroot_dir mount /dev/sda2 /boot
-chroot $chroot_dir echo 'EMERGE_DEFAULT_OPTS="--jobs --quiet-build=y"' >> $chroot_dir/etc/portage/make.conf
+chroot $chroot_dir echo 'EMERGE_DEFAULT_OPTS="--jobs --quiet-build=y --with-bdeps=y"' >> $chroot_dir/etc/portage/make.conf
+chroot $chroot_dir echo 'PORTAGE_BINHOST="https://mirror.yandex.ru/calculate/grp/x86_64"' >> $chroot_dir/etc/portage/make.conf
 chroot $chroot_dir emerge-webrsync
 chroot $chroot_dir emerge --oneshot sys-apps/portage
 chroot $chroot_dir emerge app-portage/gentoolkit
@@ -86,7 +87,7 @@ chroot $chroot_dir emerge app-editors/vim
 chroot $chroot_dir echo "/dev/sda2 /boot fat32 defaults 0 2" >> $chroot_dir/etc/fstab
 chroot $chroot_dir echo 'ACCEPT_LICENSE="*"'     >> $chroot_dir/etc/portage/make.conf
 chroot $chroot_dir echo 'USE="abi_x86_64"' >> $chroot_dir/etc/portage/make.conf
-chroot $chroot_dir echo "tmpfs /var/tmp/portage tmpfs size=12G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> $chroot_dir/etc/fstab
+#chroot $chroot_dir echo "tmpfs /var/tmp/portage tmpfs size=12G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> $chroot_dir/etc/fstab
 
 chroot $chroot_dir emerge sys-kernel/gentoo-sources
 chroot $chroot_dir emerge sys-kernel/linux-firmware
