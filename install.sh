@@ -53,7 +53,7 @@ echo -e "\e[31m--- extract Stage3 ---\e[0m"
 tar xpf stage3-*.tar.* --xattrs-include='*.*' --numeric-owner
 
 
-sed -i '/COMMON_FLAGS=/ s/\("[^"]*\)"/\1 -march=skylake"/' etc/portage/make.conf
+sed -i '/COMMON_FLAGS=/ s/\("[^"]*\)"/\1 -march=native"/' etc/portage/make.conf
 
 mkdir --parents etc/portage/repos.conf
 cp usr/share/portage/config/repos.conf etc/portage/repos.conf/gentoo.conf
@@ -73,8 +73,8 @@ chroot $chroot_dir /bin/bash << "CHROOT"
 env-update && source /etc/profile
 export PS1="(chroot) $PS1" 
 mount /dev/sda2 /boot
-echo 'EMERGE_DEFAULT_OPTS="--quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
-echo 'MAKEOPTS="-j6"' >> /etc/portage/make.conf
+echo 'EMERGE_DEFAULT_OPTS="--jobs=5 --load-average=4 --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
+echo 'MAKEOPTS="-j5 -l4"' >> /etc/portage/make.conf
 echo -e "\e[31m--- emerge-webrsync ---\e[0m"
 emerge-webrsync
 emerge --oneshot sys-apps/portage
@@ -82,8 +82,8 @@ emerge app-portage/gentoolkit
 emerge app-portage/cpuid2cpuflags
 cpuid2cpuflags | sed 's/: /="/' | sed -e '$s/$/"/' >> /etc/portage/make.conf
 #http://lego.arbh.ru/posts/gentoo_upd.html - про обновление toolchain
-#echo -e "\e[31m--- update @world ---\e[0m"
-#emerge --update --deep --newuse @world
+echo -e "\e[31m--- update @world ---\e[0m"
+emerge --update --deep --newuse @world
 
 echo "app-editors/vim X python vim-pager perl terminal" >> /etc/portage/package.use/vim
 emerge app-editors/vim
@@ -115,7 +115,7 @@ emerge sys-apps/mlocate
 emerge sys-fs/e2fsprogs
 emerge net-misc/dhcpcd
 emerge net-wireless/iw
-emerge net-wireless/wpa_supplicant
+#emerge net-wireless/wpa_supplicant
 emerge tmux
 emerge htop
 emerge app-misc/mc
