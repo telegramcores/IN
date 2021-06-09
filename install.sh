@@ -68,7 +68,7 @@ mount --make-rslave       dev
 
 echo "--- inside chroot ---"
 chroot_dir=/mnt/gentoo
-chroot $chroot_dir /bin/bash
+chroot $chroot_dir /bin/bash << "CHROOT"
 env-update && source /etc/profile
 export PS1="(chroot) $PS1" 
 
@@ -80,6 +80,7 @@ emerge --oneshot sys-apps/portage
 emerge app-portage/gentoolkit
 emerge app-portage/cpuid2cpuflags
 cpuid2cpuflags | sed 's/: /="/' | sed -e '$s/$/"/' >> /etc/portage/make.conf
+CHROOT
 
 #http://lego.arbh.ru/posts/gentoo_upd.html - про обновление toolchain
 
