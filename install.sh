@@ -44,12 +44,15 @@ ntpd -q -g
 cd /mnt/gentoo
 echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
 
-
+<< ///
 URL='https://mirror.yandex.ru/gentoo-distfiles/releases/amd64/autobuilds'
 STAGE3=$(wget $URL/latest-stage3-amd64.txt -qO - | grep -v '#' | awk '{print $1;}')
 wget $URL/$STAGE3
 echo "--- extract Stage3 ---"
 tar xpf stage3-*.tar.* --xattrs-include='*.*' --numeric-owner
+///
+wget https://mirror.yandex.ru/gentoo-distfiles/releases/amd64/autobuilds/20200705T214503Z/stage4-amd64-minimal-20200705T214503Z.tar.xz
+tar xpf stage4-*.tar.* --xattrs-include='*.*' --numeric-owner
 
 sed -i '/COMMON_FLAGS=/ s/\("[^"]*\)"/\1 -march=skylake"/' etc/portage/make.conf
 
