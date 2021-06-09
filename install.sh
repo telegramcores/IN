@@ -70,7 +70,7 @@ chroot_dir=/mnt/gentoo
 chroot $chroot_dir source /etc/profile
 chroot $chroot_dir mount /dev/sda2 /boot
 chroot $chroot_dir echo 'EMERGE_DEFAULT_OPTS="--jobs --quiet-build=y --with-bdeps=y"' >> $chroot_dir/etc/portage/make.conf
-chroot $chroot_dir echo 'PORTAGE_BINHOST="https://mirror.yandex.ru/calculate/grp/x86_64"' >> $chroot_dir/etc/portage/make.conf
+#chroot $chroot_dir echo 'PORTAGE_BINHOST="https://mirror.yandex.ru/calculate/grp/x86_64"' >> $chroot_dir/etc/portage/make.conf
 chroot $chroot_dir emerge-webrsync
 chroot $chroot_dir emerge --oneshot sys-apps/portage
 chroot $chroot_dir emerge app-portage/gentoolkit
@@ -79,7 +79,7 @@ chroot $chroot_dir cpuid2cpuflags | sed 's/: /="/' | sed -e '$s/$/"/' >> $chroot
 
 #http://lego.arbh.ru/posts/gentoo_upd.html - про обновление toolchain
 
-chroot $chroot_dir emerge --update --deep --newuse @world
+#chroot $chroot_dir emerge --update --deep --newuse @world
 
 << ////
 chroot $chroot_dir echo "app-editors/vim X python vim-pager perl terminal" >> $chroot_dir/etc/portage/package.use/vim
@@ -89,6 +89,7 @@ chroot $chroot_dir echo 'ACCEPT_LICENSE="*"'     >> $chroot_dir/etc/portage/make
 chroot $chroot_dir echo 'USE="abi_x86_64"' >> $chroot_dir/etc/portage/make.conf
 #chroot $chroot_dir echo "tmpfs /var/tmp/portage tmpfs size=12G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> $chroot_dir/etc/fstab
 
+#chroot $chroot_dir emerge sys-kernel/gentoo-kernel-bin
 chroot $chroot_dir emerge sys-kernel/gentoo-sources
 chroot $chroot_dir emerge sys-kernel/linux-firmware
 chroot $chroot_dir emerge --autounmask-write sys-kernel/genkernel
@@ -100,7 +101,7 @@ chroot $chroot_dir echo hostname="gentoo" > $chroot_dir/etc/conf.d/hostname
 chroot $chroot_dir blkid | grep 'boot' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t /boot \t swap \t sw \t 0 \t 0@'
 chroot $chroot_dir blkid | grep 'swap' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t none \t swap \t sw \t 0 \t 0@' >> $chroot_dir/etc/fstab
 chroot $chroot_dir blkid | grep 'ext4' | grep 'rootfs' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t / \t ext4 \t noatime \t 0 \t 1@'>> $chroot_dir/etc/fstab
-chroot $chroot_dir pushd $chroot_dir/etc/init.d && ln -s net.lo net.eth0 && rc-update add net.eth0 default && popd
+chroot $chroot_dir pushd /etc/init.d && ln -s net.lo net.eth0 && rc-update add net.eth0 default && popd
 emerge app-admin/sysklogd
 rc-update add sysklogd default
 emerge sys-process/cronie
