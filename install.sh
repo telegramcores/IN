@@ -80,7 +80,7 @@ emerge --oneshot sys-apps/portage
 emerge app-portage/gentoolkit
 emerge app-portage/cpuid2cpuflags
 cpuid2cpuflags | sed 's/: /="/' | sed -e '$s/$/"/' >> /etc/portage/make.conf
-CHROOT
+
 
 #http://lego.arbh.ru/posts/gentoo_upd.html - про обновление toolchain
 
@@ -133,4 +133,5 @@ rc-update add lvmetad boot
 passwd
 ////
 
+CHROOT
 
