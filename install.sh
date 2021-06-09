@@ -66,7 +66,7 @@ mount --make-rslave       sys
 mount --rbind       /dev  dev
 mount --make-rslave       dev
 
-echo "--- inside chroot ---"
+echo -e "\e[31m--- inside chroot ---\e[0m"
 chroot_dir=/mnt/gentoo
 chroot $chroot_dir /bin/bash << "CHROOT"
 env-update && source /etc/profile
