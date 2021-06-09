@@ -82,24 +82,26 @@ emerge app-portage/gentoolkit
 emerge app-portage/cpuid2cpuflags
 cpuid2cpuflags | sed 's/: /="/' | sed -e '$s/$/"/' >> /etc/portage/make.conf
 #http://lego.arbh.ru/posts/gentoo_upd.html - про обновление toolchain
-echo -e "\e[31m--- update @world ---\e[0m"
-emerge --update --deep --newuse @world
+#echo -e "\e[31m--- update @world ---\e[0m"
+#emerge --update --deep --newuse @world
 
-<< ////
 echo "app-editors/vim X python vim-pager perl terminal" >> /etc/portage/package.use/vim
 emerge app-editors/vim
 echo "/dev/sda2 /boot fat32 defaults 0 2" >> /etc/fstab
 echo 'ACCEPT_LICENSE="*"'     >> /etc/portage/make.conf
 echo 'USE="abi_x86_64"' >> /etc/portage/make.conf
 #echo "tmpfs /var/tmp/portage tmpfs size=12G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
+
 echo -e "\e[31m--- create kernel ---\e[0m"
+emerge sys-kernel/gentoo-kernel-bin
 emerge sys-kernel/gentoo-sources
 emerge sys-kernel/linux-firmware
 emerge --autounmask-write sys-kernel/genkernel
 echo -5 | etc-update
 emerge sys-kernel/genkernel
-genkernel --lvm --mountboot --busybox all
+#genkernel --lvm --mountboot --busybox all
 
+echo -e "\e[31m--- add soft and settings ---\e[0m"
 echo hostname="gentoo" > /etc/conf.d/hostname
 blkid | grep 'boot' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t /boot \t swap \t sw \t 0 \t 0@'
 blkid | grep 'swap' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t none \t swap \t sw \t 0 \t 0@' >> /etc/fstab
@@ -131,6 +133,6 @@ rc-update add lvmetad boot
 eval $start_time
 date
 passwd
-////
+
 CHROOT
 
