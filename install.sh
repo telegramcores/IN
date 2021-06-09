@@ -73,7 +73,8 @@ chroot $chroot_dir /bin/bash << "CHROOT"
 env-update && source /etc/profile
 export PS1="(chroot) $PS1" 
 mount /dev/sda2 /boot
-echo 'EMERGE_DEFAULT_OPTS="--jobs --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
+echo 'EMERGE_DEFAULT_OPTS="--quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
+echo 'MAKEOPTS="-j6"' >> /etc/portage/make.conf
 echo -e "\e[31m--- emerge-webrsync ---\e[0m"
 emerge-webrsync
 emerge --oneshot sys-apps/portage
