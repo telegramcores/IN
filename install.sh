@@ -74,7 +74,7 @@ chroot $chroot_dir emerge-webrsync
 chroot $chroot_dir emerge --oneshot sys-apps/portage
 chroot $chroot_dir emerge app-portage/gentoolkit
 chroot $chroot_dir emerge app-portage/cpuid2cpuflags
-chroot $chroot_dir echo "*/* $(cpuid2cpuflags)" > $chroot_dir/etc/portage/package.use/00cpu-flags
+chroot $chroot_dir cpuid2cpuflags > $chroot_dir/etc/portage/package.use/00cpu-flags
 chroot $chroot_dir emerge --update --deep --newuse @world
 
 << ////
