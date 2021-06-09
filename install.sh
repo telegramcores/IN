@@ -44,15 +44,13 @@ ntpd -q -g
 cd /mnt/gentoo
 echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
 
-<< ///
+
 URL='https://mirror.yandex.ru/gentoo-distfiles/releases/amd64/autobuilds'
 STAGE3=$(wget $URL/latest-stage3-amd64.txt -qO - | grep -v '#' | awk '{print $1;}')
 wget $URL/$STAGE3
 echo "--- extract Stage3 ---"
 tar xpf stage3-*.tar.* --xattrs-include='*.*' --numeric-owner
-///
-wget https://mirror.yandex.ru/gentoo-distfiles/releases/amd64/autobuilds/20200705T214503Z/stage4-amd64-minimal-20200705T214503Z.tar.xz
-tar xpf stage4-*.tar.* --xattrs-include='*.*' --numeric-owner
+
 
 sed -i '/COMMON_FLAGS=/ s/\("[^"]*\)"/\1 -march=skylake"/' etc/portage/make.conf
 
@@ -70,15 +68,18 @@ mount --make-rslave       dev
 
 echo "--- inside chroot ---"
 chroot_dir=/mnt/gentoo
-chroot $chroot_dir source /etc/profile
-chroot $chroot_dir mount /dev/sda2 /boot
-chroot $chroot_dir echo 'EMERGE_DEFAULT_OPTS="--jobs --quiet-build=y --with-bdeps=y"' >> $chroot_dir/etc/portage/make.conf
+chroot $chroot_dir /bin/bash
+env-update && source /etc/profile
+export PS1="(chroot) $PS1" 
+
+mount /dev/sda2 /boot
+echo 'EMERGE_DEFAULT_OPTS="--jobs --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
 #chroot $chroot_dir echo 'PORTAGE_BINHOST="https://mirror.yandex.ru/calculate/grp/x86_64"' >> $chroot_dir/etc/portage/make.conf
-chroot $chroot_dir emerge-webrsync
-chroot $chroot_dir emerge --oneshot sys-apps/portage
-chroot $chroot_dir emerge app-portage/gentoolkit
-chroot $chroot_dir emerge app-portage/cpuid2cpuflags
-chroot $chroot_dir cpuid2cpuflags | sed 's/: /="/' | sed -e '$s/$/"/' >> $chroot_dir/etc/portage/make.conf
+emerge-webrsync
+emerge --oneshot sys-apps/portage
+emerge app-portage/gentoolkit
+emerge app-portage/cpuid2cpuflags
+cpuid2cpuflags | sed 's/: /="/' | sed -e '$s/$/"/' >> /etc/portage/make.conf
 
 #http://lego.arbh.ru/posts/gentoo_upd.html - про обновление toolchain
 
