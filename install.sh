@@ -1,3 +1,4 @@
+start_time="date"
 echo "--- start LVM-service ---"
 /etc/init.d/lvm start
 
@@ -73,14 +74,15 @@ env-update && source /etc/profile
 export PS1="(chroot) $PS1" 
 mount /dev/sda2 /boot
 echo 'EMERGE_DEFAULT_OPTS="--jobs --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
-#chroot $chroot_dir echo 'PORTAGE_BINHOST="https://mirror.yandex.ru/calculate/grp/x86_64"' >> $chroot_dir/etc/portage/make.conf
+echo -e "\e[31m--- emerge-webrsync ---\e[0m"
 emerge-webrsync
 emerge --oneshot sys-apps/portage
 emerge app-portage/gentoolkit
 emerge app-portage/cpuid2cpuflags
 cpuid2cpuflags | sed 's/: /="/' | sed -e '$s/$/"/' >> /etc/portage/make.conf
 #http://lego.arbh.ru/posts/gentoo_upd.html - про обновление toolchain
-#chroot $chroot_dir emerge --update --deep --newuse @world
+echo -e "\e[31m--- update @world ---\e[0m"
+emerge --update --deep --newuse @world
 
 << ////
 echo "app-editors/vim X python vim-pager perl terminal" >> /etc/portage/package.use/vim
@@ -90,7 +92,6 @@ echo 'ACCEPT_LICENSE="*"'     >> /etc/portage/make.conf
 echo 'USE="abi_x86_64"' >> /etc/portage/make.conf
 #echo "tmpfs /var/tmp/portage tmpfs size=12G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
 
-#emerge sys-kernel/gentoo-kernel-bin
 emerge sys-kernel/gentoo-sources
 emerge sys-kernel/linux-firmware
 emerge --autounmask-write sys-kernel/genkernel
@@ -126,8 +127,9 @@ echo -5 | etc-update
 emerge sys-boot/os-prober
 rc-update add dhcpcd default
 rc-update add lvmetad boot
+eval $start_time
+date
 passwd
 ////
-
 CHROOT
 
