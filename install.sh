@@ -77,6 +77,7 @@ chroot $chroot_dir emerge app-portage/cpuid2cpuflags
 chroot $chroot_dir echo "*/* $(cpuid2cpuflags)" > $chroot_dir/etc/portage/package.use/00cpu-flags
 chroot $chroot_dir emerge --update --deep --newuse @world
 
+<< ////
 chroot $chroot_dir echo "app-editors/vim X python vim-pager perl terminal" >> $chroot_dir/etc/portage/package.use/vim
 chroot $chroot_dir emerge app-editors/vim
 chroot $chroot_dir echo "/dev/sda2 /boot fat32 defaults 0 2" >> $chroot_dir/etc/fstab
@@ -120,5 +121,6 @@ emerge sys-boot/os-prober
 rc-update add dhcpcd default
 rc-update add lvmetad boot
 passwd
+////
 
 
