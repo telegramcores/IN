@@ -75,6 +75,9 @@ chroot $chroot_dir emerge --oneshot sys-apps/portage
 chroot $chroot_dir emerge app-portage/gentoolkit
 chroot $chroot_dir emerge app-portage/cpuid2cpuflags
 chroot $chroot_dir cpuid2cpuflags | sed 's/: /="/' | sed -e '$s/$/"/' >> $chroot_dir/etc/portage/make.conf
+
+#http://lego.arbh.ru/posts/gentoo_upd.html - про обновление toolchain
+
 chroot $chroot_dir emerge --update --deep --newuse @world
 
 << ////
