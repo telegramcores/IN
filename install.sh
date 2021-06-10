@@ -92,7 +92,7 @@ echo 'ACCEPT_LICENSE="*"'     >> /etc/portage/make.conf
 echo 'USE="abi_x86_64"' >> /etc/portage/make.conf
 #echo "tmpfs /var/tmp/portage tmpfs size=12G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
 
-echo -e "\e[31m--- create kernel ---\e[0m"
+echo -e "\e[31m--- set kernel ---\e[0m"
 #emerge sys-kernel/gentoo-kernel-bin
 emerge sys-kernel/gentoo-sources
 emerge sys-kernel/linux-firmware
@@ -100,6 +100,8 @@ emerge --autounmask-write sys-kernel/genkernel
 echo -5 | etc-update
 emerge sys-kernel/genkernel
 eselect kernel set 1
+
+echo -e "\e[31m--- create kernel ---\e[0m"
 genkernel --lvm --mountboot --busybox all
 
 echo -e "\e[31m--- add soft and settings ---\e[0m"
