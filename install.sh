@@ -124,7 +124,6 @@ emerge app-misc/mc
 echo 'GRUB_PLATFORMS="emu efi-32 efi-64 pc"' >> /etc/portage/make.conf
 emerge sys-boot/grub:2
 echo 'GRUB_CMDLINE_LINUX="dolvm"' >> /etc/default/grub
-echo 'GRUB_DISABLE_LINUX_UUID="true"' >> /etc/default/grub
 grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot --removable
 grub-mkconfig -o /boot/grub/grub.cfg
 rc-update add dhcpcd default
