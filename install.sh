@@ -73,8 +73,8 @@ chroot $chroot_dir /bin/bash << "CHROOT"
 env-update && source /etc/profile
 export PS1="(chroot) $PS1" 
 mount /dev/sda2 /boot
-echo 'EMERGE_DEFAULT_OPTS="--jobs=5 --load-average=4 --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
-echo 'MAKEOPTS="-j5 -l4"' >> /etc/portage/make.conf
+echo 'EMERGE_DEFAULT_OPTS="--jobs=12 --load-average=11 --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
+echo 'MAKEOPTS="-j12 -l11"' >> /etc/portage/make.conf
 echo -e "\e[31m--- emerge-webrsync ---\e[0m"
 emerge-webrsync
 emerge --oneshot sys-apps/portage
@@ -93,13 +93,13 @@ echo 'USE="abi_x86_64"' >> /etc/portage/make.conf
 #echo "tmpfs /var/tmp/portage tmpfs size=12G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
 
 echo -e "\e[31m--- create kernel ---\e[0m"
-emerge sys-kernel/gentoo-kernel-bin
+#emerge sys-kernel/gentoo-kernel-bin
 emerge sys-kernel/gentoo-sources
 emerge sys-kernel/linux-firmware
 emerge --autounmask-write sys-kernel/genkernel
 echo -5 | etc-update
 emerge sys-kernel/genkernel
-#genkernel --lvm --mountboot --busybox all
+genkernel --lvm --mountboot --busybox all
 
 echo -e "\e[31m--- add soft and settings ---\e[0m"
 echo hostname="gentoo" > /etc/conf.d/hostname
