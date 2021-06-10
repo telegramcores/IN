@@ -76,8 +76,7 @@ chroot $chroot_dir /bin/bash << "CHROOT"
 env-update && source /etc/profile
 export PS1="(chroot) $PS1" 
 mount /dev/sda2 /boot
-echo 'EMERGE_DEFAULT_OPTS="--jobs=12 --load-average=11 --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
-echo 'MAKEOPTS="-j12 -l11"' >> /etc/portage/make.conf
+echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
 echo -e "\e[31m--- emerge-webrsync ---\e[0m"
 emerge-webrsync
 emerge --oneshot sys-apps/portage
@@ -133,11 +132,9 @@ grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --
 grub-mkconfig -o /boot/grub/grub.cfg
 emerge --autounmask-write sys-boot/os-prober
 echo -5 | etc-update
-emerge sys-boot/os-prober
 rc-update add dhcpcd default
-emerge lvm2
+emerge sys-fs/lvm2
 rc-update add lvmetad boot
-rc-update add lvm boot
 END_TIME=$(date +%s)
 DIFF=$(( $END_TIME - $START_TIME ))
 echo "Time to work $DIFF seconds"
