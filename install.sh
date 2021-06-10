@@ -103,7 +103,7 @@ emerge sys-kernel/genkernel
 eselect kernel set 1
 
 echo -e "\e[31m--- create kernel ---\e[0m"
-genkernel --mdadm --mdadm-config=/etc/mdadm.conf --lvm --e2fsprogs --busybox --install --bootloader=grub all
+genkernel --lvm --e2fsprogs --busybox --install --bootloader=grub all
 
 echo -e "\e[31m--- add soft and settings ---\e[0m"
 echo hostname="gentoo" > /etc/conf.d/hostname
@@ -124,6 +124,7 @@ emerge app-misc/mc
 echo 'GRUB_PLATFORMS="emu efi-32 efi-64 pc"' >> /etc/portage/make.conf
 emerge sys-boot/grub:2
 echo 'GRUB_CMDLINE_LINUX="dolvm"' >> /etc/default/grub
+echo "sys-boot/grub device-mapper" > /etc/portage/package.use/grub
 grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot --removable
 grub-mkconfig -o /boot/grub/grub.cfg
 rc-update add dhcpcd default
