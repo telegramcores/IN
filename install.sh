@@ -124,10 +124,7 @@ emerge app-misc/mc
 echo 'GRUB_PLATFORMS="emu efi-32 efi-64 pc"' >> /etc/portage/make.conf
 emerge sys-boot/grub:2
 echo 'GRUB_CMDLINE_LINUX_DEFAULT="dolvm rootfstype=ext4 ro console=tty1"' >> /etc/default/grub
-echo "sys-boot/grub" >> /etc/portage/package.unmask
-echo "=sys-boot/efibootmgr-0.5.4 ~amd64" >> /etc/portage/package.accept_keywords
-echo "=sys-boot/grub-9999 **" >> /etc/portage/package.accept_keywords
-grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --modules="part_gpt part_msdos linux normal boot all_video chain efi_gop video video_fb gzio ls lvm" --efi-directory=/boot/efi /dev/sda
+grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot/EFI
 grub-mkconfig -o /boot/grub/grub.cfg
 rc-update add dhcpcd default
 emerge sys-fs/lvm2
