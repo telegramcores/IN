@@ -99,6 +99,7 @@ emerge sys-kernel/linux-firmware
 emerge --autounmask-write sys-kernel/genkernel
 echo -5 | etc-update
 emerge sys-kernel/genkernel
+eselect kernel set 1
 genkernel --lvm --mountboot --busybox all
 
 echo -e "\e[31m--- add soft and settings ---\e[0m"
@@ -132,7 +133,6 @@ rc-update add dhcpcd default
 rc-update add lvmetad boot
 eval $start_time
 date
-passwd
 
 CHROOT
 
