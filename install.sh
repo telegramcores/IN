@@ -1,4 +1,4 @@
-start_time="date"
+START_TIME=$(date +%s)
 echo "--- start LVM-service ---"
 /etc/init.d/lvm start
 
@@ -134,8 +134,8 @@ emerge sys-boot/os-prober
 rc-update add dhcpcd default
 emerge lvm2
 rc-update add lvmetad boot
-eval $start_time
-date
-
+END_TIME=$(date +%s)
+DIFF=$(( $END_TIME - $START_TIME ))
+echo "Time to work $DIFF seconds"
 CHROOT
 
