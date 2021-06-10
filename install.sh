@@ -85,8 +85,8 @@ cpuid2cpuflags | sed 's/: /="/' | sed -e '$s/$/"/' >> /etc/portage/make.conf
 echo -e "\e[31m--- update @world ---\e[0m"
 emerge --update --deep --newuse @world
 
-echo "app-editors/vim X python vim-pager perl terminal" >> /etc/portage/package.use/vim
-emerge app-editors/vim
+#echo "app-editors/vim X python vim-pager perl terminal" >> /etc/portage/package.use/vim
+#emerge app-editors/vim
 echo "/dev/sda2 /boot fat32 defaults 0 2" >> /etc/fstab
 echo 'ACCEPT_LICENSE="*"'     >> /etc/portage/make.conf
 echo 'USE="abi_x86_64"' >> /etc/portage/make.conf
