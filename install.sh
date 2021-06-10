@@ -134,6 +134,7 @@ emerge sys-boot/os-prober
 rc-update add dhcpcd default
 emerge lvm2
 rc-update add lvmetad boot
+rc-update add lvm boot
 END_TIME=$(date +%s)
 DIFF=$(( $END_TIME - $START_TIME ))
 echo "Time to work $DIFF seconds"
