@@ -1,4 +1,3 @@
-START_TIME=$(date +%s)
 echo "--- start LVM-service ---"
 /etc/init.d/lvm start
 
@@ -119,24 +118,17 @@ rc-update add cronie default
 emerge sys-apps/mlocate
 emerge sys-fs/e2fsprogs
 emerge net-misc/dhcpcd
-#emerge net-wireless/iw
-#emerge net-wireless/wpa_supplicant
 emerge tmux
 emerge htop
 emerge app-misc/mc
-emerge sys-boot/os-prober
 echo 'GRUB_PLATFORMS="emu efi-32 efi-64 pc"' >> /etc/portage/make.conf
 emerge sys-boot/grub:2
 echo 'GRUB_CMDLINE_LINUX="dolvm"' >> /etc/default/grub
 grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot --removable
 grub-mkconfig -o /boot/grub/grub.cfg
-emerge --autounmask-write sys-boot/os-prober
-echo -5 | etc-update
 rc-update add dhcpcd default
 emerge sys-fs/lvm2
-rc-update add lvmetad boot
-END_TIME=$(date +%s)
-DIFF=$(( $END_TIME - $START_TIME ))
-echo "Time to work $DIFF seconds"
+rc-update add lvm boot
+echo -5 | etc-update
 CHROOT
 
