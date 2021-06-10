@@ -103,7 +103,7 @@ emerge sys-kernel/genkernel
 eselect kernel set 1
 
 echo -e "\e[31m--- create kernel ---\e[0m"
-genkernel --lvm --e2fsprogs --busybox --install --bootloader=grub all
+genkernel --lvm --mountboot --busybox all
 
 echo -e "\e[31m--- add soft and settings ---\e[0m"
 echo hostname="gentoo" > /etc/conf.d/hostname
