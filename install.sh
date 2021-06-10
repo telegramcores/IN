@@ -94,16 +94,17 @@ echo 'USE="abi_x86_64"' >> /etc/portage/make.conf
 #echo "tmpfs /var/tmp/portage tmpfs size=12G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
 
 echo -e "\e[31m--- set kernel ---\e[0m"
-emerge sys-kernel/gentoo-kernel-bin
-#emerge sys-kernel/gentoo-sources
+#emerge sys-kernel/gentoo-kernel-bin
+emerge sys-kernel/gentoo-sources
 emerge sys-kernel/linux-firmware
-#emerge --autounmask-write sys-kernel/genkernel
-#echo -5 | etc-update
-#emerge sys-kernel/genkernel
+emerge --autounmask-write sys-kernel/genkernel
+echo -5 | etc-update
+emerge sys-kernel/genkernel
 eselect kernel set 1
 
 echo -e "\e[31m--- create kernel ---\e[0m"
-#genkernel --lvm --mountboot --busybox all
+genkernel all
+genkernel --mdadm --mdadm-config=/etc/mdadm.conf --lvm --e2fsprogs --busybox --install --bootloader=grub initramfs
 
 echo -e "\e[31m--- add soft and settings ---\e[0m"
 echo hostname="gentoo" > /etc/conf.d/hostname
@@ -129,6 +130,5 @@ grub-mkconfig -o /boot/grub/grub.cfg
 rc-update add dhcpcd default
 emerge sys-fs/lvm2
 rc-update add lvm boot
-echo -5 | etc-update
 CHROOT
 
