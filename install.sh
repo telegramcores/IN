@@ -126,8 +126,8 @@ emerge sys-boot/os-prober
 echo 'GRUB_PLATFORMS="emu efi-32 efi-64 pc"' >> /etc/portage/make.conf
 emerge sys-boot/grub:2
 echo 'GRUB_CMDLINE_LINUX="dolvm"' >> /etc/default/grub
-grub2-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot --removable
-grub2-mkconfig -o /boot/grub/grub.cfg
+grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot --removable
+grub-mkconfig -o /boot/grub/grub.cfg
 emerge --autounmask-write sys-boot/os-prober
 echo -5 | etc-update
 emerge sys-boot/os-prober
