@@ -114,7 +114,7 @@ rc-update add cronie default
 emerge sys-apps/mlocate
 emerge sys-fs/e2fsprogs
 emerge net-misc/dhcpcd
-emerge net-wireless/iw
+#emerge net-wireless/iw
 #emerge net-wireless/wpa_supplicant
 emerge tmux
 emerge htop
