@@ -132,6 +132,7 @@ emerge --autounmask-write sys-boot/os-prober
 echo -5 | etc-update
 emerge sys-boot/os-prober
 rc-update add dhcpcd default
+emerge lvm2
 rc-update add lvmetad boot
 eval $start_time
 date
