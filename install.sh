@@ -95,7 +95,7 @@ echo 'USE="abi_x86_64"' >> /etc/portage/make.conf
 
 
 
-echo -e "\e[31m--- add soft and settings ---\e[0m"
+echo -e "\e[31m--- add soft and settings ---\e[0m"rd.lvm.vg=vg01 rd.lvm.lv=vg01/rootfs rd.lvm.lv=vg01/swap ro rootfstype=ext4 
 echo hostname="gentoo" > /etc/conf.d/hostname
 blkid | grep 'boot' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t /boot \t swap \t sw \t 0 \t 0@'
 blkid | grep 'swap' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t none \t swap \t sw \t 0 \t 0@' >> /etc/fstab
@@ -118,7 +118,7 @@ emerge sys-apps/mlocate sys-fs/e2fsprogs tmux htop app-misc/mc
 echo 'GRUB_PLATFORMS="emu efi-32 efi-64 pc"' >> /etc/portage/make.conf
 echo 'sys-boot/grub:2 device-mapper' >> /etc/portage/package.use/package.use
 emerge sys-boot/grub:2
-echo 'GRUB_CMDLINE_LINUX_DEFAULT="rd.lvm.vg=vg01 rd.lvm.lv=vg01/rootfs rd.lvm.lv=vg01/swap ro rootfstype=ext4 dolvm"' >> /etc/default/grub
+echo 'GRUB_CMDLINE_LINUX_DEFAULT="dolvm"' >> /etc/default/grub
 
 echo -e "\e[31m--- set kernel ---\e[0m"
 #emerge sys-kernel/gentoo-kernel-bin
