@@ -126,7 +126,7 @@ emerge sys-kernel/genkernel
 eselect kernel set 1
 
 echo -e "\e[31m--- create kernel ---\e[0m"
-genkernel --lvm --mountboot --busybox all
+genkernel --lvm --mountboot --iscsi --busybox all
 
 grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot
 grub-mkconfig -o /boot/grub/grub.cfg
