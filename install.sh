@@ -112,9 +112,10 @@ emerge sys-fs/lvm2
 rc-update add lvm boot
 
 #--- софт ---
-emerge sys-apps/mlocate sys-fs/e2fsprogs  tmux htop app-misc/mc
+emerge sys-apps/mlocate sys-fs/e2fsprogs tmux htop app-misc/mc
 
 echo 'GRUB_PLATFORMS="emu efi-32 efi-64 pc"' >> /etc/portage/make.conf
+echo 'sys-boot/grub:2 device-mapper' >> /etc/portage/package.use/package.use
 emerge sys-boot/grub:2
 echo 'GRUB_CMDLINE_LINUX_DEFAULT="dolvm rootfstype=ext4 ro console=tty1"' >> /etc/default/grub
 
@@ -129,7 +130,7 @@ eselect kernel set 1
 
 << NOT
 echo -e "\e[31m--- create kernel ---\e[0m"
-genkernel --instal --no-ramdisk-modules --lvm --mountboot --disklabel --busybox l initramfs
+genkernel --install --no-ramdisk-modules --lvm --mountboot --disklabel --busybox all
 
 grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot
 grub-mkconfig -o /boot/grub/grub.cfg
