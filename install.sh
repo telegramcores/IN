@@ -127,11 +127,14 @@ echo -5 | etc-update
 emerge sys-kernel/genkernel
 eselect kernel set 1
 
+<< NOT
 echo -e "\e[31m--- create kernel ---\e[0m"
-genkernel --lvm --mountboot --busybox all
+genkernel --lvm --mountboot --disklabel --busybox all
 
 grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot
 grub-mkconfig -o /boot/grub/grub.cfg
+
+NOT
 
 CHROOT
 
