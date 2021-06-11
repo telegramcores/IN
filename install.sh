@@ -93,6 +93,31 @@ echo 'ACCEPT_LICENSE="*"'     >> /etc/portage/make.conf
 echo 'USE="abi_x86_64"' >> /etc/portage/make.conf
 #echo "tmpfs /var/tmp/portage tmpfs size=12G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
 
+
+
+echo -e "\e[31m--- add soft and settings ---\e[0m"
+echo hostname="gentoo" > /etc/conf.d/hostname
+blkid | grep 'boot' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t /boot \t swap \t sw \t 0 \t 0@'
+blkid | grep 'swap' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t none \t swap \t sw \t 0 \t 0@' >> /etc/fstab
+blkid | grep 'ext4' | grep 'rootfs' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t / \t ext4 \t noatime \t 0 \t 1@'>> /etc/fstab
+pushd /etc/init.d && ln -s net.lo net.eth0 && rc-update add net.eth0 default && popd
+#--- службы ---
+emerge app-admin/sysklogd
+rc-update add sysklogd default
+emerge sys-process/cronie
+rc-update add cronie default
+emerge net-misc/dhcpcd
+rc-update add dhcpcd default
+emerge sys-fs/lvm2
+rc-update add lvm boot
+
+#--- софт ---
+emerge sys-apps/mlocate sys-fs/e2fsprogs  tmux htop app-misc/mc
+
+echo 'GRUB_PLATFORMS="emu efi-32 efi-64 pc"' >> /etc/portage/make.conf
+emerge sys-boot/grub:2
+echo 'GRUB_CMDLINE_LINUX_DEFAULT="dolvm rootfstype=ext4 ro console=tty1"' >> /etc/default/grub
+
 echo -e "\e[31m--- set kernel ---\e[0m"
 #emerge sys-kernel/gentoo-kernel-bin
 emerge sys-kernel/gentoo-sources
@@ -105,25 +130,8 @@ eselect kernel set 1
 echo -e "\e[31m--- create kernel ---\e[0m"
 genkernel --lvm --mountboot --busybox all
 
-echo -e "\e[31m--- add soft and settings ---\e[0m"
-echo hostname="gentoo" > /etc/conf.d/hostname
-blkid | grep 'boot' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t /boot \t swap \t sw \t 0 \t 0@'
-blkid | grep 'swap' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t none \t swap \t sw \t 0 \t 0@' >> /etc/fstab
-blkid | grep 'ext4' | grep 'rootfs' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t / \t ext4 \t noatime \t 0 \t 1@'>> /etc/fstab
-pushd /etc/init.d && ln -s net.lo net.eth0 && rc-update add net.eth0 default && popd
-emerge app-admin/sysklogd
-rc-update add sysklogd default
-emerge sys-process/cronie
-rc-update add cronie default
-emerge sys-apps/mlocate sys-fs/e2fsprogs net-misc/dhcpcd tmux htop app-misc/mc
-
-echo 'GRUB_PLATFORMS="emu efi-32 efi-64 pc"' >> /etc/portage/make.conf
-emerge sys-boot/grub:2
-echo 'GRUB_CMDLINE_LINUX_DEFAULT="dolvm rootfstype=ext4 ro console=tty1"' >> /etc/default/grub
 grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot
 grub-mkconfig -o /boot/grub/grub.cfg
-rc-update add dhcpcd default
-emerge sys-fs/lvm2
-rc-update add lvm boot
+
 CHROOT
 
