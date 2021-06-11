@@ -86,14 +86,10 @@ cpuid2cpuflags | sed 's/: /="/' | sed -e '$s/$/"/' >> /etc/portage/make.conf
 echo -e "\e[31m--- update @world ---\e[0m"
 emerge --update --deep --newuse @world
 
-#echo "app-editors/vim X python vim-pager perl terminal" >> /etc/portage/package.use/vim
-#emerge app-editors/vim
 echo "/dev/sda2 /boot fat32 defaults 0 2" >> /etc/fstab
 echo 'ACCEPT_LICENSE="*"'     >> /etc/portage/make.conf
 echo 'USE="abi_x86_64"' >> /etc/portage/make.conf
 #echo "tmpfs /var/tmp/portage tmpfs size=12G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
-
-
 
 echo -e "\e[31m--- add soft and settings ---\e[0m"rd.lvm.vg=vg01 rd.lvm.lv=vg01/rootfs rd.lvm.lv=vg01/swap ro rootfstype=ext4 
 echo hostname="gentoo" > /etc/conf.d/hostname
@@ -129,14 +125,11 @@ echo -5 | etc-update
 emerge sys-kernel/genkernel
 eselect kernel set 1
 
-<< NOT
 echo -e "\e[31m--- create kernel ---\e[0m"
 genkernel --lvm --mountboot --busybox all
 
 grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot
 grub-mkconfig -o /boot/grub/grub.cfg
-
-NOT
 
 CHROOT
 
