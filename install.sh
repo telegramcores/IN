@@ -118,7 +118,7 @@ emerge sys-apps/mlocate sys-fs/e2fsprogs tmux htop app-misc/mc
 echo 'GRUB_PLATFORMS="emu efi-32 efi-64 pc"' >> /etc/portage/make.conf
 echo 'sys-boot/grub:2 device-mapper' >> /etc/portage/package.use/package.use
 emerge sys-boot/grub:2
-echo 'GRUB_CMDLINE_LINUX_DEFAULT="dolvm rootfstype=ext4 ro console=tty1"' >> /etc/default/grub
+echo 'GRUB_CMDLINE_LINUX_DEFAULT="rd.lvm.vg=vg01 rd.lvm.lv=vg01/root rd.lvm.lv=vg01/swap ro rootfstype=ext4 dolvm"' >> /etc/default/grub
 
 echo -e "\e[31m--- set kernel ---\e[0m"
 #emerge sys-kernel/gentoo-kernel-bin
@@ -131,7 +131,7 @@ eselect kernel set 1
 
 << NOT
 echo -e "\e[31m--- create kernel ---\e[0m"
-genkernel --install --no-ramdisk-modules --lvm --mountboot --busybox all
+genkernel --lvm --mountboot --busybox all
 
 grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot
 grub-mkconfig -o /boot/grub/grub.cfg
