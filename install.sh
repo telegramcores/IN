@@ -104,9 +104,6 @@ eselect kernel set 1
 
 echo -e "\e[31m--- create kernel ---\e[0m"
 genkernel --lvm --mountboot --busybox all
-cd /usr/src/linux
-make module_install
-make install
 
 echo -e "\e[31m--- add soft and settings ---\e[0m"
 echo hostname="gentoo" > /etc/conf.d/hostname
@@ -118,12 +115,8 @@ emerge app-admin/sysklogd
 rc-update add sysklogd default
 emerge sys-process/cronie
 rc-update add cronie default
-emerge sys-apps/mlocate
-emerge sys-fs/e2fsprogs
-emerge net-misc/dhcpcd
-emerge tmux
-emerge htop
-emerge app-misc/mc
+emerge sys-apps/mlocate sys-fs/e2fsprogs net-misc/dhcpcd tmux htop app-misc/mc
+
 echo 'GRUB_PLATFORMS="emu efi-32 efi-64 pc"' >> /etc/portage/make.conf
 emerge sys-boot/grub:2
 echo 'GRUB_CMDLINE_LINUX_DEFAULT="dolvm rootfstype=ext4 ro console=tty1"' >> /etc/default/grub
