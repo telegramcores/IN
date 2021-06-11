@@ -109,7 +109,7 @@ rc-update add cronie default
 emerge net-misc/dhcpcd
 rc-update add dhcpcd default
 emerge sys-fs/lvm2
-rc-update add lvm boot
+rc-update add lvmetad boot
 rc-update add udev boot
 
 #--- софт ---
