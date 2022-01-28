@@ -132,26 +132,7 @@ eselect kernel set 1
 
 echo -e "\e[31m--- create kernel ---\e[0m"
 #genkernel --lvm --mountboot --busybox all
-
-EFI="false"
-if [ $EFI = "false" ]
-	then
-		#setup boot loader
-		emerge -q --verbose sys-boot/grub:2
-		grub-install /dev/sda
-		grub-mkconfig -o /boot/grub/grub.cfg
-	fi
-	if [ $EFI = "true" ]
-	then
-		mount /dev/sda2 /boot
-		echo 'GRUB_PLATFORMS="efi-64"' >> /etc/portage/make.conf
-		emerge -q sys-boot/grub:2
-		grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot
-        grub-mkconfig -o /boot/grub/grub.cfg
-	fi
-
-
-
-
+grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot
+grub-mkconfig -o /boot/grub/grub.cfg
 CHROOT
 
