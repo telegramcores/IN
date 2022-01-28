@@ -6,10 +6,10 @@ from utils import call_cmd_and_print_cmd, source
 
 def compile(boot_device: str):
     #Пока отключу полное обновление системы
-    #call_cmd_and_print_cmd('USE="-bluetooth" emerge --update --deep --newuse @world')
-    #call_cmd_and_print_cmd('emerge --sync')
-    #call_cmd_and_print_cmd('echo "app-editors/vim X python vim-pager perl terminal" >> /etc/portage/package.use/vim')
-    #call_cmd_and_print_cmd('emerge app-editors/vim')
+    call_cmd_and_print_cmd('USE="-bluetooth" emerge --update --deep --newuse @world')
+    call_cmd_and_print_cmd('emerge --sync')
+    call_cmd_and_print_cmd('echo "app-editors/vim X python vim-pager perl terminal" >> /etc/portage/package.use/vim')
+    call_cmd_and_print_cmd('emerge app-editors/vim')
 
     call_cmd_and_print_cmd(f'echo "{boot_device} /boot fat32 defaults 0 2" >> /etc/fstab')
     call_cmd_and_print_cmd(f'echo "tmpfs /var/tmp/portage tmpfs size=12G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab')
@@ -21,7 +21,7 @@ def compile(boot_device: str):
     call_cmd_and_print_cmd('emerge -gK --autounmask-write sys-kernel/genkernel')
     call_cmd_and_print_cmd('echo -5 | etc-update')
     call_cmd_and_print_cmd('emerge -gK sys-kernel/genkernel')
-    #call_cmd_and_print_cmd('genkernel --lvm --mountboot --busybox all')
+    call_cmd_and_print_cmd('genkernel --lvm --mountboot --busybox all')
     
     #Драйвера
     call_cmd_and_print_cmd('emerge -gK sys-kernel/linux-firmware')
@@ -37,7 +37,7 @@ def configuring():
     call_cmd_and_print_cmd(r'''blkid | grep 'boot' |                 sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t /boot \t swap \t sw \t 0 \t 0@' ''')
     call_cmd_and_print_cmd(r'''blkid | grep 'swap' |                 sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t none \t swap \t sw \t 0 \t 0@'               >> /etc/fstab''')
     call_cmd_and_print_cmd(r'''blkid | grep 'ext4' | grep 'rootfs' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t / \t ext4 \t noatime \t 0 \t 1@'             >> /etc/fstab''')
-    #call_cmd_and_print_cmd(r'''blkid | grep 'ext4' | grep 'home'   | sed "s@.*UUID=\"\([^\"]*\)\".*@UUID=\1 \t /home/ \t ext4 \t noatime \t 0 \t 1@"     >> /etc/fstab''')
+    call_cmd_and_print_cmd(r'''blkid | grep 'ext4' | grep 'home'   | sed "s@.*UUID=\"\([^\"]*\)\".*@UUID=\1 \t /home/ \t ext4 \t noatime \t 0 \t 1@"     >> /etc/fstab''')
 
     call_cmd_and_print_cmd('pushd /etc/init.d && ln -s net.lo net.eth0 && rc-update add net.eth0 default && popd')
 
