@@ -49,7 +49,7 @@ df -h
 
 echo -e "\e[31m--- load Stage3 ---\e[0m"
 URL='https://mirror.yandex.ru/gentoo-distfiles/releases/amd64/autobuilds'
-STAGE3=$(wget $URL/latest-stage3-amd64.txt -qO - | grep -v '#' | awk '{print $1;}')
+STAGE3=$(wget $URL/latest-stage3-amd64-openrc.txt -qO - | grep -v '#' | awk '{print $1;}')
 wget $URL/$STAGE3
 echo -e "\e[31m--- extract Stage3 ---\e[0m"
 tar xpf stage3-*.tar.* --xattrs-include='*.*' --numeric-owner
@@ -92,7 +92,7 @@ echo 'USE="abi_x86_64"' >> /etc/portage/make.conf
 #echo "tmpfs /var/tmp/portage tmpfs size=12G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
 
 echo -e "\e[31m--- add soft and settings ---\e[0m"rd.lvm.vg=vg01 rd.lvm.lv=vg01/rootfs rd.lvm.lv=vg01/swap ro rootfstype=ext4 
-echo hostname="gentoo" > /etc/conf.d/hostname
+echo hostname="gentoo_server" > /etc/conf.d/hostname
 blkid | grep 'boot' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t /boot \t swap \t sw \t 0 \t 0@'
 blkid | grep 'swap' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t none \t swap \t sw \t 0 \t 0@' >> /etc/fstab
 blkid | grep 'ext4' | grep 'rootfs' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t / \t ext4 \t noatime \t 0 \t 1@'>> /etc/fstab
