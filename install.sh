@@ -108,6 +108,12 @@ emerge sys-fs/lvm2
 rc-update add lvmetad boot
 rc-update add udev boot
 
+#--- пароль root и запуск ssh ---
+echo -e "\e[31m--- root&sshd ---\e[0m"
+sed -i "s/everyone/none/" /etc/security/passwdqc.conf
+echo -e "1\n1" | passwd root
+rc-update add sshd default
+
 #--- софт ---
 emerge sys-apps/mlocate sys-fs/e2fsprogs tmux htop app-misc/mc
 
@@ -130,6 +136,7 @@ genkernel --lvm --mountboot --busybox all
 
 grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot
 grub-mkconfig -o /boot/grub/grub.cfg
+
 
 CHROOT
 
