@@ -110,7 +110,7 @@ rc-update add udev boot
 
 #--- пароль root и запуск ssh ---
 echo -e "\e[31m--- root&sshd ---\e[0m"
-sed -i "s/everyone/none/" /etc/security/passwdqc.conf
+sed -i 's/everyone/none/' /etc/security/passwdqc.conf
 echo -e "1\n1" | passwd root
 rc-update add sshd default
 
