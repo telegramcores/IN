@@ -74,7 +74,6 @@ chroot_dir=/mnt/gentoo
 chroot $chroot_dir /bin/bash << "CHROOT"
 env-update && source /etc/profile
 export PS1="(chroot) $PS1" 
-mount /dev/sda2 /boot
 echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
 echo -e "\e[31m--- emerge-webrsync ---\e[0m"
 emerge-webrsync
@@ -134,8 +133,24 @@ eselect kernel set 1
 echo -e "\e[31m--- create kernel ---\e[0m"
 #genkernel --lvm --mountboot --busybox all
 
-grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot
-grub-mkconfig -o /boot/grub/grub.cfg
+EFI="false"
+if [ $EFI = "false" ]
+	then
+		#setup boot loader
+		emerge -q --verbose sys-boot/grub:2
+		grub-install /dev/sda
+		grub-mkconfig -o /boot/grub/grub.cfg
+	fi
+	if [ $EFI = "true" ]
+	then
+		mount /dev/sda2 /boot
+		echo 'GRUB_PLATFORMS="efi-64"' >> /etc/portage/make.conf
+		emerge -q sys-boot/grub:2
+		grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot
+        grub-mkconfig -o /boot/grub/grub.cfg
+	fi
+
+
 
 
 CHROOT
