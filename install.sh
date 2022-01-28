@@ -123,9 +123,9 @@ emerge sys-boot/grub:2
 echo 'GRUB_CMDLINE_LINUX_DEFAULT="dolvm"' >> /etc/default/grub
 
 echo -e "\e[31m--- set kernel ---\e[0m"
+emerge sys-kernel/linux-firmware
 emerge sys-kernel/gentoo-kernel-bin
 #emerge sys-kernel/gentoo-sources
-emerge sys-kernel/linux-firmware
 emerge --autounmask-write sys-kernel/genkernel
 echo -5 | etc-update
 emerge sys-kernel/genkernel
