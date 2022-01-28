@@ -135,8 +135,9 @@ echo -e "\e[31m--- create kernel ---\e[0m"
 #genkernel --lvm --mountboot --busybox all
 
 #grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot
-grub-mkconfig -o /boot/grub/grub.cfg
 grub-install /dev/sda
+grub-mkconfig -o /boot/grub/grub.cfg
+
 
 
 
