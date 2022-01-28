@@ -136,5 +136,11 @@ echo -e "\e[31m--- create kernel ---\e[0m"
 
 grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot
 grub-mkconfig -o /boot/grub/grub.cfg
+emerge --autounmask-write sys-boot/os-prober
+echo -5 | etc-update
+emerge sys-boot/os-prober
+
+
+
 CHROOT
 
