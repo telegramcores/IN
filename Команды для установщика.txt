@@ -1,0 +1,87 @@
+emerge lm-sensors		проверка температуры
+emerge smartmontools		проверка HDD
+
+#samba
+emerge samba
+mkdir /mnt/smbshare
+chmod 777 /mnt/smbshare/
+touch /etc/samba/smb.conf
+_____________________________________
+nano /etc/samba/smb.conf
+[GLOBAL]
+workgroup = WORKGROUP
+server role = standalone server
+security = user
+browseable = yes
+map to guest = Bad User
+
+[share]
+path = /mnt/smbshare
+read only = No
+browseable = yes
+guest ok = yes
+create mask = 0777
+directory mask = 0777
+_____________________________________
+rc-service samba start
+rc-update add samba default
+
+
+#lxc
+# https://wiki.calculate-linux.org/ru/lxc
+emerge -v lxc
+lxc-checkconfig
+
+ifconfig - смотрим сетевые интерфейсы
+_____________________________________
+создаем файл (вместо eth0 подставляем имя рабочего интерфейса из ifconfig)
+/etc/conf.d/net
+
+config_enp2s0="null"
+config_enp1s0="null"
+bridge_br0="enp2s0 enp1s0"
+config_br0="192.168.1.50/24"
+bridge_forward_delay_br0=0
+bridge_hello_time_br0=200
+bridge_stp_state_br0=0
+routes_br0="default gw 192.168.1.1"
+
+______________________________________
+/etc/init.d/net.eth0 stop
+rm -f /etc/init.d/net.eth0
+ln -s /etc/init.d/net.lo /etc/init.d/net.br0
+/etc/init.d/net.br0 start
+ rc-update add net.br0 - bridge в автозагрузку
+
+
+/var/lib/lxc/gentoo/config
+lxc.net.0.type = veth
+lxc.net.0.flags = up
+lxc.net.0.name = eth0
+lxc.net.0.link = br0
+lxc.net.0.hwaddr = 02:03:04:05:06:07
+
+/etc/conf.d/lxc
+rc_want="net.br0"
+
+#если нужен автозапуск контейнера после включения
+ln -sf /etc/init.d/lxc /etc/init.d/lxc.gentoo
+rc-update add lxc.gentoo
+
+
+
+
+/usr/share/lxc/templates/
+/var/lib/lxc/ - удалить контейнеры отсюда (если пишет, что контейнер уже создан ( main: 264 Container already exists))
+
+
+
+# https://eax.me/lxc/
+# https://uk.lxd.images.canonical.com/
+lxc-create -t download -n gentoo -- -d gentoo -r current -a amd64 --variant openrc
+lxc-create -t download -n debian -- -d debian -r bookworm -a amd64
+lxc-ls -f		список контейнеров
+lxc-start -d -n gentoo	запуск контейнера
+
+
+
