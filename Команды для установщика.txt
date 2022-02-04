@@ -83,5 +83,6 @@ lxc-create -t download -n debian -- -d debian -r bookworm -a amd64
 lxc-ls -f		список контейнеров
 lxc-start -d -n gentoo	запуск контейнера
 
-
+######################### настройка KVM QEMU + libvrt ################################
+https://wiki.enchtex.info/howto/gentoo/gentoo_install_kvm
 
