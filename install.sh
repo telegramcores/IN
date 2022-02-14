@@ -37,7 +37,7 @@ vgcreate vg01 /dev/sda3
 pvcreate -ff /dev/sda4
 vgcreate vg02 /dev/sda4
 
-lvcreate -y -L 4096M -n swap vg01
+lvcreate -y -L 16384M -n swap vg01
 lvcreate -y -l 100%VG -n rootfs vg01
 
 lvcreate -y -l 100%VG -n devhdd vg02
@@ -163,12 +163,6 @@ grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --
 #Параметр для Leagacy
 #grub-install /dev/sda
 grub-mkconfig -o /boot/grub/grub.cfg
-
-
-
-
-
-
 
 CHROOT
 
