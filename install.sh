@@ -162,7 +162,7 @@ rc-update add samba default
 
 
 #--- софт ---
-emerge sys-apps/mlocate sys-fs/e2fsprogs tmux htop app-misc/mc
+emerge sys-apps/mlocate sys-fs/e2fsprogs tmux htop app-misc/mc sys-apps/lm-sensors sys-apps/smartmontools
 
 echo 'GRUB_PLATFORMS="emu efi-32 efi-64 pc"' >> /etc/portage/make.conf
 echo 'sys-boot/grub:2 device-mapper' >> /etc/portage/package.use/package.use
