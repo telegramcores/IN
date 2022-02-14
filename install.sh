@@ -20,24 +20,40 @@ parted -a optimal --script $disk mkpart primary 3MiB 259MiB
 parted -a optimal --script $disk name 2 boot
 parted -a optimal --script $disk set 2 boot on
 
-echo "---create sda3 LVM ---"
-parted -s -- $disk mkpart primary 259MiB -1MiB
+echo "---create sda3 LVM (ssd) ---"
+parted -s -- $disk mkpart primary 259MiB 90%
 parted -a optimal --script $disk name 3 lvm01
 parted -a optimal --script $disk set 3 lvm on
+
+echo "---create sda4 LVM (hdd) ---"
+parted -s -- $disk mkpart primary 90% -1MiB
+parted -a optimal --script $disk name 4 lvm02
+parted -a optimal --script $disk set 4 lvm on
 
 
 pvcreate -ff /dev/sda3
 vgcreate vg01 /dev/sda3
 
+pvcreate -ff /dev/sda4
+vgcreate vg02 /dev/sda4
+
 lvcreate -y -L 4096M -n swap vg01
 lvcreate -y -l 100%VG -n rootfs vg01
 
+lvcreate -y -l 100%VG -n devhdd vg02
+
 mkfs.fat -F 32 /dev/sda2
 mkfs.ext4 /dev/vg01/rootfs
+
+mkfs.ext4 /dev/vg02/devhdd
+
 mkswap /dev/vg01/swap
 swapon /dev/vg01/swap
 
 mount /dev/vg01/rootfs /mnt/gentoo
+
+mount /dev/vg02/devhdd /mnt/gentoo/mnt/HDD
+
 mkdir /mnt/gentoo/home
 
 ntpd -q -g
@@ -96,6 +112,9 @@ echo hostname="gentoo_server" > /etc/conf.d/hostname
 blkid | grep 'boot' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t /boot \t swap \t sw \t 0 \t 0@'
 blkid | grep 'swap' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t none \t swap \t sw \t 0 \t 0@' >> /etc/fstab
 blkid | grep 'ext4' | grep 'rootfs' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t / \t ext4 \t noatime \t 0 \t 1@'>> /etc/fstab
+
+blkid | grep 'ext4' | grep 'devhdd' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t / \t ext4 \t noatime \t 0 \t 1@'>> /etc/fstab
+
 #pushd /etc/init.d && ln -s net.lo net.eth0 && rc-update add net.eth0 default && popd
 #--- службы ---
 emerge app-admin/sysklogd
