@@ -113,6 +113,11 @@ echo -e "\e[31m--- root&sshd ---\e[0m"
 sed -i 's/everyone/none/' /etc/security/passwdqc.conf
 echo -e "1\n1" | passwd root
 rc-update add sshd default
+#Дополнительные настройки для доступа
+sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config
+sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_config
+sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
+
 
 #--- софт ---
 emerge sys-apps/mlocate sys-fs/e2fsprogs tmux htop app-misc/mc
@@ -139,6 +144,9 @@ grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --
 #Параметр для Leagacy
 #grub-install /dev/sda
 grub-mkconfig -o /boot/grub/grub.cfg
+
+
+
 
 
 
