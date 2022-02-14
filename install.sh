@@ -137,6 +137,29 @@ sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/ssh
 sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_config
 sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
 
+#-- samba ---
+emerge net-fs/samba
+touch /etc/samba/smb.conf
+
+cat << EOF >> /etc/samba/smb.conf
+[GLOBAL]
+workgroup = WORKGROUP
+server role = standalone server
+security = user
+browseable = yes
+map to guest = Bad User
+
+[share]
+path = /mnt/HDD
+read only = No
+browseable = yes
+guest ok = yes
+create mask = 0777
+directory mask = 0777
+EOF
+
+rc-update add samba default
+
 
 #--- софт ---
 emerge sys-apps/mlocate sys-fs/e2fsprogs tmux htop app-misc/mc
