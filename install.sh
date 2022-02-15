@@ -137,11 +137,44 @@ sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/ssh
 sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_config
 sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
 
-<<'BRIDGE'
+
 ################# Настройка bridge ##############################
 echo -e "\e[31m--- bridge ---\e[0m"
-netcard=`ip address | grep -v lo | cut -d ' ' -f2 | tr ':' '\n' | awk NF`
-BRIDGE
+netcard1=`ip link | awk -F: '$0 !~ "lo|vir|wl|^[^0-9]"{print $2;getline}'| awk 'NR==1'`
+netcard2=`ip link | awk -F: '$0 !~ "lo|vir|wl|^[^0-9]"{print $2;getline}'| awk 'NR==2'`
+touch /etc/conf.d/net
+if [ "$netcard2" != "" ]; then
+cat << EOF >> /etc/conf.d/net
+config_$netcard1="null"
+config_$netcard2="null"
+bridge_br0="$netcard1 $netcard2"
+config_br0="192.168.1.50/24"
+bridge_forward_delay_br0=0
+bridge_hello_time_br0=200
+bridge_stp_state_br0=0
+routes_br0="default gw 192.168.1.1"
+EOF
+rm -f /etc/init.d/net.$netcard1
+rm -f /etc/init.d/net.$netcard2
+rc-update delete net.$netcard1
+rc-update delete net.$netcard2
+else
+cat << EOF >> /etc/conf.d/net
+config_$netcard1="null"
+bridge_br0="$netcard1"
+config_br0="192.168.1.50/24"
+bridge_forward_delay_br0=0
+bridge_hello_time_br0=200
+bridge_stp_state_br0=0
+routes_br0="default gw 192.168.1.1"
+rm -f /etc/init.d/net.$netcard1
+rc-update delete net.$netcard1
+EOF
+
+ln -s /etc/init.d/net.lo /etc/init.d/net.br0
+rc-update add net.br0
+
+
 
 #-- samba ---
 emerge net-fs/samba
