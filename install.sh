@@ -137,6 +137,12 @@ sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/ssh
 sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_config
 sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
 
+<<'BRIDGE'
+################# Настройка bridge ##############################
+echo -e "\e[31m--- bridge ---\e[0m"
+netcard=`ip address | grep -v lo | cut -d ' ' -f2 | tr ':' '\n' | awk NF`
+BRIDGE
+
 #-- samba ---
 emerge net-fs/samba
 touch /etc/samba/smb.conf
