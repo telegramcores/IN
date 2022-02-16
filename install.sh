@@ -176,8 +176,8 @@ bridge_br0="$netcard1 $netcard2"
 EOF
 rm -f /etc/init.d/net.$netcard1
 rm -f /etc/init.d/net.$netcard2
-rc-update delete net.$netcard1
-rc-update delete net.$netcard2
+# rc-update delete net.$netcard1
+# rc-update delete net.$netcard2
 else
 # если только одна сетевая карта
 cat << EOF >> /etc/conf.d/net
@@ -186,7 +186,7 @@ bridge_br0="$netcard1"
 config_br0="192.168.1.50/24"
 EOF
 rm -f /etc/init.d/net.$netcard1
-rc-update delete net.$netcard1
+# rc-update delete net.$netcard1
 fi
 cat << EOF >> /etc/conf.d/net
 bridge_forward_delay_br0=0
