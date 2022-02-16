@@ -56,7 +56,6 @@ swapon /dev/vg01/swap
 mount /dev/vg01/rootfs /mnt/gentoo
 mkdir /mnt/gentoo/mnt
 mkdir /mnt/gentoo/mnt/HDD
-chmod 777 /mnt/gentoo/mnt/HDD
 mount /dev/vg02/devhdd /mnt/gentoo/mnt/HDD
 
 mkdir /mnt/gentoo/home
@@ -200,6 +199,7 @@ rc-update add net.br0
 
 
 #-- samba ---
+chmod 777 /mnt/HDD
 emerge net-fs/samba
 touch /etc/samba/smb.conf
 
