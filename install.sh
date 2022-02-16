@@ -7,7 +7,9 @@ echo "--- clean disk /dev/sda ---"
 wipefs -af $disk
 echo "--- clear LVM group ---" 
 existing_lvm_groups=$(vgs | sed -n 2,\$p | awk '{print $1}')
+if [ "$existing_lvm_groups" != "" ]; then
 vgremove -y $existing_lvm_groups
+fi
 
 echo "---create sda1 bios_grub ---"
 parted -a optimal --script $disk mklabel gpt
