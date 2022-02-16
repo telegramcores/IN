@@ -91,6 +91,9 @@ chroot $chroot_dir /bin/bash << "CHROOT"
 env-update && source /etc/profile
 export PS1="(chroot) $PS1" 
 mount /dev/sda2 /boot
+# создаем tmpfs
+echo "tmpfs /var/tmp/portage tmpfs size=2G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
+mount /var/tmp/portage
 
 ############ бинарные пакеты https://www.linux.org.ru/news/gentoo/16547411 ##########################
 # cat << EOF >> /etc/portage/binrepos.conf
@@ -118,7 +121,7 @@ emerge --update --deep --newuse @world
 echo "/dev/sda2 /boot vfat defaults 0 2" >> /etc/fstab
 echo 'ACCEPT_LICENSE="*"'     >> /etc/portage/make.conf
 echo 'USE="abi_x86_64"' >> /etc/portage/make.conf
-#echo "tmpfs /var/tmp/portage tmpfs size=12G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
+
 
 echo -e "\e[31m--- add soft and settings ---\e[0m"
 echo hostname="gentoo_server" > /etc/conf.d/hostname
