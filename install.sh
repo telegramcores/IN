@@ -98,6 +98,8 @@ mount /dev/sda2 /boot
 echo "tmpfs /var/tmp/portage tmpfs size=2G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
 mkdir /var/tmp/portage
 mount -t tmpfs tmpfs -o size=1024M,nr_inodes=1M /var/tmp/portage
+echo -e "\e[31m--- Disk System after tmpfs ---\e[0m"
+df -h
 
 ############ бинарные пакеты https://www.linux.org.ru/news/gentoo/16547411 ##########################
 # cat << EOF >> /etc/portage/binrepos.conf
