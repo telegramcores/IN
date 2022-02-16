@@ -2,7 +2,7 @@ echo "--- start LVM-service ---"
 /etc/init.d/lvm start
 
 disk="/dev/sda"
-lvm_group_name = "vg01"
+# lvm_group_name = "vg01"
 echo "--- clean disk /dev/sda ---"
 wipefs -af $disk
 echo "--- clear LVM group ---" 
