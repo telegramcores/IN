@@ -50,8 +50,9 @@ mkfs.ext4 /dev/vg02/devhdd
 mkswap /dev/vg01/swap
 swapon /dev/vg01/swap
 
-mount /dev/vg01/rootfs /mnt/gentoo
+mkdir /mnt/gentoo/mnt
 mkdir /mnt/gentoo/mnt/HDD
+mount /dev/vg01/rootfs /mnt/gentoo
 mount /dev/vg02/devhdd /mnt/gentoo/mnt/HDD
 
 mkdir /mnt/gentoo/home
