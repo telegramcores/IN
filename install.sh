@@ -92,7 +92,7 @@ env-update && source /etc/profile
 export PS1="(chroot) $PS1" 
 mount /dev/sda2 /boot
 
-############ бинарные пакеты ##########################
+############ бинарные пакеты https://www.linux.org.ru/news/gentoo/16547411 ##########################
 cat << EOF >> /etc/portage/binrepos.conf
 [binhost]
 priority = 9999
