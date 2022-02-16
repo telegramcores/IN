@@ -56,6 +56,7 @@ swapon /dev/vg01/swap
 mount /dev/vg01/rootfs /mnt/gentoo
 mkdir /mnt/gentoo/mnt
 mkdir /mnt/gentoo/mnt/HDD
+chmod 777 /mnt/gentoo/mnt/HDD
 mount /dev/vg02/devhdd /mnt/gentoo/mnt/HDD
 
 mkdir /mnt/gentoo/home
@@ -183,12 +184,12 @@ else
 cat << EOF >> /etc/conf.d/net
 config_$netcard1="null"
 bridge_br0="$netcard1"
-config_br0="192.168.1.50/24"
 EOF
 rm -f /etc/init.d/net.$netcard1
 # rc-update delete net.$netcard1
 fi
 cat << EOF >> /etc/conf.d/net
+config_br0="192.168.1.50/24"
 bridge_forward_delay_br0=0
 bridge_hello_time_br0=200
 bridge_stp_state_br0=0
