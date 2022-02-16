@@ -75,17 +75,18 @@ tar xpf stage3-*.tar.* --xattrs-include='*.*' --numeric-owner
 
 sed -i '/COMMON_FLAGS=/ s/\("[^"]*\)"/\1 -march=native"/' etc/portage/make.conf
 
-mkdir --parents etc/portage/repos.conf
-cp usr/share/portage/config/repos.conf etc/portage/repos.conf/gentoo.conf
-
-cp --dereference /etc/resolv.conf etc/
+mkdir --parents /mnt/gentoo/etc/portage/repos.conf
+cp /mnt/gentoo/usr/share/portage/config/repos.conf /mnt/gentoo/etc/portage/repos.conf/gentoo.conf
+cp --dereference /etc/resolv.conf /mnt/gentoo/etc/
 
     # mounting livecd folders
-mount --types proc  /proc proc
-mount --rbind       /sys  sys
-mount --make-rslave       sys
-mount --rbind       /dev  dev
-mount --make-rslave       dev
+mount --types proc /proc /mnt/gentoo/proc
+mount --rbind /sys /mnt/gentoo/sys
+mount --make-rslave /mnt/gentoo/sys
+mount --rbind /dev /mnt/gentoo/dev
+mount --make-rslave /mnt/gentoo/dev
+mount --bind /run /mnt/gentoo/run
+mount --make-slave /mnt/gentoo/run
 
 echo -e "\e[31m--- inside chroot ---\e[0m"
 chroot_dir=/mnt/gentoo
@@ -131,7 +132,6 @@ echo hostname="gentoo_server" > /etc/conf.d/hostname
 blkid | grep 'boot' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t /boot \t swap \t sw \t 0 \t 0@'
 blkid | grep 'swap' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t none \t swap \t sw \t 0 \t 0@' >> /etc/fstab
 blkid | grep 'ext4' | grep 'rootfs' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t / \t ext4 \t noatime \t 0 \t 1@'>> /etc/fstab
-
 blkid | grep 'ext4' | grep 'devhdd' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t / \t ext4 \t noatime \t 0 \t 1@'>> /etc/fstab
 
 #pushd /etc/init.d && ln -s net.lo net.eth0 && rc-update add net.eth0 default && popd
