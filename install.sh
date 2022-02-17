@@ -232,8 +232,7 @@ rc-update add samba default
 
 #--- софт ---
 emerge sys-apps/mlocate sys-fs/e2fsprogs tmux htop app-misc/mc sys-apps/lm-sensors sys-apps/smartmontools
-emerge --ask net-misc/ntp
-rc-update add ntpd
+
 
 
 echo 'GRUB_PLATFORMS="emu efi-32 efi-64 pc"' >> /etc/portage/make.conf
