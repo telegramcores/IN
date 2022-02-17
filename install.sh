@@ -119,7 +119,7 @@ echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-us
 
 echo -e "\e[31m--- emerge-webrsync ---\e[0m"
 emerge-webrsync
-eselect news purge
+eselect news read
 emerge --oneshot sys-apps/portage
 emerge app-portage/gentoolkit
 emerge app-portage/cpuid2cpuflags
