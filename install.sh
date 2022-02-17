@@ -98,9 +98,9 @@ env-update && source /etc/profile
 export PS1="(chroot) $PS1" 
 mount /dev/sda2 /boot
 # создаем tmpfs
-echo "tmpfs /var/tmp/portage tmpfs size=1G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
+echo "tmpfs /var/tmp/portage tmpfs size=2G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
 mkdir /var/tmp/portage
-mount -t tmpfs tmpfs -o size=1G,nr_inodes=1M /var/tmp/portage
+mount -t tmpfs tmpfs -o size=2G,nr_inodes=1M /var/tmp/portage
 echo -e "\e[31m--- Disk System after tmpfs ---\e[0m"
 df -h
 
@@ -135,7 +135,7 @@ echo 'USE="abi_x86_64"' >> /etc/portage/make.conf
 
 echo -e "\e[31m--- add soft and settings ---\e[0m"
 echo hostname="gentoo_server" > /etc/conf.d/hostname
-blkid | grep 'boot' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t /boot \t swap \t sw \t 0 \t 0@'
+# blkid | grep 'boot' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t /boot \t swap \t sw \t 0 \t 0@'
 blkid | grep 'swap' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t none \t swap \t sw \t 0 \t 0@' >> /etc/fstab
 blkid | grep 'ext4' | grep 'rootfs' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t / \t ext4 \t noatime \t 0 \t 1@'>> /etc/fstab
 blkid | grep 'ext4' | grep 'devhdd' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t /mnt/HDD \t ext4 \t noatime \t 0 \t 1@'>> /etc/fstab
