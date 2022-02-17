@@ -105,16 +105,16 @@ echo -e "\e[31m--- Disk System after tmpfs ---\e[0m"
 df -h
 
 ############ бинарные пакеты https://www.linux.org.ru/news/gentoo/16547411 ##########################
-# cat << EOF >> /etc/portage/binrepos.conf
-# [binhost]
-# priority = 9999
-# sync-uri = https://gentoo.osuosl.org/experimental/amd64/binpkg/default/linux/17.1/x86-64/
-# EOF
+cat << EOF >> /etc/portage/binrepos.conf
+[binhost]
+priority = 9999
+sync-uri = https://gentoo.osuosl.org/experimental/amd64/binpkg/default/linux/17.1/x86-64/
+EOF
 # прописываем параметры для бинарных пакетов
-#echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-use=y --getbinpkg=y"' >> /etc/portage/make.conf
+echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-use=y --getbinpkg=y"' >> /etc/portage/make.conf
 #######################################################
 # отключить бинарные пакеты
-echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
+# echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
 #######################################################
 
 echo -e "\e[31m--- emerge-webrsync ---\e[0m"
