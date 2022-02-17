@@ -157,14 +157,11 @@ rc-update add udev boot
 
 #--- пароль root и запуск ssh ---
 echo -e "\e[31m--- root&sshd ---\e[0m"
-sed -i 's/everyone/none/' /etc/security/passwdqc.conf
-echo -e "1\n1" | passwd root
 rc-update add sshd default
 #Дополнительные настройки для доступа
-# sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config
+sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin prohibit-password/g' /etc/ssh/sshd_config
 sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_config
 # sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
-
 
 ################# Настройка bridge ##############################
 echo -e "\e[31m--- bridge ---\e[0m"
@@ -232,7 +229,6 @@ directory mask = 0777
 EOF
 
 rc-update add samba default
-
 
 #--- софт ---
 emerge sys-apps/mlocate sys-fs/e2fsprogs tmux htop app-misc/mc sys-apps/lm-sensors sys-apps/smartmontools
