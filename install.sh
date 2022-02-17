@@ -7,7 +7,8 @@ echo "--- clean disk /dev/sda ---"
 wipefs -af $disk
 echo "--- clear LVM group ---" 
 existing_lvm_groups=$(vgs | sed -n 2,\$p | awk '{print $1}')
-if [ "$existing_lvm_groups" != "" ]; then
+if [ "$existing_lvm_groups" != "" ]
+then
 vgremove -y $existing_lvm_groups
 fi
 
@@ -168,7 +169,8 @@ netcard1=`ip link | awk -F: '$0 !~ "lo|vir|wl|^[^0-9]"{print $2;getline}'| awk '
 netcard2=`ip link | awk -F: '$0 !~ "lo|vir|wl|^[^0-9]"{print $2;getline}'| awk 'NR==2'`
 touch /etc/conf.d/net
 # если есть вторая сетевая карта
-if [ "$netcard2" != "" ]; then
+if [ "$netcard2" != "" ]
+then
 cat << EOF >> /etc/conf.d/net
 config_$netcard1="null"
 config_$netcard2="null"
