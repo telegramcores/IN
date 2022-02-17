@@ -262,6 +262,8 @@ grub-mkconfig -o /boot/grub/grub.cfg
 
 echo -e "\e[31m--- Последний этап установки! ---\e[0m"
 echo -e "\e[31m--- Введите пароль root ---\e[0m"
-passwd
+echo -e "\e[31m--- Наберите chroot /mnt/gentoo ---\e[0m"
+echo -e "\e[31m--- Наберите passwd ---\e[0m"
+echo -e "\e[31m--- После ввода пароля наберите exit ---\e[0m"
 
 CHROOT
