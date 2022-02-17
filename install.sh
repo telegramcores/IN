@@ -209,7 +209,8 @@ EOF
 
 
 #-- samba ---
-chmod 777 /mnt/HDD
+mkdir /mnt/HDD/access
+chmod 777 /mnt/HDD/access
 emerge net-fs/samba
 touch /etc/samba/smb.conf
 
@@ -222,7 +223,7 @@ browseable = yes
 map to guest = Bad User
 
 [share]
-path = /mnt/HDD
+path = /mnt/HDD/access
 read only = No
 browseable = yes
 guest ok = yes
