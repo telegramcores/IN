@@ -248,20 +248,21 @@ echo 'GRUB_CMDLINE_LINUX="iommu=pt intel_iommu=on pcie_acs_override=downstream,m
 
 echo -e "\e[31m--- set kernel ---\e[0m"
 emerge sys-kernel/linux-firmware
-emerge sys-kernel/gentoo-kernel-bin
-#emerge sys-kernel/gentoo-sources
+#emerge sys-kernel/gentoo-kernel-bin
+emerge sys-kernel/gentoo-sources
 emerge --autounmask-write sys-kernel/genkernel
 echo -5 | etc-update
 emerge sys-kernel/genkernel
 eselect kernel set 1
 
 echo -e "\e[31m--- create kernel ---\e[0m"
-#genkernel --lvm --mountboot --busybox all
+genkernel all
 
 #Параметр для EFI
-#grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot
+grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot
 #Параметр для Leagacy
-grub-install /dev/sda
+#grub-install /dev/sda
+
 grub-mkconfig -o /boot/grub/grub.cfg
 
 CHROOT
