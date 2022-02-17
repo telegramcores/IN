@@ -252,9 +252,9 @@ echo -e "\e[31m--- create kernel ---\e[0m"
 #genkernel --lvm --mountboot --busybox all
 
 #Параметр для EFI
-grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot
+#grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot
 #Параметр для Leagacy
-#grub-install /dev/sda
+grub-install /dev/sda
 grub-mkconfig -o /boot/grub/grub.cfg
 
 CHROOT
