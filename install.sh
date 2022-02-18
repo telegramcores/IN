@@ -154,6 +154,8 @@ rc-update add dhcpcd default
 emerge sys-fs/lvm2
 rc-update add lvmetad boot
 rc-update add udev boot
+emerge ntp
+rc-update add ntp default
 
 #--- пароль root и запуск ssh ---
 echo -e "\e[31m--- root&sshd ---\e[0m"
