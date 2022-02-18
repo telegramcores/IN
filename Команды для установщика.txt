@@ -1,9 +1,13 @@
 #################### Настройка qemu - libvirt
 grep --color -E "vmx|svm" /proc/cpuinfo
+
+// настроить /etc/portage/package.use
+// app-emulation/qemu spice
+// net-dns/dnsmasq script
+
 emerge --ask app-emulation/qemu
 gpasswd -a <username> kvm
-emerge app-emulation/libvirt             // возможно потребуется настройка /etc/portage/package.use
-
+emerge app-emulation/libvirt             
 groupadd libvirt
 usermod -a -G libvirt <user>
 
@@ -17,20 +21,18 @@ unix_sock_rw_perms = "0770"
 /etc/init.d/libvirtd restart
 
 
+#########  Проброс видеокарты
+dmesg | grep 'IOMMU enabled'
+for d in /sys/kernel/iommu_groups/*/devices/*; do n=${d#*/iommu_groups/*}; n=${n%%/*}; printf 'IOMMU Group %s ' "$n"; lspci -nns "${d##*/}"; done;
+lspci -nn
 
+/etc/modprobe.d/vfio.conf
+options vfio-pci ids=1002:687f,1002:aaf8
 
+reboot
+далее в virt-manager подключать видеокарту
 
-
-
-
-
-
-
-
-
-
-
-
+########################################################
 
 emerge lm-sensors		проверка температуры
 emerge smartmontools		проверка HDD
