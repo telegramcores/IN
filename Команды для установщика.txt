@@ -21,6 +21,11 @@ unix_sock_rw_perms = "0770"
 /etc/init.d/libvirtd restart
 
 
+################ SPICE Guest Tools and QEMU Drivers (Windows)
+https://mac.getutm.app/support/
+
+
+
 #########  Проброс видеокарты
 dmesg | grep 'IOMMU enabled'
 for d in /sys/kernel/iommu_groups/*/devices/*; do n=${d#*/iommu_groups/*}; n=${n%%/*}; printf 'IOMMU Group %s ' "$n"; lspci -nns "${d##*/}"; done;
