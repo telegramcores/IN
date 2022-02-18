@@ -1,3 +1,10 @@
+############## CygWin
+https://www.freesoftwareservers.com/display/FREES/Install+CygWin+with+X+Server+and+OpenSSH+and+Virt-Manager
+
+
+
+
+
 #################### Настройка qemu - libvirt
 grep --color -E "vmx|svm" /proc/cpuinfo
 
