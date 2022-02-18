@@ -2,7 +2,7 @@
 grep --color -E "vmx|svm" /proc/cpuinfo
 emerge --ask app-emulation/qemu
 gpasswd -a <username> kvm
-emerge app-emulation/libvirt
+emerge app-emulation/libvirt             // возможно потребуется настройка /etc/portage/package.use
 
 groupadd libvirt
 usermod -a -G libvirt <user>
