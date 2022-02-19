@@ -16,7 +16,7 @@ startxwin >/dev/null 2>&1 &
 #################### Настройка qemu - libvirt
 grep --color -E "vmx|svm" /proc/cpuinfo
 
-// настроить /etc/portage/package.use
+// настроить /etc/portage/package.use/package.use
 // app-emulation/qemu spice
 // net-dns/dnsmasq script
 
