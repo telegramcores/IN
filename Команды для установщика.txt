@@ -150,6 +150,7 @@ https://www.dmosk.ru/instruktions.php?object=lvm#resizeup
 
 vgextend vg01 /dev/sdd
 lvextend -l +100%FREE /dev/vg01/lv01
+resize2fs /dev/vg01/lv01
 
 ######################### Настройка qemu
 https://wiki.gentoo.org/wiki/QEMU
