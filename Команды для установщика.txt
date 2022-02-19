@@ -49,6 +49,10 @@ lspci -nn
 /etc/modprobe.d/vfio.conf
 options vfio-pci ids=1002:687f,1002:aaf8
 
+//мои видеокарты 1- 1050
+options vfio-pci ids=10de:1c82,10de:0fb9 
+options vfio-pci ids=10de:1d01,10de:0fb8
+
 reboot
 далее в virt-manager подключать видеокарту
 
