@@ -1,6 +1,6 @@
 ############## CygWin
 https://www.freesoftwareservers.com/display/FREES/Install+CygWin+with+X+Server+and+OpenSSH+and+Virt-Manager
-
+https://osmaster.org.ua/kak-poluchit-dostup-k-windows-7-cherez-ssh-konsol-pri-pomoshhi-cygwin/
 
 
 
