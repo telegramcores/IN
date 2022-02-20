@@ -8,6 +8,10 @@ sleep inf
 EOF
 chmod +x ~/.startxwinrc
 
+запуск через .bat
+tskill.exe xwin
+C:\cygwin64\bin\bash.exe -l -c /usr/bin/startxwin
+
 запуск из консоли
 startxwin >/dev/null 2>&1 &
 
