@@ -51,7 +51,7 @@ https://mac.getutm.app/support/
 ############### определить IP-адрес виртуальной машины
 sudo virsh list
 sudo virsh domiflist <name BM>
-ip neigh | grep -i <NAC-adress>
+ip neigh | grep -i <MAC-adress>
 
 
 
