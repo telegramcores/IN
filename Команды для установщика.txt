@@ -172,3 +172,6 @@ resize2fs /dev/vg01/lv01
 
 ######################### Настройка qemu
 https://wiki.gentoo.org/wiki/QEMU
+
+######################### Обновление ядра
+http://odessa-linux.blogspot.com/2014/03/gentoo-genkernel.html
