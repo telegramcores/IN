@@ -252,9 +252,11 @@ echo -5 | etc-update
 emerge sys-kernel/genkernel
 eselect kernel set 1
 
-echo -e "\e[31m--- create kernel ---\e[0m"
+#echo -e "\e[31m--- create kernel ---\e[0m"
 #genkernel all
 
+
+echo -e "\e[31m--- create EFI boot ---\e[0m"
 #Параметр для EFI
 grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot --removable
 #Параметр для Leagacy
