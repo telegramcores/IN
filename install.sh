@@ -258,9 +258,9 @@ eselect kernel set 1
 
 echo -e "\e[31m--- create EFI boot ---\e[0m"
 #Параметр для EFI
-grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot --removable
+#grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot --removable
 #Параметр для Leagacy
-#grub-install /dev/sda
+grub-install /dev/sda
 
 grub-mkconfig -o /boot/grub/grub.cfg
 
