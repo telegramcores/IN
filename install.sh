@@ -256,7 +256,7 @@ echo -e "\e[31m--- create kernel ---\e[0m"
 #genkernel all
 
 #Параметр для EFI
-grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot
+grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot --removable
 #Параметр для Leagacy
 #grub-install /dev/sda
 
