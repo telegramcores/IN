@@ -13,6 +13,7 @@ vgremove -y $existing_lvm_groups
 fi
 
 echo "---create sda1 boot ---"
+parted -a optimal --script $disk mklabel gpt
 parted -a optimal --script $disk mkpart primary 1MiB 256MiB
 parted -a optimal --script $disk name 1 boot
 parted -a optimal --script $disk set 1 boot on
