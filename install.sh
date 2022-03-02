@@ -265,6 +265,7 @@ grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --
 grub-mkconfig -o /boot/grub/grub.cfg
 
 echo -e "\e[31m--- Check EFI boot ---\e[0m"
+################ https://wiki.gentoo.org/wiki/Efibootmgr/ru
 efibootmgr -v
 
 echo -e "\e[31m--- Последний этап установки! ---\e[0m"
