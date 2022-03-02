@@ -14,18 +14,18 @@ fi
 
 echo "---create sda1 boot ---"
 parted -a optimal --script $disk mkpart primary 1MiB 256MiB
-parted -a optimal --script $disk name 2 boot
-parted -a optimal --script $disk set 2 boot on
+parted -a optimal --script $disk name 1 boot
+parted -a optimal --script $disk set 1 boot on
 
 echo "---create sda2 LVM (ssd) ---"
 parted -s -- $disk mkpart primary 256MiB 90%
-parted -a optimal --script $disk name 3 lvm01
-parted -a optimal --script $disk set 3 lvm on
+parted -a optimal --script $disk name 2 lvm01
+parted -a optimal --script $disk set 2 lvm on
 
 echo "---create sda3 LVM (hdd) ---"
 parted -s -- $disk mkpart primary 90% -1MiB
-parted -a optimal --script $disk name 4 lvm02
-parted -a optimal --script $disk set 4 lvm on
+parted -a optimal --script $disk name 3 lvm02
+parted -a optimal --script $disk set 3 lvm on
 
 
 pvcreate -ff /dev/sda2
