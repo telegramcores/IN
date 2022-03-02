@@ -18,7 +18,7 @@ parted -a optimal --script $disk name 2 boot
 parted -a optimal --script $disk set 2 boot on
 
 echo "---create sda2 LVM (ssd) ---"
-parted -s -- $disk mkpart primary 259MiB 90%
+parted -s -- $disk mkpart primary 256MiB 90%
 parted -a optimal --script $disk name 3 lvm01
 parted -a optimal --script $disk set 3 lvm on
 
