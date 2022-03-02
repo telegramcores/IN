@@ -240,7 +240,7 @@ emerge app-admin/sudo
 echo 'GRUB_PLATFORMS="emu efi-32 efi-64 pc"' >> /etc/portage/make.conf
 echo 'sys-boot/grub:2 device-mapper' >> /etc/portage/package.use/package.use
 emerge sys-boot/grub:2
-echo 'GRUB_CMDLINE_LINUX_DEFAULT="dolvm"' >> /etc/default/grub
+echo 'GRUB_CMDLINE_LINUX_DEFAULT="rd.lvm.vg=vg01 rd.lvm.lv=vg01/rootfs rd.lvm.lv=vg01/swap ro rootfstype=ext4 dolvm"' >> /etc/default/grub
 echo 'GRUB_CMDLINE_LINUX="iommu=pt intel_iommu=on pcie_acs_override=downstream,multifunction nofb"' >> /etc/default/grub
 
 echo -e "\e[31m--- set kernel ---\e[0m"
