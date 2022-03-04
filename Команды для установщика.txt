@@ -136,6 +136,7 @@ lxc.net.0.link = br0
 lxc.net.0.hwaddr = 02:03:04:05:06:07
 
 // каталоги /torrents/Download в хосте создавать под root - тогда не будет проблем с обновлением данных
+// на каталог Download дать все права sudo chmod 777 /mnt/HDD/access/torrents/Download
 //если нужен проброс - lxc.mount.entry = /mnt/HDD/access/torrents/Download /mnt/torrents/Download none bind,optional,create=dir
 
 /etc/conf.d/lxc
