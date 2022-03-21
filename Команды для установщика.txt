@@ -179,3 +179,9 @@ https://wiki.gentoo.org/wiki/QEMU
 
 ######################### Обновление ядра
 http://odessa-linux.blogspot.com/2014/03/gentoo-genkernel.html
+
+######################### Установка Plex
+https://githubhelp.com/mb-0/plex-gentoo-ebuilds
+echo 'ACCEPT_LICENSE="*"'     >> /etc/portage/make.conf
+echo "media-tv/plex-media-server::mb0plex ~amd64" >> /etc/portage/package.keywords
+
