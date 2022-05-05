@@ -185,3 +185,11 @@ https://githubhelp.com/mb-0/plex-gentoo-ebuilds
 echo 'ACCEPT_LICENSE="*"'     >> /etc/portage/make.conf
 echo "media-tv/plex-media-server::mb0plex ~amd64" >> /etc/portage/package.keywords
 
+Сетевая карта
+enp4s0 d8:bb:c1:a1:3e:45
+nano /etc/udev/rules.d/80-net-interfaces.rules
+SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="d8:bb:c1:a1:3e:45", NAME="enp4s0"
+
+
+
+
