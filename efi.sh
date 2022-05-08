@@ -233,7 +233,7 @@ EOF
 rc-update add samba default
 
 #--- софт ---
-emerge sys-apps/mlocate sys-fs/e2fsprogs tmux htop app-misc/mc sys-apps/lm-sensors sys-apps/smartmontools
+emerge sys-apps/mlocate sys-fs/e2fsprogs tmux htop app-misc/mc sys-apps/lm-sensors sys-apps/smartmontools app-portage/eix app-misc/colordiff
 emerge app-admin/sudo
 
 
