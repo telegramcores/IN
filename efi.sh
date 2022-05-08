@@ -169,27 +169,32 @@ touch /etc/conf.d/net
 if [ "$netcard2" != "" ]
 then
 cat << EOF >> /etc/conf.d/net
+bridge_br0="$netcard1 $netcard2"
+rc_net_$netcard1_need="udev-settle"
+rc_net_$netcard2_need="udev-settle"
 config_$netcard1="null"
 config_$netcard2="null"
-bridge_br0="$netcard1 $netcard2"
+rc_net_br0_need="net.$netcard1 net.$netcard2"
 EOF
-rm -f /etc/init.d/net.$netcard1
-rm -f /etc/init.d/net.$netcard2
-# rc-update delete net.$netcard1
-# rc-update delete net.$netcard2
+#rm -f /etc/init.d/net.$netcard1
+#rm -f /etc/init.d/net.$netcard2
+rc-update delete net.$netcard1
+rc-update delete net.$netcard2
 else
 # если только одна сетевая карта
 cat << EOF >> /etc/conf.d/net
-config_$netcard1="null"
 bridge_br0="$netcard1"
+rc_net_$netcard1_need="udev-settle"
+config_$netcard1="null"
+rc_net_br0_need="net.$netcard1"
 EOF
-rm -f /etc/init.d/net.$netcard1
-# rc-update delete net.$netcard1
+# rm -f /etc/init.d/net.$netcard1
+rc-update delete net.$netcard1
 fi
 cat << EOF >> /etc/conf.d/net
 config_br0="192.168.1.50/24"
 bridge_forward_delay_br0=0
-bridge_hello_time_br0=200
+bridge_hello_time_br0=1000
 bridge_stp_state_br0=0
 routes_br0="default gw 192.168.1.1"
 EOF
