@@ -201,9 +201,14 @@ EOF
 ln -s /etc/init.d/net.lo /etc/init.d/net.br0
 rc-update add net.br0
 
-touch /etc/resolve.conf
-cat << EOF >> /etc/resolve.conf
-nameserver 192.168.1.1
+#touch /etc/resolve.conf
+#cat << EOF >> /etc/resolve.conf
+#nameserver 192.168.1.1
+#EOF
+
+touch /etc/resolv.conf
+cat << EOF >> /etc/resolv.conf
+nameserver 8.8.8.8
 EOF
 
 
