@@ -239,7 +239,7 @@ rc-update add samba default
 
 #--- софт ---
 emerge sys-apps/mlocate sys-fs/e2fsprogs tmux htop app-misc/mc sys-apps/lm-sensors sys-apps/smartmontools app-portage/eix app-misc/colordiff
-emerge app-admin/sudo
+emerge app-admin/sudo app-admin/eclean-kernel
 
 
 echo 'GRUB_PLATFORMS="emu efi-32 efi-64 pc"' >> /etc/portage/make.conf
