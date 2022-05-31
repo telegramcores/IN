@@ -93,9 +93,9 @@ env-update && source /etc/profile
 export PS1="(chroot) $PS1" 
 mount /dev/sda1 /boot
 # создаем tmpfs
-echo "tmpfs /var/tmp/portage tmpfs size=2G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
+echo "tmpfs /var/tmp/portage tmpfs size=10G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
 mkdir /var/tmp/portage
-mount -t tmpfs tmpfs -o size=2G,nr_inodes=1M /var/tmp/portage
+mount -t tmpfs tmpfs -o size=10G,nr_inodes=1M /var/tmp/portage
 echo -e "\e[31m--- Disk System after tmpfs ---\e[0m"
 df -h
 
