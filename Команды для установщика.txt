@@ -188,6 +188,7 @@ echo "media-tv/plex-media-server::mb0plex ~amd64" >> /etc/portage/package.keywor
 ######################### Проброс виртуализации
 https://docs.fedoraproject.org/en-US/quick-docs/using-nested-virtualization-in-kvm/index.html
 
-
+######################### Установка Gentoo с LIVEDVD
+https://dmzik.blogspot.com/2013/05/install-livedvd-121-to-hard-disk-drive.html
 
 
