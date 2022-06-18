@@ -147,7 +147,7 @@ cpuid2cpuflags | sed 's/: /="/' | sed -e '$s/$/"/' >> /etc/portage/make.conf
 
 echo "/dev/sda1 /boot vfat defaults 0 2" >> /etc/fstab
 echo 'ACCEPT_LICENSE="*"'     >> /etc/portage/make.conf
-echo 'USE="ABI_x86_64"' >> /etc/portage/make.conf
+echo 'USE="abi_x86_64"' >> /etc/portage/make.conf
 
 
 echo -e "\e[31m--- add soft and settings ---\e[0m"
