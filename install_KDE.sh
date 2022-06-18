@@ -128,7 +128,7 @@ emerge --update --deep --newuse @world
 
 echo "/dev/sda1 /boot vfat defaults 0 2" >> /etc/fstab
 echo 'ACCEPT_LICENSE="*"'     >> /etc/portage/make.conf
-echo 'USE="abi_x86_64"' >> /etc/portage/make.conf
+echo 'USE="X abi_x86_64 dbus policykit udisks elogind -systemd"' >> /etc/portage/make.conf
 
 
 echo -e "\e[31m--- add soft and settings ---\e[0m"
@@ -187,6 +187,13 @@ emerge --autounmask-write sys-kernel/genkernel
 echo -5 | etc-update
 emerge sys-kernel/genkernel
 eselect kernel set 1
+
+#--- Установка KDE ---
+eselect profile set 8
+rc-update add dbus default
+rc-update add elogind boot
+emerge x11-base/xorg-server
+emerge kde-plasma/plasma-meta
 
 
 
