@@ -142,8 +142,7 @@ emerge app-portage/gentoolkit
 emerge app-portage/cpuid2cpuflags
 cpuid2cpuflags | sed 's/: /="/' | sed -e '$s/$/"/' >> /etc/portage/make.conf
 #http://lego.arbh.ru/posts/gentoo_upd.html - про обновление toolchain
-#echo -e "\e[31m--- update @world ---\e[0m"
-#emerge --update --deep --newuse @world
+
 
 echo "/dev/sda1 /boot vfat defaults 0 2" >> /etc/fstab
 echo 'ACCEPT_LICENSE="*"'     >> /etc/portage/make.conf
@@ -182,9 +181,6 @@ sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_co
 emerge sys-apps/mlocate sys-fs/e2fsprogs tmux htop app-misc/mc sys-apps/lm-sensors sys-apps/smartmontools app-portage/eix app-misc/colordiff
 emerge app-admin/sudo app-admin/eclean-kernel
 
-#--- обновление системы
-emerge system -uDNav --ignore-world
-
 
 echo 'GRUB_PLATFORMS="emu efi-32 efi-64 pc"' >> /etc/portage/make.conf
 echo 'sys-boot/grub:2 device-mapper' >> /etc/portage/package.use/package.use
@@ -199,6 +195,8 @@ emerge sys-kernel/linux-firmware
 emerge sys-kernel/gentoo-kernel-bin
 eselect kernel set 1
 
+#--- обновление системы
+emerge system -uDNav --ignore-world
 
 echo -e "\e[31m--- create EFI boot ---\e[0m"
 #Параметр для EFI
