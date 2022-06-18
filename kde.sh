@@ -57,7 +57,7 @@ mount /dev/vg02/devhdd /mnt/gentoo/mnt/HDD
 mkdir /mnt/gentoo/home
 
 ntpd -q -g
-cd /mnt/gentoo
+
 echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
 
 echo -e "\e[31m--- Disk System ---\e[0m"
@@ -65,7 +65,7 @@ df -h
 
 echo -e "\e[31m--- Copy the DVD to your new filesystem ---\e[0m"
 eval `grep '^ROOT_' /usr/share/genkernel/defaults/initrd.defaults`
-#cd /
+cd /
 cp -avx /$ROOT_LINKS /mnt/gentoo
 cp -avx /$ROOT_TREES /mnt/gentoo
 mkdir /mnt/gentoo/proc
@@ -75,6 +75,7 @@ mkdir -p /mnt/gentoo/run/udev
 tar cvf - -C /dev/ . | tar xvf - -C /mnt/gentoo/dev/
 tar cvf - -C /etc/ . | tar xvf - -C /mnt/gentoo/etc/
 
+cd /mnt/gentoo
 sed -i '/COMMON_FLAGS=/ s/\("[^"]*\)"/\1 -march=native"/' etc/portage/make.conf
 
 mkdir --parents /mnt/gentoo/etc/portage/repos.conf
