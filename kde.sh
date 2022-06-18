@@ -48,7 +48,7 @@ mkfs.ext4 /dev/vg02/devhdd
 mkswap /dev/vg01/swap
 swapon /dev/vg01/swap
 
-
+mkdir /mnt/gentoo
 mount /dev/vg01/rootfs /mnt/gentoo
 mkdir /mnt/gentoo/mnt
 mkdir /mnt/gentoo/mnt/HDD
