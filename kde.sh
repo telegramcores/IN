@@ -196,7 +196,7 @@ emerge sys-kernel/gentoo-kernel-bin
 eselect kernel set 1
 
 #--- обновление системы
-emerge system -uDNav --ignore-world
+emerge system -uDNv --ignore-world
 
 echo -e "\e[31m--- create EFI boot ---\e[0m"
 #Параметр для EFI
