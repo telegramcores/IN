@@ -107,7 +107,7 @@ chmod 666 null
 mknod zero c 1 5 
 chmod 666 zero 
 rc-update del autoconfig default
-rc-update del fixinittab boot
+rc-update del fixinittab
 
 
 
