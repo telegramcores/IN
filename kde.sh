@@ -182,6 +182,9 @@ sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_co
 emerge sys-apps/mlocate sys-fs/e2fsprogs tmux htop app-misc/mc sys-apps/lm-sensors sys-apps/smartmontools app-portage/eix app-misc/colordiff
 emerge app-admin/sudo app-admin/eclean-kernel
 
+#--- обновление системы
+emerge system -uDNav --ignore-world
+
 
 echo 'GRUB_PLATFORMS="emu efi-32 efi-64 pc"' >> /etc/portage/make.conf
 echo 'sys-boot/grub:2 device-mapper' >> /etc/portage/package.use/package.use
