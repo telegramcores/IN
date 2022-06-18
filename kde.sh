@@ -136,7 +136,7 @@ emerge --config sys-libs/timezone-data
 
 echo -e "\e[31m--- emerge-webrsync ---\e[0m"
 emerge-webrsync
-#eselect news read
+eselect news read
 emerge --oneshot sys-apps/portage
 emerge app-portage/gentoolkit
 emerge app-portage/cpuid2cpuflags
