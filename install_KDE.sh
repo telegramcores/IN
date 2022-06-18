@@ -65,7 +65,7 @@ df -h
 
 echo -e "\e[31m--- load Stage3 ---\e[0m"
 URL='https://mirror.yandex.ru/gentoo-distfiles/releases/amd64/autobuilds'
-STAGE3=$(wget $URL/latest-stage3-amd64-openrc.txt -qO - | grep -v '#' | awk '{print $1;}')
+STAGE3=$(wget $URL/latest-stage3-amd64-desktop-openrc.txt -qO - | grep -v '#' | awk '{print $1;}')
 wget $URL/$STAGE3
 echo -e "\e[31m--- extract Stage3 ---\e[0m"
 tar xpf stage3-*.tar.* --xattrs-include='*.*' --numeric-owner
@@ -160,82 +160,11 @@ sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin prohibit-password/g
 sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_config
 # sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
 
-################# Настройка bridge ##############################
-echo -e "\e[31m--- bridge ---\e[0m"
-netcard1=`ip link | awk -F: '$0 !~ "lo|vir|wl|^[^0-9]"{print $2;getline}'| awk 'NR==1'| sed -r 's/^ *//'`
-netcard2=`ip link | awk -F: '$0 !~ "lo|vir|wl|^[^0-9]"{print $2;getline}'| awk 'NR==2'| sed -r 's/^ *//'`
-touch /etc/conf.d/net
-# если есть вторая сетевая карта
-if [ "$netcard2" != "" ]
-then
-cat << EOF >> /etc/conf.d/net
-bridge_br0="$netcard1 $netcard2"
-rc_net_$netcard1_need="udev-settle"
-rc_net_$netcard2_need="udev-settle"
-config_$netcard1="null"
-config_$netcard2="null"
-rc_net_br0_need="net.$netcard1 net.$netcard2"
-EOF
-#rm -f /etc/init.d/net.$netcard1
-#rm -f /etc/init.d/net.$netcard2
-rc-update delete net.$netcard1
-rc-update delete net.$netcard2
-else
-# если только одна сетевая карта
-cat << EOF >> /etc/conf.d/net
-bridge_br0="$netcard1"
-rc_net_$netcard1_need="udev-settle"
-config_$netcard1="null"
-rc_net_br0_need="net.$netcard1"
-EOF
-# rm -f /etc/init.d/net.$netcard1
-rc-update delete net.$netcard1
-fi
-cat << EOF >> /etc/conf.d/net
-config_br0="192.168.1.50/24"
-bridge_forward_delay_br0=0
-bridge_hello_time_br0=1000
-bridge_stp_state_br0=0
-routes_br0="default gw 192.168.1.1"
-EOF
-ln -s /etc/init.d/net.lo /etc/init.d/net.br0
-rc-update add net.br0
-
-#touch /etc/resolve.conf
-#cat << EOF >> /etc/resolve.conf
-#nameserver 192.168.1.1
-#EOF
-
 touch /etc/resolv.conf
 cat << EOF >> /etc/resolv.conf
 nameserver 8.8.8.8
 EOF
 
-
-#-- samba ---
-mkdir /mnt/HDD/access
-chmod 777 /mnt/HDD/access
-emerge net-fs/samba
-touch /etc/samba/smb.conf
-
-cat << EOF >> /etc/samba/smb.conf
-[GLOBAL]
-workgroup = WORKGROUP
-server role = standalone server
-security = user
-browseable = yes
-map to guest = Bad User
-
-[share]
-path = /mnt/HDD/access
-read only = No
-browseable = yes
-guest ok = yes
-create mask = 0777
-directory mask = 0777
-EOF
-
-rc-update add samba default
 
 #--- софт ---
 emerge sys-apps/mlocate sys-fs/e2fsprogs tmux htop app-misc/mc sys-apps/lm-sensors sys-apps/smartmontools app-portage/eix app-misc/colordiff
@@ -259,8 +188,7 @@ echo -5 | etc-update
 emerge sys-kernel/genkernel
 eselect kernel set 1
 
-#echo -e "\e[31m--- create kernel ---\e[0m"
-#genkernel all
+
 
 
 echo -e "\e[31m--- create EFI boot ---\e[0m"
