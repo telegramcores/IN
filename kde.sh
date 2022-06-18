@@ -63,13 +63,17 @@ echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
 echo -e "\e[31m--- Disk System ---\e[0m"
 df -h
 
-echo -e "\e[31m--- load Stage3 ---\e[0m"
-URL='https://mirror.yandex.ru/gentoo-distfiles/releases/amd64/autobuilds'
-STAGE3=$(wget $URL/latest-stage3-amd64-openrc.txt -qO - | grep -v '#' | awk '{print $1;}')
-wget $URL/$STAGE3
-echo -e "\e[31m--- extract Stage3 ---\e[0m"
-tar xpf stage3-*.tar.* --xattrs-include='*.*' --numeric-owner
-
+echo -e "\e[31m--- Copy the DVD to your new filesystem ---\e[0m"
+eval `grep '^ROOT_' /usr/share/genkernel/defaults/initrd.defaults`
+#cd /
+cp -avx /$ROOT_LINKS /mnt/gentoo
+cp -avx /$ROOT_TREES /mnt/gentoo
+mkdir /mnt/gentoo/proc
+mkdir /mnt/gentoo/dev
+mkdir /mnt/gentoo/sys
+mkdir -p /mnt/gentoo/run/udev
+tar cvf - -C /dev/ . | tar xvf - -C /mnt/gentoo/dev/
+tar cvf - -C /etc/ . | tar xvf - -C /mnt/gentoo/etc/
 
 sed -i '/COMMON_FLAGS=/ s/\("[^"]*\)"/\1 -march=native"/' etc/portage/make.conf
 
@@ -92,6 +96,19 @@ chroot $chroot_dir /bin/bash << "CHROOT"
 env-update && source /etc/profile
 export PS1="(chroot) $PS1" 
 mount /dev/sda1 /boot
+
+cd /dev
+rm null 
+mknod console c 5 1 
+chmod 600 console 
+mknod null c 1 3 
+chmod 666 null 
+mknod zero c 1 5 
+chmod 666 zero 
+rc-update del autoconfig default
+
+
+
 # создаем tmpfs
 echo "tmpfs /var/tmp/portage tmpfs size=10G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
 mkdir /var/tmp/portage
@@ -117,14 +134,14 @@ emerge --config sys-libs/timezone-data
 
 echo -e "\e[31m--- emerge-webrsync ---\e[0m"
 emerge-webrsync
-eselect news read
+#eselect news read
 emerge --oneshot sys-apps/portage
 emerge app-portage/gentoolkit
 emerge app-portage/cpuid2cpuflags
 cpuid2cpuflags | sed 's/: /="/' | sed -e '$s/$/"/' >> /etc/portage/make.conf
 #http://lego.arbh.ru/posts/gentoo_upd.html - про обновление toolchain
-echo -e "\e[31m--- update @world ---\e[0m"
-emerge --update --deep --newuse @world
+#echo -e "\e[31m--- update @world ---\e[0m"
+#emerge --update --deep --newuse @world
 
 echo "/dev/sda1 /boot vfat defaults 0 2" >> /etc/fstab
 echo 'ACCEPT_LICENSE="*"'     >> /etc/portage/make.conf
@@ -132,13 +149,12 @@ echo 'USE="abi_x86_64"' >> /etc/portage/make.conf
 
 
 echo -e "\e[31m--- add soft and settings ---\e[0m"
-echo hostname="gentoo_server" > /etc/conf.d/hostname
+echo hostname="gentoo_kde" > /etc/conf.d/hostname
 # blkid | grep 'boot' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t /boot \t swap \t sw \t 0 \t 0@'
 blkid | grep 'swap' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t none \t swap \t sw \t 0 \t 0@' >> /etc/fstab
 blkid | grep 'ext4' | grep 'rootfs' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t / \t ext4 \t noatime \t 0 \t 1@'>> /etc/fstab
 blkid | grep 'ext4' | grep 'devhdd' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t /mnt/HDD \t ext4 \t noatime \t 0 \t 1@'>> /etc/fstab
 
-#pushd /etc/init.d && ln -s net.lo net.eth0 && rc-update add net.eth0 default && popd
 #--- службы ---
 emerge app-admin/sysklogd
 rc-update add sysklogd default
@@ -160,83 +176,6 @@ sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin prohibit-password/g
 sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_config
 # sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
 
-################# Настройка bridge ##############################
-echo -e "\e[31m--- bridge ---\e[0m"
-netcard1=`ip link | awk -F: '$0 !~ "lo|vir|wl|^[^0-9]"{print $2;getline}'| awk 'NR==1'| sed -r 's/^ *//'`
-netcard2=`ip link | awk -F: '$0 !~ "lo|vir|wl|^[^0-9]"{print $2;getline}'| awk 'NR==2'| sed -r 's/^ *//'`
-touch /etc/conf.d/net
-# если есть вторая сетевая карта
-if [ "$netcard2" != "" ]
-then
-cat << EOF >> /etc/conf.d/net
-bridge_br0="$netcard1 $netcard2"
-rc_net_$netcard1_need="udev-settle"
-rc_net_$netcard2_need="udev-settle"
-config_$netcard1="null"
-config_$netcard2="null"
-rc_net_br0_need="net.$netcard1 net.$netcard2"
-EOF
-#rm -f /etc/init.d/net.$netcard1
-#rm -f /etc/init.d/net.$netcard2
-rc-update delete net.$netcard1
-rc-update delete net.$netcard2
-else
-# если только одна сетевая карта
-cat << EOF >> /etc/conf.d/net
-bridge_br0="$netcard1"
-rc_net_$netcard1_need="udev-settle"
-config_$netcard1="null"
-rc_net_br0_need="net.$netcard1"
-EOF
-# rm -f /etc/init.d/net.$netcard1
-rc-update delete net.$netcard1
-fi
-cat << EOF >> /etc/conf.d/net
-config_br0="192.168.1.50/24"
-bridge_forward_delay_br0=0
-bridge_hello_time_br0=1000
-bridge_stp_state_br0=0
-routes_br0="default gw 192.168.1.1"
-EOF
-ln -s /etc/init.d/net.lo /etc/init.d/net.br0
-rc-update add net.br0
-
-#touch /etc/resolve.conf
-#cat << EOF >> /etc/resolve.conf
-#nameserver 192.168.1.1
-#EOF
-
-touch /etc/resolv.conf
-cat << EOF >> /etc/resolv.conf
-nameserver 8.8.8.8
-EOF
-
-
-#-- samba ---
-mkdir /mnt/HDD/access
-chmod 777 /mnt/HDD/access
-emerge net-fs/samba
-touch /etc/samba/smb.conf
-
-cat << EOF >> /etc/samba/smb.conf
-[GLOBAL]
-workgroup = WORKGROUP
-server role = standalone server
-security = user
-browseable = yes
-map to guest = Bad User
-
-[share]
-path = /mnt/HDD/access
-read only = No
-browseable = yes
-guest ok = yes
-create mask = 0777
-directory mask = 0777
-EOF
-
-rc-update add samba default
-
 #--- софт ---
 emerge sys-apps/mlocate sys-fs/e2fsprogs tmux htop app-misc/mc sys-apps/lm-sensors sys-apps/smartmontools app-portage/eix app-misc/colordiff
 emerge app-admin/sudo app-admin/eclean-kernel
@@ -251,36 +190,19 @@ echo 'GRUB_CMDLINE_LINUX="iommu=pt intel_iommu=on pcie_acs_override=downstream,m
 
 
 echo -e "\e[31m--- set kernel ---\e[0m"
-emerge sys-kernel/linux-firmware
-emerge sys-kernel/gentoo-kernel-bin
-#emerge sys-kernel/gentoo-sources
-emerge --autounmask-write sys-kernel/genkernel
-echo -5 | etc-update
-emerge sys-kernel/genkernel
-eselect kernel set 1
-
-#echo -e "\e[31m--- create kernel ---\e[0m"
-#genkernel all
+mkdir -p /mnt/cdrom/
+mount /dev/cdrom /mnt/cdrom/
+cp /mnt/cdrom/boot/gentoo /boot/kernel
+cp /mnt/cdrom/boot/gentoo.igz /boot/initramfs
 
 
 echo -e "\e[31m--- create EFI boot ---\e[0m"
 #Параметр для EFI
 grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot --removable
-#Параметр для Leagacy
-#grub-install /dev/sda
-
 grub-mkconfig -o /boot/grub/grub.cfg
 
 echo -e "\e[31m--- Check EFI boot ---\e[0m"
 ################ https://wiki.gentoo.org/wiki/Efibootmgr/ru
 efibootmgr -v
-
-echo -e "\e[31m--- Последний этап установки! ---\e[0m"
-echo -e "\e[31m--- Сделай вход в chroot: chroot /mnt/gentoo ---\e[0m"
-echo -e "\e[31m--- Создай пароль root: passwd ---\e[0m"
-echo -e "\e[33m--- Создать пользователя: useradd <name> ---\e[0m"
-echo -e "\e[33m--- Создать пароль пользователя: passwd <name> ---\e[0m"
-echo -e "\e[33m--- Добавить права суперпользователя аналогично root: visudo ---\e[0m"
-echo -e "\e[31m--- После ввода пароля наберите exit ---\e[0m"
 
 CHROOT
