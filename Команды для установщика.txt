@@ -191,4 +191,5 @@ https://docs.fedoraproject.org/en-US/quick-docs/using-nested-virtualization-in-k
 ######################### Установка Gentoo с LIVEDVD
 https://dmzik.blogspot.com/2013/05/install-livedvd-121-to-hard-disk-drive.html
 
-
+#--- установка KDE
+https://www.noobslab.com/2018/08/how-to-install-gentoo-linux-cli-and-kde.html
