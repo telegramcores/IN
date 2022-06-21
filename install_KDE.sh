@@ -128,11 +128,11 @@ emerge --update --deep --newuse @world
 
 echo "/dev/sda1 /boot vfat defaults 0 2" >> /etc/fstab
 echo 'ACCEPT_LICENSE="*"'     >> /etc/portage/make.conf
-echo 'USE="X abi_x86_64 dbus policykit udisks elogind -systemd"' >> /etc/portage/make.conf
-
+echo 'USE="bindist mmx sse sse2 mmxext dbus udev branding icu python X acpi display-manager sddm gtk handbook libkms wallpapers pulseaudio legacy-systray gtk2 gtk3"' >> /etc/portage/make.conf
+echo 'INPUT_DEVICES="evdev keyboard mouse synaptics"'     >> /etc/portage/make.conf
 
 echo -e "\e[31m--- add soft and settings ---\e[0m"
-echo hostname="gentoo_server" > /etc/conf.d/hostname
+echo hostname="gentoo_KDE" > /etc/conf.d/hostname
 # blkid | grep 'boot' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t /boot \t swap \t sw \t 0 \t 0@'
 blkid | grep 'swap' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t none \t swap \t sw \t 0 \t 0@' >> /etc/fstab
 blkid | grep 'ext4' | grep 'rootfs' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t / \t ext4 \t noatime \t 0 \t 1@'>> /etc/fstab
@@ -188,15 +188,24 @@ echo -5 | etc-update
 emerge sys-kernel/genkernel
 eselect kernel set 1
 
-#--- Установка KDE ---
+#--- Установка KDE ---------------------
 eselect profile set 8
+emerge dbus
+/etc/init.d/dbus start
 rc-update add dbus default
-rc-update add elogind boot
-emerge x11-base/xorg-server
+emerge x11-base/xorg-drivers
+emerge x11-base/xorg-x11
+
+gpasswd -a root video
+
 emerge kde-plasma/plasma-meta
-
-
-
+emerge kde-plasma/plasma-desktop
+emerge kde-plasma/kdeplasma-addons kde-apps/kwalletmanager kde-apps/dolphin x11-misc/sddm kde-plasma/systemsettings kde-plasma/kscreen kde-plasma/console
+emerge xdm
+echo 'DISPLAYMANAGER="sddm"' >> /etc/conf.d/xdm
+rc-update add xdm default
+usermod -a -G video sddm
+#---------------------------------------
 
 echo -e "\e[31m--- create EFI boot ---\e[0m"
 #Параметр для EFI
@@ -206,16 +215,21 @@ grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --
 
 grub-mkconfig -o /boot/grub/grub.cfg
 
-echo -e "\e[31m--- Check EFI boot ---\e[0m"
+#echo -e "\e[31m--- Check EFI boot ---\e[0m"
 ################ https://wiki.gentoo.org/wiki/Efibootmgr/ru
-efibootmgr -v
+#efibootmgr -v
 
-echo -e "\e[31m--- Последний этап установки! ---\e[0m"
-echo -e "\e[31m--- Сделай вход в chroot: chroot /mnt/gentoo ---\e[0m"
-echo -e "\e[31m--- Создай пароль root: passwd ---\e[0m"
-echo -e "\e[33m--- Создать пользователя: useradd <name> ---\e[0m"
-echo -e "\e[33m--- Создать пароль пользователя: passwd <name> ---\e[0m"
-echo -e "\e[33m--- Добавить права суперпользователя аналогично root: visudo ---\e[0m"
-echo -e "\e[31m--- После ввода пароля наберите exit ---\e[0m"
+echo -e "\e[31m--- Enter user name ---\e[0m"
+read Name
+useradd -m -G wheel,audio,video,usb,cdrom -s /bin/bash $Name
+gpasswd -a $Name video
+
+echo -e "\e[31m--- At last! ---\e[0m"
+echo -e "\e[31m--- Enter to chroot: chroot /mnt/gentoo ---\e[0m"
+echo -e "\e[31m--- Create root pass: passwd ---\e[0m"
+#echo -e "\e[33m--- Создать пользователя: useradd <name> ---\e[0m"
+echo -e "\e[33m--- Create user pass: passwd <name> ---\e[0m"
+echo -e "\e[33m--- Use visudo: visudo ---\e[0m"
+echo -e "\e[31m--- Type "exit" and "reboot" ---\e[0m"
 
 CHROOT
