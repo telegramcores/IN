@@ -128,7 +128,7 @@ emerge --update --deep --newuse @world
 
 echo "/dev/sda1 /boot vfat defaults 0 2" >> /etc/fstab
 echo 'ACCEPT_LICENSE="*"'     >> /etc/portage/make.conf
-echo 'USE="bindist mmx sse sse2 mmxext dbus udev branding icu python X acpi display-manager sddm gtk handbook libkms wallpapers pulseaudio legacy-systray gtk2 gtk3"' >> /etc/portage/make.conf
+echo 'USE="abi_x86_64 bindist mmx sse sse2 mmxext dbus udev branding icu python X acpi display-manager sddm gtk handbook libkms wallpapers pulseaudio legacy-systray gtk2 gtk3"' >> /etc/portage/make.conf
 echo 'INPUT_DEVICES="evdev keyboard mouse synaptics"'     >> /etc/portage/make.conf
 
 echo -e "\e[31m--- add soft and settings ---\e[0m"
