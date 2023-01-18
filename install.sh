@@ -84,13 +84,7 @@ cp /mnt/gentoo/usr/share/portage/config/repos.conf /mnt/gentoo/etc/portage/repos
 cp --dereference /etc/resolv.conf /mnt/gentoo/etc/
 
     # mounting livecd folders
-mount --types proc /proc /mnt/gentoo/proc
-mount --rbind /sys /mnt/gentoo/sys
-mount --make-rslave /mnt/gentoo/sys
-mount --rbind /dev /mnt/gentoo/dev
-mount --make-rslave /mnt/gentoo/dev
-mount --bind /run /mnt/gentoo/run
-mount --make-slave /mnt/gentoo/run
+mount --types proc /proc /mnt/gentoo/proc && mount --rbind /sys /mnt/gentoo/sys && mount --make-rslave /mnt/gentoo/sys && mount --rbind /dev /mnt/gentoo/dev && mount --make-rslave /mnt/gentoo/dev && mount --bind /run /mnt/gentoo/run && mount --make-slave /mnt/gentoo/run
 
 echo -e "\e[31m--- inside chroot ---\e[0m"
 chroot_dir=/mnt/gentoo
@@ -126,6 +120,14 @@ eselect news read
 # Московское время
 echo "Europe/Moscow" > /etc/timezone
 emerge --config sys-libs/timezone-data
+
+
+#ccache
+emerge --ask dev-util/ccache
+echo 'FEATURES="ccache"' >> /etc/portage/make.conf
+echo 'CCACHE_SIZE="2G"' >> /etc/portage/make.conf
+
+
 
 emerge --oneshot sys-apps/portage
 emerge app-portage/gentoolkit
