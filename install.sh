@@ -1,7 +1,8 @@
 echo "--- start LVM-service ---"
 /etc/init.d/lvm start
 
-disk="/dev/sda"
+#disk="/dev/sda"
+disk="/dev/md0"
 # lvm_group_name = "vg01"
 echo "--- clean disk /dev/sda ---"
 wipefs -af $disk
@@ -98,9 +99,9 @@ env-update && source /etc/profile
 export PS1="(chroot) $PS1" 
 mount /dev/sda2 /boot
 # создаем tmpfs
-echo "tmpfs /var/tmp/portage tmpfs size=2G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
+echo "tmpfs /var/tmp/portage tmpfs size=10G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
 mkdir /var/tmp/portage
-mount -t tmpfs tmpfs -o size=2G,nr_inodes=1M /var/tmp/portage
+mount -t tmpfs tmpfs -o size=10G,nr_inodes=1M /var/tmp/portage
 echo -e "\e[31m--- Disk System after tmpfs ---\e[0m"
 df -h
 
@@ -116,13 +117,16 @@ echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-us
 # отключить бинарные пакеты
 # echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
 #######################################################
-# Московское время
-echo "Europe/Moscow" > /etc/timezone
-emerge --config sys-libs/timezone-data
+
 
 echo -e "\e[31m--- emerge-webrsync ---\e[0m"
 emerge-webrsync
 eselect news read
+
+# Московское время
+echo "Europe/Moscow" > /etc/timezone
+emerge --config sys-libs/timezone-data
+
 emerge --oneshot sys-apps/portage
 emerge app-portage/gentoolkit
 emerge app-portage/cpuid2cpuflags
@@ -145,17 +149,13 @@ blkid | grep 'ext4' | grep 'devhdd' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t /mn
 
 #pushd /etc/init.d && ln -s net.lo net.eth0 && rc-update add net.eth0 default && popd
 #--- службы ---
-emerge app-admin/sysklogd
-rc-update add sysklogd default
-emerge sys-process/cronie
-rc-update add cronie default
-emerge net-misc/dhcpcd
-rc-update add dhcpcd default
-emerge sys-fs/lvm2
-rc-update add lvmetad boot
+emerge app-admin/sysklogd && rc-update add sysklogd default
+emerge sys-process/cronie && rc-update add cronie default
+emerge net-misc/dhcpcd && rc-update add dhcpcd default
+echo sys-fs/lvm2 lvm >> /etc/portage/package.use/custom && emerge sys-fs/lvm2 && rc-update add lvm boot
 rc-update add udev boot
-emerge ntp
-rc-update add ntpd default
+emerge mdadm && mdadm --detail --scan >> /etc/mdadm.conf && rc-update add mdadm boot 
+emerge ntp && rc-update add ntpd default
 
 #--- пароль root и запуск ssh ---
 echo -e "\e[31m--- root&sshd ---\e[0m"
@@ -238,20 +238,23 @@ emerge app-admin/sudo
 
 
 echo 'GRUB_PLATFORMS="emu efi-32 efi-64 pc"' >> /etc/portage/make.conf
-echo 'sys-boot/grub:2 device-mapper' >> /etc/portage/package.use/package.use
+echo 'sys-boot/grub:2 device-mapper' >> /etc/portage/package.use/grub2
 emerge sys-boot/grub:2
 #echo 'GRUB_CMDLINE_LINUX_DEFAULT="rd.lvm.vg=vg01 rd.lvm.lv=vg01/rootfs rd.lvm.lv=vg01/swap ro rootfstype=ext4 dolvm"' >> /etc/default/grub
 #echo 'GRUB_CMDLINE_LINUX="rd.lvm.vg=vg01 rd.lvm.lv=vg01/rootfs rd.lvm.lv=vg01/swap ro rootfstype=ext4 dolvm iommu=pt intel_iommu=on pcie_acs_override=downstream,multifunction nofb"' >> /etc/default/grub
-echo 'GRUB_CMDLINE_LINUX="dolvm iommu=pt intel_iommu=on pcie_acs_override=downstream,multifunction nofb"' >> /etc/default/grub
-echo 'GRUB_PRELOAD_MODULES=lvm' >> /etc/default/grub
+#echo 'GRUB_CMDLINE_LINUX="dolvm iommu=pt intel_iommu=on pcie_acs_override=downstream,multifunction nofb"' >> /etc/default/grub
+#echo 'GRUB_PRELOAD_MODULES=lvm' >> /etc/default/grub
+echo 'GRUB_CMDLINE_LINUX="dolvm"' >> /etc/default/grub
 
 echo -e "\e[31m--- set kernel ---\e[0m"
 emerge sys-kernel/linux-firmware
 emerge sys-kernel/gentoo-kernel-bin
+dracut -f --kver 5.15.88-gentoo-dist
+
 #emerge sys-kernel/gentoo-sources
-emerge --autounmask-write sys-kernel/genkernel
-echo -5 | etc-update
-emerge sys-kernel/genkernel
+#emerge --autounmask-write sys-kernel/genkernel
+#echo -5 | etc-update
+#emerge sys-kernel/genkernel
 eselect kernel set 1
 
 #echo -e "\e[31m--- create kernel ---\e[0m"
@@ -260,9 +263,9 @@ eselect kernel set 1
 
 echo -e "\e[31m--- create EFI boot ---\e[0m"
 #Параметр для EFI
-grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot --removable
+#grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot --removable
 #Параметр для Leagacy
-#grub-install /dev/sda
+grub-install /dev/sda
 
 grub-mkconfig -o /boot/grub/grub.cfg
 
