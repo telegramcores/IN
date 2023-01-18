@@ -123,7 +123,7 @@ emerge --config sys-libs/timezone-data
 
 
 #ccache
-emerge --ask dev-util/ccache
+emerge dev-util/ccache
 echo 'FEATURES="ccache"' >> /etc/portage/make.conf
 echo 'CCACHE_SIZE="2G"' >> /etc/portage/make.conf
 
