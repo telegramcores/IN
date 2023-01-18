@@ -244,7 +244,7 @@ emerge sys-boot/grub:2
 #echo 'GRUB_CMDLINE_LINUX="rd.lvm.vg=vg01 rd.lvm.lv=vg01/rootfs rd.lvm.lv=vg01/swap ro rootfstype=ext4 dolvm iommu=pt intel_iommu=on pcie_acs_override=downstream,multifunction nofb"' >> /etc/default/grub
 #echo 'GRUB_CMDLINE_LINUX="dolvm iommu=pt intel_iommu=on pcie_acs_override=downstream,multifunction nofb"' >> /etc/default/grub
 #echo 'GRUB_PRELOAD_MODULES=lvm' >> /etc/default/grub
-echo 'GRUB_CMDLINE_LINUX="dolvm"' >> /etc/default/grub
+echo 'GRUB_CMDLINE_LINUX="dolvm rd.auto"' >> /etc/default/grub
 
 echo -e "\e[31m--- set kernel ---\e[0m"
 emerge sys-kernel/linux-firmware
