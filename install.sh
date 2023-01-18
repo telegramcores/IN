@@ -106,10 +106,10 @@ priority = 9999
 sync-uri = https://gentoo.osuosl.org/experimental/amd64/binpkg/default/linux/17.1/x86-64/
 EOF
 # прописываем параметры для бинарных пакетов
-echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-use=y --getbinpkg=y"' >> /etc/portage/make.conf
+echo 'EMERGE_DEFAULT_OPTS="-j1 --quiet-build=y --with-bdeps=y --binpkg-respect-use=y --getbinpkg=y"' >> /etc/portage/make.conf
 #######################################################
 # отключить бинарные пакеты
-# echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
+# echo 'EMERGE_DEFAULT_OPTS="-j1 --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
 #######################################################
 
 
