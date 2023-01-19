@@ -34,7 +34,7 @@ lvcreate -y -L 16384M -n swap vg0
 lvcreate -y -l 50%VG -n rootfs vg0
 
 mkfs.fat -F 32 /dev/md0p2
-mkfs.ext4 /dev/vg0/rootfs
+mkfs.xfs /dev/vg0/rootfs
 
 mkswap /dev/vg0/swap
 swapon /dev/vg0/swap
