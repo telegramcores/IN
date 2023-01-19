@@ -114,7 +114,9 @@ blkid | grep 'ext4' | grep 'rootfs' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t / \
 #--- службы ---
 emerge app-admin/sysklogd && rc-update add sysklogd default
 emerge sys-process/cronie && rc-update add cronie default
-emerge net-misc/dhcpcd && rc-update add dhcpcd default
+
+#emerge net-misc/dhcpcd && rc-update add dhcpcd default
+
 echo sys-fs/lvm2 lvm >> /etc/portage/package.use/custom && emerge sys-fs/lvm2 && rc-update add lvm boot
 rc-update add udev boot
 emerge mdadm && mdadm --detail --scan >> /etc/mdadm.conf && rc-update add mdadm boot 
@@ -158,7 +160,10 @@ EOF
 ln -s /etc/init.d/net.lo /etc/init.d/net.br0
 rc-update add net.br0
 
-echo 'nameserver 192.168.10.8' >> /etc/resolv.conf
+touch /etc/resolv.conf
+cat << EOF >> /etc/resolv.conf
+nameserver 192.168.1.8
+EOF
 
 ###########################
 #-- samba ---
