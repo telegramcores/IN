@@ -72,7 +72,7 @@ echo "tmpfs /var/tmp/portage tmpfs size=10G,uid=portage,gid=portage,mode=775,nos
 mkdir /var/tmp/portage
 mount -t tmpfs tmpfs -o size=10G,nr_inodes=1M /var/tmp/portage
 
-echo 'EMERGE_DEFAULT_OPTS="-j1 --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
+echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
 
 echo -e "\e[31m--- emerge-webrsync ---\e[0m"
 emerge-webrsync
@@ -81,12 +81,6 @@ eselect news read
 # Московское время
 echo "Europe/Moscow" > /etc/timezone
 emerge --config sys-libs/timezone-data
-
-#ccache
-emerge dev-util/ccache
-echo 'FEATURES="ccache"' >> /etc/portage/make.conf
-echo 'CCACHE_DIR="/var/tmp/ccache/"' >> /etc/portage/make.conf
-echo 'CCACHE_SIZE="10G"' >> /etc/portage/make.conf
 
 emerge --oneshot sys-apps/portage
 emerge app-portage/gentoolkit
