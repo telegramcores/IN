@@ -1,3 +1,11 @@
+#Создание RAID 1
+# fdisk /dev/sda - нажать n, далее по умолчанию, выход W // fdisk /dev/sda - нажать t, набрать fd, выход W
+# fdisk /dev/sdb - нажать n, далее по умолчанию, выход W // fdisk /dev/sdb - нажать t, набрать fd, выход W
+# mdadm --create --verbose /dev/md0 --level=1 --raid-devices=2 /dev/sda1 /dev/sdb1
+# watch -n 1 cat /proc/mdstat - ждем, пока соберется Raid
+
+
+
 echo "--- start LVM-service ---"
 /etc/init.d/lvm start
 
