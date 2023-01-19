@@ -158,10 +158,7 @@ EOF
 ln -s /etc/init.d/net.lo /etc/init.d/net.br0
 rc-update add net.br0
 
-touch /etc/resolv.conf
-cat << EOF >> /etc/resolv.conf
-nameserver 192.168.10.8
-EOF
+echo 'nameserver 192.168.10.8' >> /etc/resolv.conf
 
 ###########################
 #-- samba ---
