@@ -162,7 +162,7 @@ rc-update add net.br0
 
 touch /etc/resolv.conf
 cat << EOF >> /etc/resolv.conf
-nameserver 192.168.1.8
+nameserver 192.168.10.8
 EOF
 
 ###########################
