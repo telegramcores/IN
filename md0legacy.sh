@@ -107,7 +107,7 @@ emerge net-misc/dhcpcd && rc-update add dhcpcd default
 echo sys-fs/lvm2 lvm >> /etc/portage/package.use/custom && emerge sys-fs/lvm2 && rc-update add lvm boot
 rc-update add udev boot
 emerge mdadm && mdadm --detail --scan >> /etc/mdadm.conf && rc-update add mdadm boot 
-emerge ntp && rc-update add ntpd default
+emerge net-misc/ntp && rc-update add ntpd default
 rc-update add sshd default
 #Дополнительные настройки для доступа
 sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin prohibit-password/g' /etc/ssh/sshd_config
