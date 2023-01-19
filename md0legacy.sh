@@ -101,13 +101,13 @@ cpuid2cpuflags | sed 's/: /="/' | sed -e '$s/$/"/' >> /etc/portage/make.conf
 echo -e "\e[31m--- update @world ---\e[0m"
 emerge --update --deep --newuse @world
 
-#echo "/dev/sda2 /boot vfat defaults 0 2" >> /etc/fstab
+echo "/dev/md127p2 /boot vfat defaults 0 2" >> /etc/fstab
 echo 'ACCEPT_LICENSE="*"'     >> /etc/portage/make.conf
 echo 'USE="abi_x86_64"' >> /etc/portage/make.conf
 
 echo -e "\e[31m--- add soft and settings ---\e[0m"
 echo hostname="gentoo_s" > /etc/conf.d/hostname
-blkid | grep 'boot' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t /boot \t vfat \t defaults \t 0 \t 2@' >> /etc/fstab
+#blkid | grep 'boot' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t /boot \t vfat \t defaults \t 0 \t 2@' >> /etc/fstab
 blkid | grep 'swap' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t none \t swap \t sw \t 0 \t 0@' >> /etc/fstab
 blkid | grep 'ext4' | grep 'rootfs' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t / \t ext4 \t noatime \t 0 \t 1@'>> /etc/fstab
 
@@ -158,39 +158,19 @@ EOF
 ln -s /etc/init.d/net.lo /etc/init.d/net.br0
 rc-update add net.br0
 
-touch /etc/resolve.conf
-cat << EOF >> /etc/resolve.conf
+touch /etc/resolv.conf
+cat << EOF >> /etc/resolv.conf
 nameserver 192.168.10.8
 EOF
 
-:'
+###########################
 #-- samba ---
-mkdir /mnt/HDD/access
-chmod 777 /mnt/HDD/access
-emerge net-fs/samba
-touch /etc/samba/smb.conf
 
-cat << EOF >> /etc/samba/smb.conf
-[GLOBAL]
-workgroup = WORKGROUP
-server role = standalone server
-security = user
-browseable = yes
-map to guest = Bad User
+############################
 
-[share]
-path = /mnt/HDD/access
-read only = No
-browseable = yes
-guest ok = yes
-create mask = 0777
-directory mask = 0777
-EOF
-rc-update add samba default
-'
 
 #--- софт ---
-emerge sys-apps/mlocate sys-fs/e2fsprogs tmux htop app-misc/mc sys-apps/lm-sensors sys-apps/smartmontools app-admin/sudo
+emerge sys-apps/mlocate sys-fs/e2fsprogs app-misc/tmux sys-process/htop app-misc/mc sys-apps/lm-sensors sys-apps/smartmontools app-admin/sudo
 
 echo 'GRUB_PLATFORMS="emu efi-32 efi-64 pc"' >> /etc/portage/make.conf
 echo 'sys-boot/grub:2 device-mapper' >> /etc/portage/package.use/grub2
