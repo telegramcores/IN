@@ -72,7 +72,18 @@ echo "tmpfs /var/tmp/portage tmpfs size=10G,uid=portage,gid=portage,mode=775,nos
 mkdir /var/tmp/portage
 mount -t tmpfs tmpfs -o size=10G,nr_inodes=1M /var/tmp/portage
 
-echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
+############ бинарные пакеты https://www.linux.org.ru/news/gentoo/16547411 ##########################
+cat << EOF >> /etc/portage/binrepos.conf
+[binhost]
+priority = 9999
+sync-uri = https://gentoo.osuosl.org/experimental/amd64/binpkg/default/linux/17.1/x86-64/
+EOF
+# прописываем параметры для бинарных пакетов
+echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-use=y --getbinpkg=y"' >> /etc/portage/make.conf
+#######################################################
+# отключить бинарные пакеты
+# echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
+#######################################################
 
 echo -e "\e[31m--- emerge-webrsync ---\e[0m"
 emerge-webrsync
