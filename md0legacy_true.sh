@@ -1,11 +1,3 @@
-#Создание RAID 1
-# fdisk /dev/sda - нажать n, далее по умолчанию, выход W // fdisk /dev/sda - нажать t, набрать fd, выход W
-# fdisk /dev/sdb - нажать n, далее по умолчанию, выход W // fdisk /dev/sdb - нажать t, набрать fd, выход W
-# mdadm --create --verbose /dev/md0 --level=1 --raid-devices=2 /dev/sda1 /dev/sdb1
-# watch -n 1 cat /proc/mdstat - ждем, пока соберется Raid
-
-
-
 echo "--- start LVM-service ---"
 /etc/init.d/lvm start
 
@@ -50,13 +42,13 @@ done
 echo "Raid superblock resynchronization complete"
 
 disk="/dev/md0"
-pvcreate -ff /dev/md0
-vgcreate vg0 /dev/md0p3
+pvcreate -ff $disk
+vgcreate vg0 $disk
 
 lvcreate -y -L 16384M -n swap vg0
 lvcreate -y -l 50%VG -n rootfs vg0
 
-mkfs.fat -F 32 /dev/md0p2
+mkfs.fat -F 32 /dev/sda2
 mkfs.ext4 /dev/vg0/rootfs
 
 mkswap /dev/vg0/swap
@@ -89,7 +81,7 @@ chroot_dir=/mnt/gentoo
 chroot $chroot_dir /bin/bash << "CHROOT"
 env-update && source /etc/profile
 export PS1="(chroot) $PS1" 
-mount /dev/md0p2 /boot
+mount /dev/sda2 /boot
 # создаем tmpfs
 echo "tmpfs /var/tmp/portage tmpfs size=20G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
 mkdir /var/tmp/portage
@@ -110,7 +102,7 @@ echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-us
 
 echo -e "\e[31m--- emerge-webrsync ---\e[0m"
 emerge-webrsync
-eselect news read
+eselect news read && eselect news purge
 
 # Московское время
 echo "Europe/Moscow" > /etc/timezone
@@ -124,7 +116,7 @@ cpuid2cpuflags | sed 's/: /="/' | sed -e '$s/$/"/' >> /etc/portage/make.conf
 echo -e "\e[31m--- update @world ---\e[0m"
 emerge --update --deep --newuse @world
 
-echo "/dev/md127p2 /boot vfat defaults 0 2" >> /etc/fstab
+echo "/dev/sda2 /boot vfat defaults 0 2" >> /etc/fstab
 echo 'ACCEPT_LICENSE="*"'     >> /etc/portage/make.conf
 echo 'USE="abi_x86_64"' >> /etc/portage/make.conf
 
