@@ -36,7 +36,8 @@ parted -a optimal --script $disk name 3 raid1
 parted -a optimal --script $disk set 3 raid on
 
 mdadm --create --verbose /dev/md0 --level=1 --raid-devices=2 /dev/sda3 /dev/sdb3
-while [[`mdadm --detail /dev/md0 | grep 'Resync Status'` != '']]; do 
+while [`mdadm --detail /dev/md0 | grep 'Resync Status'` != ''];
+do 
 echo "wait 30 sek"
 sleep 30
 done
