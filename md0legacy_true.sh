@@ -1,5 +1,5 @@
 echo "--- start LVM-service ---"
-/etc/init.d/lvm start
+/etc/init.d/lvm restart
 
 disk="/dev/sda"
 echo "---create sda1 bios_grub ---"
@@ -36,10 +36,10 @@ parted -a optimal --script $disk name 3 raid1
 parted -a optimal --script $disk set 3 raid on
 
 mdadm --create --verbose /dev/md0 --level=1 --raid-devices=2 /dev/sda3 /dev/sdb3
-dev=md0
-until grep -A2 "^$dev :" /proc/mdstat | grep -q '\[UU*\]' ; do
-    sleep 2
-done 
+while ((`mdadm --detail /dev/md0 | grep 'Rebuild Status' != ''`)); do 
+echo "wait 30 sek"
+sleep 30
+done
 echo "Raid superblock resynchronization complete"
 
 disk="/dev/md0"
