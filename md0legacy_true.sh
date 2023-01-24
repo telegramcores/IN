@@ -14,7 +14,7 @@ parted -a optimal --script $disk name 2 boot
 parted -a optimal --script $disk set 2 boot on
 
 echo "---create sda3 raid1 ---"
-parted -s -- $disk mkpart primary 259MiB 1%
+parted -s -- $disk mkpart primary 259MiB 20%
 parted -a optimal --script $disk name 3 raid1
 parted -a optimal --script $disk set 3 raid on
 
@@ -31,7 +31,7 @@ parted -a optimal --script $disk name 2 boot
 parted -a optimal --script $disk set 2 boot on
 
 echo "---create sdb3 raid1 ---"
-parted -s -- $disk mkpart primary 259MiB 1%
+parted -s -- $disk mkpart primary 259MiB 20%
 parted -a optimal --script $disk name 3 raid1
 parted -a optimal --script $disk set 3 raid on
 
@@ -177,18 +177,18 @@ EOF
 rm -f /etc/init.d/net.$netcard1
 fi
 cat << EOF >> /etc/conf.d/net
-config_br0="192.168.10.222/24"
+config_br0="192.168.1.52/24"
 bridge_forward_delay_br0=0
 bridge_hello_time_br0=200
 bridge_stp_state_br0=0
-routes_br0="default gw 192.168.10.8"
+routes_br0="default gw 192.168.1.1"
 EOF
 ln -s /etc/init.d/net.lo /etc/init.d/net.br0
 rc-update add net.br0
 
 touch /etc/resolv.conf
 cat << EOF >> /etc/resolv.conf
-nameserver 192.168.10.8
+nameserver 192.168.1.1
 EOF
 
 ###########################
