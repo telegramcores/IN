@@ -14,7 +14,7 @@ parted -a optimal --script $disk name 2 boot
 parted -a optimal --script $disk set 2 boot on
 
 echo "---create sda3 raid1 ---"
-parted -s -- $disk mkpart primary 259MiB 10%
+parted -s -- $disk mkpart primary 259MiB 1%
 parted -a optimal --script $disk name 3 raid1
 parted -a optimal --script $disk set 3 raid on
 
@@ -31,7 +31,7 @@ parted -a optimal --script $disk name 2 boot
 parted -a optimal --script $disk set 2 boot on
 
 echo "---create sdb3 raid1 ---"
-parted -s -- $disk mkpart primary 259MiB 10%
+parted -s -- $disk mkpart primary 259MiB 1%
 parted -a optimal --script $disk name 3 raid1
 parted -a optimal --script $disk set 3 raid on
 
