@@ -36,7 +36,7 @@ parted -a optimal --script $disk name 3 raid1
 parted -a optimal --script $disk set 3 raid on
 
 mdadm --create --verbose /dev/md0 --level=1 --raid-devices=2 /dev/sda3 /dev/sdb3
-while ((`mdadm --detail /dev/md0 | grep 'Resync Status'` != '')); do 
+while [[`mdadm --detail /dev/md0 | grep 'Resync Status'` != '']]; do 
 echo "wait 30 sek"
 sleep 30
 done
@@ -47,7 +47,7 @@ echo "---create /dev/md0 lvm ---"
 parted -s -- $disk mkpart primary 0 100%
 parted -a optimal --script $disk name 1 lvm0
 parted -a optimal --script $disk set 1 lvm on
-
+e
 disk="/dev/md0p1"
 pvcreate -ff $disk
 vgcreate vg0 $disk
