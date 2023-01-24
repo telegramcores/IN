@@ -42,13 +42,20 @@ done
 echo "Raid superblock resynchronization complete"
 
 disk="/dev/md0"
+echo "---create /dev/md0 lvm ---"
+parted -s -- $disk mkpart primary 0 100%
+parted -a optimal --script $disk name 1 lvm0
+parted -a optimal --script $disk set 1 lvm on
+
+disk="/dev/md0p1"
 pvcreate -ff $disk
 vgcreate vg0 $disk
 
 lvcreate -y -L 16384M -n swap vg0
-lvcreate -y -l 50%VG -n rootfs vg0
+lvcreate -y -l 30%VG -n rootfs vg0
 
 mkfs.fat -F 32 /dev/sda2
+mkfs.fat -F 32 /dev/sdb2
 mkfs.ext4 /dev/vg0/rootfs
 
 mkswap /dev/vg0/swap
@@ -192,10 +199,6 @@ emerge sys-apps/mlocate sys-fs/e2fsprogs app-misc/tmux sys-process/htop app-misc
 echo 'GRUB_PLATFORMS="emu efi-32 efi-64 pc"' >> /etc/portage/make.conf
 echo 'sys-boot/grub:2 device-mapper' >> /etc/portage/package.use/grub2
 emerge sys-boot/grub:2
-#echo 'GRUB_CMDLINE_LINUX_DEFAULT="rd.lvm.vg=vg01 rd.lvm.lv=vg01/rootfs rd.lvm.lv=vg01/swap ro rootfstype=ext4 dolvm"' >> /etc/default/grub
-#echo 'GRUB_CMDLINE_LINUX="rd.lvm.vg=vg01 rd.lvm.lv=vg01/rootfs rd.lvm.lv=vg01/swap ro rootfstype=ext4 dolvm iommu=pt intel_iommu=on pcie_acs_override=downstream,multifunction nofb"' >> /etc/default/grub
-#echo 'GRUB_CMDLINE_LINUX="dolvm iommu=pt intel_iommu=on pcie_acs_override=downstream,multifunction nofb"' >> /etc/default/grub
-#echo 'GRUB_PRELOAD_MODULES=lvm' >> /etc/default/grub
 echo 'GRUB_CMDLINE_LINUX="dolvm rd.auto"' >> /etc/default/grub
 
 echo -e "\e[31m--- set kernel ---\e[0m"
