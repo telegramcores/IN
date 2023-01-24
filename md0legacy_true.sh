@@ -14,7 +14,7 @@ parted -a optimal --script $disk name 2 boot
 parted -a optimal --script $disk set 2 boot on
 
 echo "---create sda3 raid1 ---"
-parted -s -- $disk mkpart primary 259MiB 100%
+parted -s -- $disk mkpart primary 259MiB 10%
 parted -a optimal --script $disk name 3 raid1
 parted -a optimal --script $disk set 3 raid on
 
@@ -31,17 +31,26 @@ parted -a optimal --script $disk name 2 boot
 parted -a optimal --script $disk set 2 boot on
 
 echo "---create sdb3 raid1 ---"
-parted -s -- $disk mkpart primary 259MiB 100%
+parted -s -- $disk mkpart primary 259MiB 10%
 parted -a optimal --script $disk name 3 raid1
 parted -a optimal --script $disk set 3 raid on
 
 mdadm --create --verbose /dev/md0 --level=1 --raid-devices=2 /dev/sda3 /dev/sdb3
-while ["mdadm --detail /dev/md0 | grep 'Resync Status'" != ''];
-do 
+true=0
+echo `mdadm --detail /dev/md0 | grep 'Resync Status'`
+while ((true==0));
+do
 echo "wait 30 sek"
 sleep 30
+echo  `mdadm --detail /dev/md0 | grep 'Resync Status'`
+RAID_INFO=`mdadm --detail /dev/md0`
+rebuild_status_line_count=`echo "$RAID_INFO" | grep "Resync Status" | wc -l`
+if (( rebuild_status_line_count == 0 )); then
+    return true=1
+fi
 done
 echo "Raid superblock resynchronization complete"
+
 
 disk="/dev/md0"
 echo "---create /dev/md0 lvm ---"
