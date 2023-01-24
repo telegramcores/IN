@@ -48,7 +48,7 @@ echo "---create /dev/md0 lvm ---"
 parted -s -- $disk mkpart primary 0 100%
 parted -a optimal --script $disk name 1 lvm0
 parted -a optimal --script $disk set 1 lvm on
-e
+
 disk="/dev/md0p1"
 pvcreate -ff $disk
 vgcreate vg0 $disk
