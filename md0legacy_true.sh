@@ -36,9 +36,10 @@ parted -a optimal --script $disk name 3 raid1
 parted -a optimal --script $disk set 3 raid on
 
 mdadm --create --verbose /dev/md0 --level=1 --raid-devices=2 /dev/sda3 /dev/sdb3
-while [[ `mdadm --detail /dev/md0 | grep 'Rebuild Status'` != '' ]] do
-sleep 30
-done
+dev=md0
+until grep -A2 "^$dev :" /proc/mdstat | grep -q '\[UU*\]' ; do
+    sleep 2
+done 
 echo "Raid superblock resynchronization complete"
 
 disk="/dev/md0"
