@@ -46,7 +46,7 @@ echo  `mdadm --detail /dev/md0 | grep 'Resync Status'`
 RAID_INFO=`mdadm --detail /dev/md0`
 rebuild_status_line_count=`echo "$RAID_INFO" | grep "Resync Status" | wc -l`
 if (( rebuild_status_line_count == 0 )); then
-    return true=1
+    true=1
 fi
 done
 echo "Raid superblock resynchronization complete"
