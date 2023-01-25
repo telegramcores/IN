@@ -31,8 +31,12 @@ mkswap /dev/sda3
 swapon /dev/sda3
 mkfs.btrfs -L btrfsmirror -m raid1 -d raid1 /dev/sda4 /dev/sdb4
 
-
-
+echo "LABEL=btrfsmirror	/mnt/gentoo		btrfs	defaults,noatime	0 0" >> /etc/fstab
+echo "LABEL=btrfsmirror	/mnt/gentoo/root	btrfs	defaults,noatime,compress=lzo,autodefrag,subvol=root	0 0" >> /etc/fstab
+mount /mnt/gentoo
+btrfs subvolume create /mnt/gentoo/root
+btrfs subvolume create /mnt/gentoo/root/home
+btrfs subvolume create /mnt/gentoo/root/var
 
 ntpd -q -g
 cd /mnt/gentoo
