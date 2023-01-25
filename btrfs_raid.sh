@@ -3,6 +3,7 @@
 #https://btrfs.wiki.kernel.org/index.php/Using_Btrfs_with_Multiple_Devices
 #https://wiki.calculate-linux.org/ru/btrfs
 #https://linuxhint.com/how-to-use-btrfs-scrub/
+#https://ru.phen375questions.com/article/how-to-use-btrfs-balance
 
 disk="/dev/sda"
 echo "---create sda1 bios_grub ---"
