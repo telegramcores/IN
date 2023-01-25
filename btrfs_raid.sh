@@ -1,3 +1,6 @@
+#https://github.com/ccie18643/Arch-Linux-install-on-RAID-BTRFS
+#https://wiki.polaire.nl/doku.php?id=install_gentoo
+
 disk="/dev/sda"
 echo "---create sda1 bios_grub ---"
 parted -a optimal --script $disk mklabel gpt
@@ -15,30 +18,20 @@ parted -a optimal --script $disk mkpart primary 259MiB 32GiB
 parted -a optimal --script $disk name 3 swap
 
 echo "---create sda4 raid1 ---"
-parted -s -- $disk mkpart primary 32GiB 20%
+parted -s -- $disk mkpart primary 32GiB 40%
 parted -a optimal --script $disk name 4 raid1
 parted -a optimal --script $disk set 4 raid on
 
 # копируем разметку /dev/sda на /dev/sdb
-sgdisk /dev/sda -R /dev/sdb
-sgdisk -G /dev/sdb
+sgdisk /dev/sda -R /dev/sdb -G
 
-disk="/dev/md0"
-pvcreate -ff $disk
-vgcreate vg0 $disk
+mkfs.fat -F32 /dev/sda2
+mkfs.fat -F32 /dev/sdb2
+mkswap /dev/sda3
+mkfs.btrfs -L btrfsmirror -m raid1 -d raid1 /dev/sda4 /dev/sdb4
 
-lvcreate -y -L 16384M -n swap vg0
-lvcreate -y -l 30%VG -n rootfs vg0
 
-mkfs.fat -F 32 /dev/sda2
-mkfs.fat -F 32 /dev/sdb2
-mkfs.ext4 /dev/vg0/rootfs
 
-mkswap /dev/vg0/swap
-swapon /dev/vg0/swap
-
-mount /dev/vg0/rootfs /mnt/gentoo
-mkdir /mnt/gentoo/home
 
 ntpd -q -g
 cd /mnt/gentoo
