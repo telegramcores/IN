@@ -15,11 +15,11 @@ parted -a optimal --script $disk name 2 boot
 parted -a optimal --script $disk set 2 boot on
 
 echo "---create sda3 swap ---"
-parted -a optimal --script $disk mkpart primary 259MiB 32GiB
+parted -a optimal --script $disk mkpart primary 259MiB 16GiB
 parted -a optimal --script $disk name 3 swap
 
 echo "---create sda4 raid1 ---"
-parted -s -- $disk mkpart primary 32GiB 100%
+parted -s -- $disk mkpart primary 16GiB 100%
 parted -a optimal --script $disk name 4 raid1
 parted -a optimal --script $disk set 4 raid on
 
@@ -35,23 +35,24 @@ parted -a optimal --script $disk mkpart primary 3MiB 259MiB
 parted -a optimal --script $disk name 2 boot
 parted -a optimal --script $disk set 2 boot on
 
-echo "---create sdb3 raid1 ---"
-parted -s -- $disk mkpart primary 259MiB 100%
-parted -a optimal --script $disk name 3 raid1
-parted -a optimal --script $disk set 3 raid on
+echo "---create sdb3 swap ---"
+parted -a optimal --script $disk mkpart primary 259MiB 16GiB
+parted -a optimal --script $disk name 3 swap
+
+echo "---create sdb4 raid1 ---"
+parted -s -- $disk mkpart primary 16GiB 100%
+parted -a optimal --script $disk name 4 raid1
+parted -a optimal --script $disk set 4 raid on
 
 mkfs.fat -F32 /dev/sda2
 mkfs.fat -F32 /dev/sdb2
 mkswap /dev/sda3
 swapon /dev/sda3
-mkfs.btrfs -L btrfsmirror -m raid1 -d raid1 /dev/sda4 /dev/sdb3
+mkfs.btrfs -L btrfsmirror -m raid1 -d raid1 /dev/sda4 /dev/sdb4
 
 echo "LABEL=btrfsmirror	/mnt/gentoo		btrfs	defaults,noatime	0 0" >> /etc/fstab
-echo "LABEL=btrfsmirror	/mnt/gentoo/root	btrfs	defaults,noatime,compress=lzo,autodefrag,subvol=root	0 0" >> /etc/fstab
 mount /mnt/gentoo
-btrfs subvolume create /mnt/gentoo/root
-btrfs subvolume create /mnt/gentoo/root/home
-btrfs subvolume create /mnt/gentoo/root/var
+btrfs subvolume create /mnt/gentoo/home
 
 ntpd -q -g
 cd /mnt/gentoo
@@ -115,9 +116,8 @@ echo 'USE="abi_x86_64"' >> /etc/portage/make.conf
 
 echo -e "\e[31m--- add soft and settings ---\e[0m"
 echo hostname="gentoo_s" > /etc/conf.d/hostname
-#blkid | grep 'boot' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t /boot \t vfat \t defaults \t 0 \t 2@' >> /etc/fstab
-blkid | grep 'swap' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t none \t swap \t sw \t 0 \t 0@' >> /etc/fstab
-echo "LABEL=btrfsmirror / btrfs defaults,noatime,compress=lzo,autodefrag,subvol=root  0 0" >> /etc/fstab
+echo "/dev/sda3 none swap sw 0 0" >> /etc/fstab
+echo "LABEL=btrfsmirror / btrfs defaults,noatime,compress=lzo,autodefrag,subvol=@  0 0" >> /etc/fstab
 
 #--- службы ---
 emerge app-admin/sysklogd && rc-update add sysklogd default
@@ -155,18 +155,18 @@ EOF
 rm -f /etc/init.d/net.$netcard1
 fi
 cat << EOF >> /etc/conf.d/net
-config_br0="192.168.10.222/24"
+config_br0="192.168.1.52/24"
 bridge_forward_delay_br0=0
 bridge_hello_time_br0=200
 bridge_stp_state_br0=0
-routes_br0="default gw 192.168.10.8"
+routes_br0="default gw 192.168.1.1"
 EOF
 ln -s /etc/init.d/net.lo /etc/init.d/net.br0
 rc-update add net.br0
 
 touch /etc/resolv.conf
 cat << EOF >> /etc/resolv.conf
-nameserver 192.168.10.8
+nameserver 192.168.1.1
 EOF
 
 ###########################
