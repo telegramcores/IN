@@ -1,5 +1,6 @@
 #https://github.com/ccie18643/Arch-Linux-install-on-RAID-BTRFS
 #https://wiki.polaire.nl/doku.php?id=install_gentoo
+#https://btrfs.wiki.kernel.org/index.php/Using_Btrfs_with_Multiple_Devices
 
 disk="/dev/sda"
 echo "---create sda1 bios_grub ---"
