@@ -28,6 +28,7 @@ sgdisk /dev/sda -R /dev/sdb -G
 mkfs.fat -F32 /dev/sda2
 mkfs.fat -F32 /dev/sdb2
 mkswap /dev/sda3
+swapon /dev/sda3
 mkfs.btrfs -L btrfsmirror -m raid1 -d raid1 /dev/sda4 /dev/sdb4
 
 
