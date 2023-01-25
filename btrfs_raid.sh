@@ -7,6 +7,7 @@
 #https://ru.phen375questions.com/article/how-to-use-btrfs-balance
 #https://pikabu.ru/story/archlinux_ustanovka_sistemyi_na_subvolume_btrfs_8052240
 #http://www.bog.pp.ru/work/btrfs.html
+#https://dzen.ru/a/XpHXdzePaVeSMFW5
 
 disk="/dev/sda"
 echo "---create sda1 bios_grub ---"
