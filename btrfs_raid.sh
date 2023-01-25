@@ -8,6 +8,7 @@
 #https://pikabu.ru/story/archlinux_ustanovka_sistemyi_na_subvolume_btrfs_8052240
 #http://www.bog.pp.ru/work/btrfs.html
 #https://dzen.ru/a/XpHXdzePaVeSMFW5
+#https://yamadharma.github.io/ru/post/2021/08/27/btrfs-subvolumes/
 
 disk="/dev/sda"
 echo "---create sda1 bios_grub ---"
