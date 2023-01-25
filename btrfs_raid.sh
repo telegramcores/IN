@@ -117,7 +117,7 @@ echo 'USE="abi_x86_64"' >> /etc/portage/make.conf
 echo -e "\e[31m--- add soft and settings ---\e[0m"
 echo hostname="gentoo_s" > /etc/conf.d/hostname
 echo "/dev/sda3 none swap sw 0 0" >> /etc/fstab
-echo "LABEL=btrfsmirror / btrfs defaults,noatime,compress=lzo,autodefrag,subvol=@  0 0" >> /etc/fstab
+echo "LABEL=btrfsmirror / btrfs defaults,noatime  0 0" >> /etc/fstab
 
 #--- службы ---
 emerge app-admin/sysklogd && rc-update add sysklogd default
