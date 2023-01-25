@@ -2,6 +2,7 @@
 #https://wiki.polaire.nl/doku.php?id=install_gentoo
 #https://btrfs.wiki.kernel.org/index.php/Using_Btrfs_with_Multiple_Devices
 #https://wiki.calculate-linux.org/ru/btrfs
+#https://linuxhint.com/how-to-use-btrfs-scrub/
 
 disk="/dev/sda"
 echo "---create sda1 bios_grub ---"
