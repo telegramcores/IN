@@ -18,18 +18,32 @@ parted -a optimal --script $disk mkpart primary 259MiB 32GiB
 parted -a optimal --script $disk name 3 swap
 
 echo "---create sda4 raid1 ---"
-parted -s -- $disk mkpart primary 32GiB 40%
+parted -s -- $disk mkpart primary 32GiB 100%
 parted -a optimal --script $disk name 4 raid1
 parted -a optimal --script $disk set 4 raid on
 
-# копируем разметку /dev/sda на /dev/sdb
-sgdisk /dev/sda -R /dev/sdb -G
+disk="/dev/sdb"
+echo "---create sdb1 bios_grub ---"
+parted -a optimal --script $disk mklabel gpt
+parted -a optimal --script $disk mkpart primary 1MiB 3MiB
+parted -a optimal --script $disk name 1 grub
+parted -a optimal --script $disk set 1 bios_grub on
+
+echo "---create sdb2 boot ---"
+parted -a optimal --script $disk mkpart primary 3MiB 259MiB
+parted -a optimal --script $disk name 2 boot
+parted -a optimal --script $disk set 2 boot on
+
+echo "---create sdb3 raid1 ---"
+parted -s -- $disk mkpart primary 259MiB 100%
+parted -a optimal --script $disk name 3 raid1
+parted -a optimal --script $disk set 3 raid on
 
 mkfs.fat -F32 /dev/sda2
 mkfs.fat -F32 /dev/sdb2
 mkswap /dev/sda3
 swapon /dev/sda3
-mkfs.btrfs -L btrfsmirror -m raid1 -d raid1 /dev/sda4 /dev/sdb4
+mkfs.btrfs -L btrfsmirror -m raid1 -d raid1 /dev/sda4 /dev/sdb3
 
 echo "LABEL=btrfsmirror	/mnt/gentoo		btrfs	defaults,noatime	0 0" >> /etc/fstab
 echo "LABEL=btrfsmirror	/mnt/gentoo/root	btrfs	defaults,noatime,compress=lzo,autodefrag,subvol=root	0 0" >> /etc/fstab
@@ -94,9 +108,6 @@ emerge app-portage/gentoolkit
 emerge app-portage/cpuid2cpuflags
 cpuid2cpuflags | sed 's/: /="/' | sed -e '$s/$/"/' >> /etc/portage/make.conf
 
-echo -e "\e[31m--- update @world ---\e[0m"
-emerge --update --deep --newuse @world
-
 echo "/dev/sda2 /boot vfat defaults 0 2" >> /etc/fstab
 echo 'ACCEPT_LICENSE="*"'     >> /etc/portage/make.conf
 echo 'USE="abi_x86_64"' >> /etc/portage/make.conf
@@ -105,18 +116,14 @@ echo -e "\e[31m--- add soft and settings ---\e[0m"
 echo hostname="gentoo_s" > /etc/conf.d/hostname
 #blkid | grep 'boot' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t /boot \t vfat \t defaults \t 0 \t 2@' >> /etc/fstab
 blkid | grep 'swap' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t none \t swap \t sw \t 0 \t 0@' >> /etc/fstab
-blkid | grep 'ext4' | grep 'rootfs' | sed 's@.*UUID="\([^"]*\)".*@UUID=\1 \t / \t ext4 \t noatime \t 0 \t 1@'>> /etc/fstab
+echo "LABEL=btrfsmirror / btrfs defaults,noatime,compress=lzo,autodefrag,subvol=root  0 0" >> /etc/fstab
 
 #--- службы ---
 emerge app-admin/sysklogd && rc-update add sysklogd default
 emerge sys-process/cronie && rc-update add cronie default
-
 #emerge net-misc/dhcpcd && rc-update add dhcpcd default
-
-echo sys-fs/lvm2 lvm >> /etc/portage/package.use/custom && emerge sys-fs/lvm2 && rc-update add lvm boot
-rc-update add udev boot
-emerge mdadm && mdadm --detail --scan >> /etc/mdadm.conf && rc-update add mdadm boot 
 emerge net-misc/ntp && rc-update add ntpd default
+emerge sys-fs/btrfs-progs
 rc-update add sshd default
 #Дополнительные настройки для доступа
 sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin prohibit-password/g' /etc/ssh/sshd_config
@@ -173,7 +180,6 @@ emerge sys-apps/mlocate sys-fs/e2fsprogs app-misc/tmux sys-process/htop app-misc
 echo 'GRUB_PLATFORMS="emu efi-32 efi-64 pc"' >> /etc/portage/make.conf
 echo 'sys-boot/grub:2 device-mapper' >> /etc/portage/package.use/grub2
 emerge sys-boot/grub:2
-echo 'GRUB_CMDLINE_LINUX="dolvm rd.auto"' >> /etc/default/grub
 
 echo -e "\e[31m--- set kernel ---\e[0m"
 emerge sys-kernel/linux-firmware
