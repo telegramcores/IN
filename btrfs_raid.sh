@@ -59,12 +59,18 @@ swapon /dev/sda3
 mkfs.btrfs -f -L btrfsmirror -m raid1 -d raid1 /dev/sda4 /dev/sdb4
 
 echo "LABEL=btrfsmirror /mnt/gentoo btrfs defaults,noatime  0 0" >> /etc/fstab
-mount /mnt/gentoo
+mount /mnt/gentoo 
 btrfs subvolume create /mnt/gentoo/@ 
 btrfs subvolume create /mnt/gentoo/@home 
 btrfs subvolume create /mnt/gentoo/@var
+btrfs subvolume create /mnt/gentoo/@snapshots
 umount /mnt/gentoo
 
+mount -o defaults,noatime,autodefrag,subvol=@ /dev/sda4 /mnt/gentoo
+mkdir -p /mnt/{home,.snapshots,var}
+mount -o autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@home /dev/sda4 /mnt/gentoo/home
+mount -o autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@var  /dev/sda4 /mnt/gentoo/var
+mount -o autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@snapshots  /dev/sda4 /mnt/gentoo/.snapshots
 
 cd /mnt/gentoo
 ntpd -q -g
