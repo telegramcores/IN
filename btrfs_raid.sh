@@ -60,10 +60,13 @@ mkfs.btrfs -L btrfsmirror -m raid1 -d raid1 /dev/sda4 /dev/sdb4
 
 echo "LABEL=btrfsmirror	/mnt/gentoo		btrfs	defaults,noatime	0 0" >> /etc/fstab
 mount /mnt/gentoo
-btrfs subvolume create /mnt/gentoo/home
+cd /mnt/gentoo
+btrfs subvolume create @ 
+btrfs subvolume create @home 
+btrfs subvolume create @var
+
 
 ntpd -q -g
-cd /mnt/gentoo
 echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
 
 echo -e "\e[31m--- load Stage3 ---\e[0m"
@@ -125,7 +128,9 @@ echo 'USE="abi_x86_64"' >> /etc/portage/make.conf
 echo -e "\e[31m--- add soft and settings ---\e[0m"
 echo hostname="gentoo_s" > /etc/conf.d/hostname
 echo "/dev/sda3 none swap sw 0 0" >> /etc/fstab
-echo "LABEL=btrfsmirror / btrfs defaults,noatime  0 0" >> /etc/fstab
+echo "LABEL=btrfsmirror / btrfs defaults,noatime,autodefrag,subvol=@  0 0" >> /etc/fstab
+echo "LABEL=btrfsmirror /home btrfs autodefrag,max_inline=256,commit=600,nodatacow,relatime,space_cache,compress=zlib,subvol=@home  0 0" >> /etc/fstab
+echo "LABEL=btrfsmirror /var btrfs autodefrag,max_inline=256,commit=600,nodatacow,relatime,space_cache,compress=zlib,subvol=@var  0 0" >> /etc/fstab
 
 #--- службы ---
 emerge app-admin/sysklogd && rc-update add sysklogd default
@@ -163,18 +168,18 @@ EOF
 rm -f /etc/init.d/net.$netcard1
 fi
 cat << EOF >> /etc/conf.d/net
-config_br0="192.168.1.52/24"
+config_br0="192.168.10.222/24"
 bridge_forward_delay_br0=0
 bridge_hello_time_br0=200
 bridge_stp_state_br0=0
-routes_br0="default gw 192.168.1.1"
+routes_br0="default gw 192.168.10.8"
 EOF
 ln -s /etc/init.d/net.lo /etc/init.d/net.br0
 rc-update add net.br0
 
 touch /etc/resolv.conf
 cat << EOF >> /etc/resolv.conf
-nameserver 192.168.1.1
+nameserver 192.168.10.8
 EOF
 
 ###########################
