@@ -129,8 +129,8 @@ echo -e "\e[31m--- add soft and settings ---\e[0m"
 echo hostname="gentoo_s" > /etc/conf.d/hostname
 echo "/dev/sda3 none swap sw 0 0" >> /etc/fstab
 echo "LABEL=btrfsmirror / btrfs defaults,noatime,autodefrag,subvol=@  0 0" >> /etc/fstab
-echo "LABEL=btrfsmirror /home btrfs autodefrag,max_inline=256,commit=600,nodatacow,relatime,space_cache,compress=zlib,subvol=@home  0 0" >> /etc/fstab
-echo "LABEL=btrfsmirror /var btrfs autodefrag,max_inline=256,commit=600,nodatacow,relatime,space_cache,compress=zlib,subvol=@var  0 0" >> /etc/fstab
+echo "LABEL=btrfsmirror /home btrfs autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@home  0 0" >> /etc/fstab
+echo "LABEL=btrfsmirror /var btrfs autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@var  0 0" >> /etc/fstab
 
 #--- службы ---
 emerge app-admin/sysklogd && rc-update add sysklogd default
