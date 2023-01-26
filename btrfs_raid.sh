@@ -129,9 +129,13 @@ echo 'USE="abi_x86_64"' >> /etc/portage/make.conf
 echo -e "\e[31m--- add soft and settings ---\e[0m"
 echo hostname="gentoo_s" > /etc/conf.d/hostname
 echo "/dev/sda3 none swap sw 0 0" >> /etc/fstab
-echo "LABEL=btrfsmirror / btrfs defaults,noatime,autodefrag,subvol=@  0 0" >> /etc/fstab
-echo "LABEL=btrfsmirror /home btrfs autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@home  0 0" >> /etc/fstab
-echo "LABEL=btrfsmirror /var btrfs autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@var  0 0" >> /etc/fstab
+#echo "LABEL=btrfsmirror / btrfs defaults,noatime,autodefrag,subvol=@  0 0" >> /etc/fstab
+#echo "LABEL=btrfsmirror /home btrfs autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@home  0 0" >> /etc/fstab
+#echo "LABEL=btrfsmirror /var btrfs autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@var  0 0" >> /etc/fstab
+
+blkid /dev/sda4 | awk '{print $2" / btrfs defaults,noatime,autodefrag,subvol=@  0 0"}' >> /etc/fstab
+blkid /dev/sda4 | awk '{print $2" /home btrfs autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@home  0 0"}' >> /etc/fstab
+blkid /dev/sda4 | awk '{print $2" /var btrfs autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@var  0 0"}' >> /etc/fstab
 
 #--- службы ---
 emerge app-admin/sysklogd && rc-update add sysklogd default
