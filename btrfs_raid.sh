@@ -67,7 +67,7 @@ btrfs subvolume create /mnt/gentoo/@snapshots
 umount /mnt/gentoo
 
 mount -o defaults,noatime,autodefrag,subvol=@ /dev/sda4 /mnt/gentoo
-mkdir -p /mnt/{home,.snapshots,var}
+mkdir -p /mnt/gentoo/{home,.snapshots,var}
 mount -o autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@home /dev/sda4 /mnt/gentoo/home
 mount -o autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@var  /dev/sda4 /mnt/gentoo/var
 mount -o autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@snapshots  /dev/sda4 /mnt/gentoo/.snapshots
@@ -142,6 +142,7 @@ echo "/dev/sda3 none swap sw 0 0" >> /etc/fstab
 blkid /dev/sda4 | awk '{print $2" / btrfs defaults,noatime,autodefrag,subvol=@  0 0"}' >> /etc/fstab
 blkid /dev/sda4 | awk '{print $2" /home btrfs autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@home  0 0"}' >> /etc/fstab
 blkid /dev/sda4 | awk '{print $2" /var btrfs autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@var  0 0"}' >> /etc/fstab
+blkid /dev/sda4 | awk '{print $2" /.snapshot btrfs autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@snapshot 0 0"}' >> /etc/fstab
 
 #--- службы ---
 emerge app-admin/sysklogd && rc-update add sysklogd default
