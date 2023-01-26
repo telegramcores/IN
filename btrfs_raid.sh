@@ -142,7 +142,7 @@ echo "/dev/sda3 none swap sw 0 0" >> /etc/fstab
 blkid /dev/sda4 | awk '{print $2" / btrfs defaults,noatime,autodefrag,subvol=@  0 0"}' >> /etc/fstab
 blkid /dev/sda4 | awk '{print $2" /home btrfs autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@home  0 0"}' >> /etc/fstab
 blkid /dev/sda4 | awk '{print $2" /var btrfs autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@var  0 0"}' >> /etc/fstab
-blkid /dev/sda4 | awk '{print $2" /.snapshot btrfs autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@snapshot 0 0"}' >> /etc/fstab
+blkid /dev/sda4 | awk '{print $2" /.snapshots btrfs autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@snapshots 0 0"}' >> /etc/fstab
 
 #--- службы ---
 emerge app-admin/sysklogd && rc-update add sysklogd default
