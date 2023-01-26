@@ -1,4 +1,5 @@
 #https://btrfs.wiki.kernel.org/index.php/Main_Page
+#https://help.ubuntu.ru/wiki/btrfs
 #https://github.com/ccie18643/Arch-Linux-install-on-RAID-BTRFS
 #https://wiki.polaire.nl/doku.php?id=install_gentoo
 #https://btrfs.wiki.kernel.org/index.php/Using_Btrfs_with_Multiple_Devices
