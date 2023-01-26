@@ -60,13 +60,13 @@ mkfs.btrfs -f -L btrfsmirror -m raid1 -d raid1 /dev/sda4 /dev/sdb4
 
 echo "LABEL=btrfsmirror /mnt/gentoo btrfs defaults,noatime  0 0" >> /etc/fstab
 mount /mnt/gentoo
-cd /mnt/gentoo
-btrfs subvolume create @ 
-btrfs subvolume create @home 
-btrfs subvolume create @var
+btrfs subvolume create /mnt/gentoo/@ 
+btrfs subvolume create /mnt/gentoo/@home 
+btrfs subvolume create /mnt/gentoo/@var
 umount /mnt/gentoo
 
 
+cd /mnt/gentoo
 ntpd -q -g
 echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
 
