@@ -64,6 +64,7 @@ cd /mnt/gentoo
 btrfs subvolume create @ 
 btrfs subvolume create @home 
 btrfs subvolume create @var
+umount /mnt/gentoo
 
 
 ntpd -q -g
