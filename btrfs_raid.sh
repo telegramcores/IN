@@ -98,7 +98,6 @@ env-update && source /etc/profile
 export PS1="(chroot) $PS1" 
 mount /dev/sda2 /boot
 # создаем tmpfs
-echo "tmpfs /var/tmp/portage tmpfs size=20G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
 mkdir /var/tmp/portage
 mount -t tmpfs tmpfs -o size=20G,nr_inodes=1M /var/tmp/portage
 
@@ -135,14 +134,11 @@ echo 'USE="abi_x86_64"' >> /etc/portage/make.conf
 echo -e "\e[31m--- add soft and settings ---\e[0m"
 echo hostname="gentoo_s" > /etc/conf.d/hostname
 echo "/dev/sda3 none swap sw 0 0" >> /etc/fstab
-#echo "LABEL=btrfsmirror / btrfs defaults,noatime,autodefrag,subvol=@  0 0" >> /etc/fstab
-#echo "LABEL=btrfsmirror /home btrfs autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@home  0 0" >> /etc/fstab
-#echo "LABEL=btrfsmirror /var btrfs autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@var  0 0" >> /etc/fstab
-
 blkid /dev/sda4 | awk '{print $3" / btrfs defaults,noatime,autodefrag,subvol=@  0 0"}' >> /etc/fstab
 blkid /dev/sda4 | awk '{print $3" /home btrfs autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@home  0 0"}' >> /etc/fstab
 blkid /dev/sda4 | awk '{print $3" /var btrfs autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@var  0 0"}' >> /etc/fstab
 blkid /dev/sda4 | awk '{print $3" /.snapshots btrfs autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@snapshots 0 0"}' >> /etc/fstab
+echo "tmpfs /var/tmp/portage tmpfs size=20G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
 
 #--- службы ---
 emerge app-admin/sysklogd && rc-update add sysklogd default
