@@ -69,7 +69,7 @@ btrfs subvolume create /mnt/gentoo/@share
 umount /mnt/gentoo
 
 mount -o defaults,noatime,autodefrag,subvol=@ /dev/sda4 /mnt/gentoo
-mkdir -p /mnt/gentoo/{home,.snapshots,var}
+mkdir -p /mnt/gentoo/{home,.snapshots,var,share}
 mount -o autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@home /dev/sda4 /mnt/gentoo/home
 mount -o autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@var  /dev/sda4 /mnt/gentoo/var
 mount -o autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@snapshots  /dev/sda4 /mnt/gentoo/.snapshots
