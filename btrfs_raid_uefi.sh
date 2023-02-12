@@ -147,7 +147,7 @@ echo "tmpfs /var/tmp/portage tmpfs size=20G,uid=portage,gid=portage,mode=775,nos
 #--- службы ---
 emerge app-admin/sysklogd && rc-update add sysklogd default
 emerge sys-process/cronie && rc-update add cronie default
-#emerge net-misc/dhcpcd && rc-update add dhcpcd default
+emerge net-misc/dhcpcd && rc-update add dhcpcd default
 emerge net-misc/ntp && rc-update add ntpd default
 emerge sys-fs/btrfs-progs
 rc-update add sshd default
