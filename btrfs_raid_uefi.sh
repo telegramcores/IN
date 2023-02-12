@@ -168,6 +168,8 @@ cat << EOF >> /etc/conf.d/net
 config_$netcard1="null"
 config_$netcard2="null"
 bridge_br0="$netcard1 $netcard2"
+rc_net_$netcard1_need="udev-settle"
+rc_net_$netcard2_need="udev-settle"
 EOF
 rm -f /etc/init.d/net.$netcard1
 rm -f /etc/init.d/net.$netcard2
@@ -176,6 +178,7 @@ else
 cat << EOF >> /etc/conf.d/net
 config_$netcard1="null"
 bridge_br0="$netcard1"
+rc_net_$netcard1_need="udev-settle"
 EOF
 rm -f /etc/init.d/net.$netcard1
 fi
