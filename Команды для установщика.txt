@@ -17,7 +17,7 @@ startxwin >/dev/null 2>&1 &
 
 
 
-#################### Настройка qemu - libvirt
+#################### Настройка qemu - libvirt ---ЧИТАТЬ ЗДЕСЬ - https://wiki.gentoo.org/wiki/Libvirt
 grep --color -E "vmx|svm" /proc/cpuinfo
 
 // настроить /etc/portage/package.use/package.use
