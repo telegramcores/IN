@@ -149,6 +149,7 @@ emerge app-admin/sysklogd && rc-update add sysklogd default
 emerge sys-process/cronie && rc-update add cronie default
 emerge net-misc/dhcpcd && rc-update add dhcpcd default
 emerge net-misc/ntp && rc-update add ntpd default
+rc-update add udev boot
 emerge sys-fs/btrfs-progs
 rc-update add sshd default
 #Дополнительные настройки для доступа
