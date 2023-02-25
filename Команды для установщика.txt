@@ -58,15 +58,18 @@ ip neigh | grep -i <MAC-adress>
 #########  Проброс видеокарты
 dmesg | grep 'IOMMU enabled'
 for d in /sys/kernel/iommu_groups/*/devices/*; do n=${d#*/iommu_groups/*}; n=${n%%/*}; printf 'IOMMU Group %s ' "$n"; lspci -nns "${d##*/}"; done;
-lspci -nn
+lspci -nnk
 
-/etc/modprobe.d/vfio.conf
-options vfio-pci ids=1002:687f,1002:aaf8
+/etc/modprobe.d/nvidia.conf
+softdep nouveau pre: vfio-pci
+softdep nvidia pre: vfio-pci
+softdep nvidia* pre: vfio-pci
 
-//мои видеокарты 1- 1050
-options vfio-pci ids=10de:1c82,10de:0fb9 
-options vfio-pci ids=10de:1d01,10de:0fb8
+/etc/default/grub
+GRUB_CMDLINE_LINUX="iommu=pt intel_iommu=on pcie_acs_override=downstream,multifunction nofb vfio_pci.ids=10de:1c82,10de:0fb9,10de:1d01,10de:0fb8 kvm.ignore_msrs=1"
 
+grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot --removable
+grub-mkconfig -o /boot/grub/grub.cfg
 reboot
 далее в virt-manager подключать видеокарту
 
