@@ -64,9 +64,11 @@ lspci -nnk
 softdep nouveau pre: vfio-pci
 softdep nvidia pre: vfio-pci
 softdep nvidia* pre: vfio-pci
+softdep snd_hda_intel pre: vfio-pci
+
 
 /etc/default/grub
-GRUB_CMDLINE_LINUX="iommu=pt intel_iommu=on pcie_acs_override=downstream,multifunction nofb vfio_pci.ids=10de:1c82,10de:0fb9,10de:1d01,10de:0fb8 kvm.ignore_msrs=1"
+GRUB_CMDLINE_LINUX="iommu=pt intel_iommu=on pcie_acs_override=downstream,multifunction nofb vfio_pci.ids=10de:1c82,10de:0fb9,10de:1d01,10de:0fb8,10de:1d01,10de:0fb8 kvm.ignore_msrs=1"
 
 grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot --removable
 grub-mkconfig -o /boot/grub/grub.cfg
