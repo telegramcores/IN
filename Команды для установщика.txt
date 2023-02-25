@@ -20,9 +20,9 @@ startxwin >/dev/null 2>&1 &
 #################### Настройка qemu - libvirt ---ЧИТАТЬ ЗДЕСЬ - https://wiki.gentoo.org/wiki/Libvirt
 grep --color -E "vmx|svm" /proc/cpuinfo
 
-// настроить /etc/portage/package.use/package.use
-// app-emulation/qemu spice
-// net-dns/dnsmasq script
+/etc/portage/package.use/package.use
+app-emulation/qemu spice
+net-dns/dnsmasq script
 
 emerge --ask app-emulation/qemu
 gpasswd -a <username> kvm
