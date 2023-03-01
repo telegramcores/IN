@@ -1,3 +1,11 @@
 btrfs balance start -dconvert=raid10 -mconvert=raid10 --force /  - конвертация раздела BTRFS в нужную версию RAID
- btrfs filesystem df / - информация о ФС 
- 
+btrfs filesystem df / - информация о ФС 
+
+
+Установка bees дедупликатора
+sudo emerge --ask --autounmask bees
+sudo etc-update
+-5
+sudo emerge --ask bees
+
+btrfs filesystem show
