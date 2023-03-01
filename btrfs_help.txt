@@ -1,0 +1,1 @@
+btrfs balance start -dconvert=raid10 -mconvert=raid10 --force /  - конвертация раздела BTRFS в нужную версию RAID
