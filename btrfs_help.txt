@@ -19,3 +19,6 @@ sudo nano /etc/bees/root.conf
    UUID=49ea5b99-8fab-47e1-96c4-4874463324c5
 
 sudo beesd 49ea5b99-8fab-47e1-96c4-4874463324c5 - запустить дедупликацию
+
+настройка автодополнения bash
+https://devsday.ru/blog/details/7415
