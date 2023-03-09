@@ -70,10 +70,10 @@ umount /mnt/gentoo
 
 mount -o defaults,noatime,autodefrag,subvol=@ /dev/sda4 /mnt/gentoo
 mkdir -p /mnt/gentoo/{home,.snapshots,var,share}
-mount -o autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@home /dev/sda4 /mnt/gentoo/home
-mount -o autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@var  /dev/sda4 /mnt/gentoo/var
-mount -o autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@snapshots  /dev/sda4 /mnt/gentoo/.snapshots
-mount -o autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@share /dev/sda4 /mnt/gentoo/share
+mount -o autodefrag,relatime,space_cache,compress=zlib,subvol=@home /dev/sda4 /mnt/gentoo/home
+mount -o autodefrag,relatime,space_cache,compress=zlib,subvol=@var  /dev/sda4 /mnt/gentoo/var
+mount -o autodefrag,relatime,space_cache,compress=zlib,subvol=@snapshots  /dev/sda4 /mnt/gentoo/.snapshots
+mount -o autodefrag,relatime,space_cache,compress=zlib,subvol=@share /dev/sda4 /mnt/gentoo/share
 
 cd /mnt/gentoo
 ntpd -q -g
@@ -138,10 +138,10 @@ echo -e "\e[31m--- add soft and settings ---\e[0m"
 echo hostname="gentoo_serv" > /etc/conf.d/hostname
 echo "/dev/sda3 none swap sw 0 0" >> /etc/fstab
 blkid /dev/sda4 | awk '{print $3" / btrfs defaults,noatime,autodefrag,subvol=@  0 0"}' >> /etc/fstab
-blkid /dev/sda4 | awk '{print $3" /home btrfs autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@home  0 0"}' >> /etc/fstab
-blkid /dev/sda4 | awk '{print $3" /var btrfs autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@var  0 0"}' >> /etc/fstab
-blkid /dev/sda4 | awk '{print $3" /.snapshots btrfs autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@snapshots 0 0"}' >> /etc/fstab
-blkid /dev/sda4 | awk '{print $3" /share btrfs autodefrag,nodatacow,relatime,space_cache,compress=zlib,subvol=@share  0 0"}' >> /etc/fstab
+blkid /dev/sda4 | awk '{print $3" /home btrfs autodefrag,relatime,space_cache,compress=zlib,subvol=@home  0 0"}' >> /etc/fstab
+blkid /dev/sda4 | awk '{print $3" /var btrfs autodefrag,relatime,space_cache,compress=zlib,subvol=@var  0 0"}' >> /etc/fstab
+blkid /dev/sda4 | awk '{print $3" /.snapshots btrfs autodefrag,relatime,space_cache,compress=zlib,subvol=@snapshots 0 0"}' >> /etc/fstab
+blkid /dev/sda4 | awk '{print $3" /share btrfs autodefrag,relatime,space_cache,compress=zlib,subvol=@share  0 0"}' >> /etc/fstab
 echo "tmpfs /var/tmp/portage tmpfs size=20G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
 
 #--- службы ---
