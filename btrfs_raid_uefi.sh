@@ -10,6 +10,8 @@
 #http://www.bog.pp.ru/work/btrfs.html
 #https://dzen.ru/a/XpHXdzePaVeSMFW5
 #https://yamadharma.github.io/ru/post/2021/08/27/btrfs-subvolumes/
+#BTRFS TOPIC https://github.com/topics/btrfs
+
 
 disk="/dev/sda"
 echo "---create sda1 bios_grub ---"
