@@ -23,7 +23,9 @@ parted -a optimal --script $disk name 4 btrfs
 mkfs.fat -F32 /dev/sda2
 mkswap /dev/sda3
 swapon /dev/sda3
-mkfs.btrfs /dev/sda4
+mkfs.btrfs /dev/sda4 -L btrfs
+sleep 10s
+
 
 echo "LABEL=btrfs /mnt/gentoo btrfs defaults,noatime  0 0" >> /etc/fstab
 mount /mnt/gentoo 
@@ -40,6 +42,8 @@ mount -o autodefrag,relatime,space_cache,compress=zlib,subvol=@home /dev/sda4 /m
 mount -o autodefrag,relatime,space_cache,compress=zlib,subvol=@var  /dev/sda4 /mnt/gentoo/var
 mount -o autodefrag,relatime,space_cache,compress=zlib,subvol=@snapshots  /dev/sda4 /mnt/gentoo/.snapshots
 mount -o autodefrag,relatime,space_cache,compress=zlib,subvol=@share /dev/sda4 /mnt/gentoo/share
+
+sleep 10s
 
 cd /mnt/gentoo
 ntpd -q -g
