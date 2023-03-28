@@ -113,7 +113,7 @@ echo "tmpfs /var/tmp/portage tmpfs size=20G,uid=portage,gid=portage,mode=775,nos
 #--- службы ---
 emerge app-admin/sysklogd && rc-update add sysklogd default
 emerge sys-process/cronie && rc-update add cronie default
-emerge net-misc/dhcpcd && rc-update add dhcpcd default
+#emerge net-misc/dhcpcd && rc-update add dhcpcd default
 emerge net-misc/ntp && rc-update add ntpd default
 rc-update add udev sysinit
 emerge sys-fs/btrfs-progs
@@ -150,18 +150,18 @@ EOF
 rm -f /etc/init.d/net.$netcard1
 fi
 cat << EOF >> /etc/conf.d/net
-config_br0="192.168.1.50/24"
+config_br0="192.168.10.221/24"
 bridge_forward_delay_br0=0
 bridge_hello_time_br0=200
 bridge_stp_state_br0=0
-routes_br0="default gw 192.168.1.1"
+routes_br0="default gw 192.168.10.8"
 EOF
 ln -s /etc/init.d/net.lo /etc/init.d/net.br0
 rc-update add net.br0
 
 touch /etc/resolv.conf
 cat << EOF >> /etc/resolv.conf
-nameserver 192.168.1.1
+nameserver 192.168.1.8
 EOF
 
 ###########################
