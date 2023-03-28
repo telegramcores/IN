@@ -72,14 +72,12 @@ mount -t tmpfs tmpfs -o size=20G,nr_inodes=1M /var/tmp/portage
 
 ############ бинарные пакеты https://www.linux.org.ru/news/gentoo/16547411 ##########################
 cat << EOF >> /etc/portage/binrepos.conf
-[yandex]
+[calculate]
 priority = 9999
 sync-uri = https://mirror.yandex.ru/calculate/grp/x86_64/
-
-[official]
+[official_test]
 priority = 9998
 sync-uri = https://gentoo.osuosl.org/experimental/amd64/binpkg/default/linux/17.1/x86-64/
-
 EOF
 # прописываем параметры для бинарных пакетов
 echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-use=y --getbinpkg=y"' >> /etc/portage/make.conf
