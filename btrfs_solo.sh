@@ -85,6 +85,7 @@ echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-us
 # отключить бинарные пакеты
 # echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
 #######################################################
+echo 'FEATURES="distcc"' >> /etc/portage/make.conf
 
 echo -e "\e[31m--- emerge-webrsync ---\e[0m"
 emerge-webrsync
