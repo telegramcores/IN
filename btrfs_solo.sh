@@ -43,7 +43,7 @@ mount -o autodefrag,relatime,space_cache,compress=zlib,subvol=@share /dev/sda4 /
 
 cd /mnt/gentoo
 ntpd -q -g
-echo 1 > /proc/sys/net/ipv6/conf/all/disaeble_ipv6
+echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
 
 echo -e "\e[31m--- load Stage3 ---\e[0m"
 URL='https://mirror.yandex.ru/gentoo-distfiles/releases/amd64/autobuilds'
@@ -70,7 +70,39 @@ mount /dev/sda2 /boot
 mkdir /var/tmp/portage
 mount -t tmpfs tmpfs -o size=20G,nr_inodes=1M /var/tmp/portage
 
-############ бинарные пакеты https://www.linux.org.ru/news/gentoo/16547411 ##########################
+############ руссификация ############################
+emerge terminus-font freefonts cronyx-fonts corefonts
+rm -f /etc/locale.gen
+touch /etc/locale.gen
+cat << EOF >> /etc/locale.gen
+ru_RU.UTF-8 UTF-8
+EOF
+locale-gen
+
+rm -f /etc/env.d/02locale
+touch /etc/env.d/02locale
+cat << EOF >> /etc/env.d/02locale
+LC_ALL=""
+LANG="ru_RU.UTF-8"
+EOF
+env-update && source /etc/profile
+
+rm -f /etc/conf.d/consolefont
+touch /etc/conf.d/consolefont
+cat << EOF >> /etc/conf.d/consolefont
+CONSOLEFONT="cyr-sun16"
+EOF
+
+rm -f /etc/conf.d/keymaps
+touch /etc/conf.d/keymaps
+cat << EOF >> /etc/conf.d/keymaps
+KEYMAP="ru-ms"
+WINDOWKEYS="yes"
+DUMPKEYS_CHARSET="koi8-r"
+EOF
+/etc/init.d/keymaps restart && /etc/init.d/consolefont restart
+
+############ бинарные пакеты ##########################
 cat << EOF >> /etc/portage/binrepos.conf
 [calculate]
 priority = 9999
@@ -85,7 +117,7 @@ echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-us
 # отключить бинарные пакеты
 # echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
 #######################################################
-echo 'FEATURES="distcc"' >> /etc/portage/make.conf
+#echo 'FEATURES="distcc"' >> /etc/portage/make.conf
 
 echo -e "\e[31m--- emerge-webrsync ---\e[0m"
 emerge-webrsync
@@ -98,11 +130,15 @@ emerge --config sys-libs/timezone-data
 emerge --oneshot sys-apps/portage
 emerge app-portage/gentoolkit
 emerge app-portage/cpuid2cpuflags
+
+emerge app-shells/bash-completion
+emerge app-shells/gentoo-bashcomp
+
 cpuid2cpuflags | sed 's/: /="/' | sed -e '$s/$/"/' >> /etc/portage/make.conf
 
 echo "/dev/sda2 /boot vfat defaults 0 2" >> /etc/fstab
 echo 'ACCEPT_LICENSE="*"'     >> /etc/portage/make.conf
-echo 'USE="abi_x86_64"' >> /etc/portage/make.conf
+echo 'USE="abi_x86_64 bash-completion unicode"' >> /etc/portage/make.conf
 
 echo -e "\e[31m--- add soft and settings ---\e[0m"
 echo hostname="gentoo_serv" > /etc/conf.d/hostname
