@@ -102,7 +102,7 @@ DUMPKEYS_CHARSET="koi8-r"
 EOF
 /etc/init.d/keymaps restart && /etc/init.d/consolefont restart
 
-############ бинарные пакеты ##########################
+echo '############ бинарные пакеты ##########################'
 cat << EOF >> /etc/portage/binrepos.conf
 [calculate]
 priority = 9999
@@ -119,7 +119,7 @@ echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-us
 #######################################################
 #echo 'FEATURES="distcc"' >> /etc/portage/make.conf
 
-echo -e "\e[31m--- emerge-webrsync ---\e[0m"
+echo -e "\e[31m--- Обновление emerge-webrsync ---\e[0m"
 emerge-webrsync
 eselect news read && eselect news purge
 
@@ -140,7 +140,7 @@ echo "/dev/sda2 /boot vfat defaults 0 2" >> /etc/fstab
 echo 'ACCEPT_LICENSE="*"'     >> /etc/portage/make.conf
 echo 'USE="abi_x86_64 bash-completion unicode"' >> /etc/portage/make.conf
 
-echo -e "\e[31m--- add soft and settings ---\e[0m"
+echo -e "\e[31m--- Установка soft and settings ---\e[0m"
 echo hostname="gentoo_serv" > /etc/conf.d/hostname
 echo "/dev/sda3 none swap sw 0 0" >> /etc/fstab
 blkid /dev/sda4 | awk '{print $3" / btrfs defaults,noatime,autodefrag,subvol=@  0 0"}' >> /etc/fstab
@@ -164,7 +164,7 @@ sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_co
 # sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
 
 ################# Настройка bridge ##############################
-echo -e "\e[31m--- bridge ---\e[0m"
+echo -e "\e[31m--- Сетевой мост bridge ---\e[0m"
 netcard1=`ip link | awk -F: '$0 !~ "lo|vir|wl|^[^0-9]"{print $2;getline}'| awk 'NR==1'| sed -r 's/^ *//'`
 netcard2=`ip link | awk -F: '$0 !~ "lo|vir|wl|^[^0-9]"{print $2;getline}'| awk 'NR==2'| sed -r 's/^ *//'`
 touch /etc/conf.d/net
