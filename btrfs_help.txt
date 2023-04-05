@@ -12,7 +12,7 @@ https://wiki.tnonline.net/w/Btrfs/Deduplication/Bees
 * *Настройка запуска* *
 Посмотрим идентификаторы UUID файловых систем:
 btrfs filesystem show
-берем как пример uuid: 49ea5b99-8fab-47e1-96c4-4874463324c5 - это roote
+берем как пример uuid: 49ea5b99-8fab-47e1-96c4-4874463324c5 - это root
 sudo cp /etc/bees/beesd.conf.sample /etc/bees/root.conf - копия сэмпла в рабочий файл
 
 sudo nano /etc/bees/root.conf
