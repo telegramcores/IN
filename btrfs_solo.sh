@@ -53,7 +53,7 @@ echo -e "\e[31m--- extract Stage3 ---\e[0m"
 tar xpf stage3-*.tar.* --xattrs-include='*.*' --numeric-owner
 emerge app-misc/resolve-march-native
 march=`resolve-march-native | head -n1 | awk '{print $1;}'`
-sed -i '/COMMON_FLAGS=/ s/\("[^"]*\)"/\1 $march"/' etc/portage/make.conf
+sed -i '/COMMON_FLAGS=/ s/\("[^"]*\)"/\1 '$march'"/' etc/portage/make.conf
 
 mkdir --parents /mnt/gentoo/etc/portage/repos.conf
 cp /mnt/gentoo/usr/share/portage/config/repos.conf /mnt/gentoo/etc/portage/repos.conf/gentoo.conf
