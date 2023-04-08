@@ -282,8 +282,8 @@ sed -i 's/DISTCCD_OPTS="${DISTCCD_OPTS} --allow 192.168.0.0\/24"/DISTCCD_OPTS="$
 touch /var/log/distccd.log
 chown distcc:root /var/log/distccd.log
 distcc-config --set-hosts "localhost 192.168.1.62"
-echo 'FEATURES="distcc"' >> /etc/portage/make.conf
-rc-update add distccd default
+#echo 'FEATURES="distcc"' >> /etc/portage/make.conf
+#rc-update add distccd default
 
 #march=`resolve-march-native | head -n1 | awk '{print $1;}'`
 #sed -i 's/COMMON_FLAGS="-O2 -pipe -march=native"/COMMON_FLAGS="-O2 -pipe '$march'"/g' /etc/portage/make.conf
