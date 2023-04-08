@@ -87,10 +87,6 @@ STAGE3=$(wget $URL/latest-stage3-amd64-openrc.txt -qO - | grep -v '#' | awk '{pr
 wget $URL/$STAGE3
 echo -e "\e[31m--- extract Stage3 ---\e[0m"
 tar xpf stage3-*.tar.* --xattrs-include='*.*' --numeric-owner
-# правильный тип процессора в make.conf
-emerge app-misc/resolve-march-native
-march=`resolve-march-native | head -n1 | awk '{print $1;}'`
-sed -i '/COMMON_FLAGS=/ s/\("[^"]*\)"/\1 '$march'"/' etc/portage/make.conf
 
 mkdir --parents /mnt/gentoo/etc/portage/repos.conf
 cp /mnt/gentoo/usr/share/portage/config/repos.conf /mnt/gentoo/etc/portage/repos.conf/gentoo.conf
@@ -113,6 +109,11 @@ mount /dev/sda2 /boot
 echo -e "\e[31m--- emerge-webrsync ---\e[0m"
 emerge-webrsync
 eselect news read && eselect news purge
+
+# правильный тип процессора в make.conf
+emerge app-misc/resolve-march-native
+march=`resolve-march-native | head -n1 | awk '{print $1;}'`
+sed -i '/COMMON_FLAGS=/ s/\("[^"]*\)"/\1 '$march'"/' etc/portage/make.conf
 
 # DISTCC
 emerge sys-devel/distcc
