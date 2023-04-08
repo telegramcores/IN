@@ -137,7 +137,7 @@ echo "Europe/Moscow" > /etc/timezone
 emerge --config sys-libs/timezone-data
 
 ############ руссификация ############################
-emerge terminus-font cronyx-fonts corefonts
+emerge terminus-font freefonts cronyx-fonts corefonts
 rm -f /etc/locale.gen
 touch /etc/locale.gen
 cat << EOF >> /etc/locale.gen
