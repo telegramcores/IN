@@ -105,9 +105,14 @@ chroot $chroot_dir /bin/bash << "CHROOT"
 env-update && source /etc/profile
 export PS1="(chroot) $PS1" 
 mount /dev/sda2 /boot
+
 # создаем tmpfs
 mkdir /var/tmp/portage
 mount -t tmpfs tmpfs -o size=20G,nr_inodes=1M /var/tmp/portage
+
+echo -e "\e[31m--- emerge-webrsync ---\e[0m"
+emerge-webrsync
+eselect news read && eselect news purge
 
 ############ руссификация ############################
 emerge terminus-font freefonts cronyx-fonts corefonts
@@ -139,7 +144,14 @@ EOF
 /etc/init.d/keymaps restart && /etc/init.d/consolefont restart
 
 # DISTCC
-
+emerge sys-devel/distcc
+sed -i 's/DISTCCD_OPTS="${DISTCCD_OPTS} --allow 192.168.0.0\/24"/DISTCCD_OPTS="${DISTCCD_OPTS} --allow 192.168.1.0\/24"/g' /etc/conf.d/distccd
+touch /var/log/distccd.log
+chown distcc:root /var/log/distccd.log
+distcc-config --set-hosts "localhost 192.168.1.62"
+echo 'FEATURES="distcc"' >> /etc/portage/make.conf
+rc-update add distccd default
+rc-service distccd start
 
 echo '############ бинарные пакеты ##########################'
 cat << EOF >> /etc/portage/binrepos.conf
@@ -156,11 +168,9 @@ echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-us
 # отключить бинарные пакеты
 # echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
 #######################################################
-echo 'FEATURES="distcc"' >> /etc/portage/make.conf
 
-echo -e "\e[31m--- emerge-webrsync ---\e[0m"
-emerge-webrsync
-eselect news read && eselect news purge
+
+
 
 # Московское время
 echo "Europe/Moscow" > /etc/timezone
