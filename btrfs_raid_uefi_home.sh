@@ -111,9 +111,6 @@ echo -e "\e[31m--- emerge-webrsync ---\e[0m"
 emerge-webrsync
 eselect news read && eselect news purge
 
-# правильный тип процессора в make.conf
-emerge app-misc/resolve-march-native
-
 echo '############ бинарные пакеты ##########################'
 cat << EOF >> /etc/portage/binrepos.conf
 [calculate]
@@ -129,6 +126,9 @@ echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-us
 # отключить бинарные пакеты
 # echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
 #######################################################
+
+# правильный тип процессора в make.conf
+emerge app-misc/resolve-march-native
 
 # Московское время
 echo "Europe/Moscow" > /etc/timezone
