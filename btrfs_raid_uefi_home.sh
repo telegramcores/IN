@@ -114,6 +114,36 @@ echo -e "\e[31m--- emerge-webrsync ---\e[0m"
 emerge-webrsync
 eselect news read && eselect news purge
 
+# DISTCC
+emerge sys-devel/distcc
+sed -i 's/DISTCCD_OPTS="${DISTCCD_OPTS} --allow 192.168.0.0\/24"/DISTCCD_OPTS="${DISTCCD_OPTS} --allow 192.168.1.0\/24"/g' /etc/conf.d/distccd
+touch /var/log/distccd.log
+chown distcc:root /var/log/distccd.log
+distcc-config --set-hosts "localhost 192.168.1.62"
+echo 'FEATURES="distcc"' >> /etc/portage/make.conf
+rc-update add distccd default
+rc-service distccd start
+
+echo '############ бинарные пакеты ##########################'
+cat << EOF >> /etc/portage/binrepos.conf
+[calculate]
+priority = 9999
+sync-uri = https://mirror.yandex.ru/calculate/grp/x86_64/
+[official_test]
+priority = 9998
+sync-uri = https://gentoo.osuosl.org/experimental/amd64/binpkg/default/linux/17.1/x86-64/
+EOF
+# прописываем параметры для бинарных пакетов
+echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-use=y --getbinpkg=y"' >> /etc/portage/make.conf
+#######################################################
+# отключить бинарные пакеты
+# echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
+#######################################################
+
+# Московское время
+echo "Europe/Moscow" > /etc/timezone
+emerge --config sys-libs/timezone-data
+
 ############ руссификация ############################
 emerge terminus-font freefonts cronyx-fonts corefonts
 rm -f /etc/locale.gen
@@ -143,47 +173,16 @@ DUMPKEYS_CHARSET="koi8-r"
 EOF
 /etc/init.d/keymaps restart && /etc/init.d/consolefont restart
 
-# DISTCC
-emerge sys-devel/distcc
-sed -i 's/DISTCCD_OPTS="${DISTCCD_OPTS} --allow 192.168.0.0\/24"/DISTCCD_OPTS="${DISTCCD_OPTS} --allow 192.168.1.0\/24"/g' /etc/conf.d/distccd
-touch /var/log/distccd.log
-chown distcc:root /var/log/distccd.log
-distcc-config --set-hosts "localhost 192.168.1.62"
-echo 'FEATURES="distcc"' >> /etc/portage/make.conf
-rc-update add distccd default
-rc-service distccd start
-
-echo '############ бинарные пакеты ##########################'
-cat << EOF >> /etc/portage/binrepos.conf
-[calculate]
-priority = 9999
-sync-uri = https://mirror.yandex.ru/calculate/grp/x86_64/
-[official_test]
-priority = 9998
-sync-uri = https://gentoo.osuosl.org/experimental/amd64/binpkg/default/linux/17.1/x86-64/
-EOF
-# прописываем параметры для бинарных пакетов
-echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-use=y --getbinpkg=y"' >> /etc/portage/make.conf
-#######################################################
-# отключить бинарные пакеты
-# echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
-#######################################################
-
-
-
-
-# Московское время
-echo "Europe/Moscow" > /etc/timezone
-emerge --config sys-libs/timezone-data
-
 emerge --oneshot sys-apps/portage
 emerge app-portage/gentoolkit
 emerge app-portage/cpuid2cpuflags
 cpuid2cpuflags | sed 's/: /="/' | sed -e '$s/$/"/' >> /etc/portage/make.conf
+emerge app-shells/bash-completion
+emerge app-shells/gentoo-bashcomp
 
 echo "/dev/sda2 /boot vfat defaults 0 2" >> /etc/fstab
 echo 'ACCEPT_LICENSE="*"'     >> /etc/portage/make.conf
-echo 'USE="abi_x86_64"' >> /etc/portage/make.conf
+echo 'USE="abi_x86_64 bash-completion unicode"' >> /etc/portage/make.conf
 
 echo -e "\e[31m--- add soft and settings ---\e[0m"
 echo hostname="gentoo_serv" > /etc/conf.d/hostname
