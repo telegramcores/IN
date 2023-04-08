@@ -98,12 +98,6 @@ mount --types proc /proc /mnt/gentoo/proc && mount --rbind /sys /mnt/gentoo/sys 
 echo -e "\e[31m--- inside chroot ---\e[0m"
 chroot_dir=/mnt/gentoo
 chroot $chroot_dir /bin/bash << "CHROOT"
-
-# правильный тип процессора в make.conf
-emerge app-misc/resolve-march-native
-march=`resolve-march-native | head -n1 | awk '{print $1;}'`
-sed -i '/COMMON_FLAGS=/ s/\("[^"]*\)"/\1 '$march'"/' /etc/portage/make.conf
-
 env-update && source /etc/profile
 export PS1="(chroot) $PS1" 
 mount /dev/sda2 /boot
@@ -115,6 +109,12 @@ mkdir /var/tmp/portage
 echo -e "\e[31m--- emerge-webrsync ---\e[0m"
 emerge-webrsync
 eselect news read && eselect news purge
+
+# правильный тип процессора в make.conf
+emerge app-misc/resolve-march-native
+march=`resolve-march-native | head -n1 | awk '{print $1;}'`
+sed -i '/COMMON_FLAGS=/ s/\("[^"]*\)"/\1 '$march'"/' /etc/portage/make.conf
+env-update && source /etc/profile
 
 echo '############ бинарные пакеты ##########################'
 cat << EOF >> /etc/portage/binrepos.conf
