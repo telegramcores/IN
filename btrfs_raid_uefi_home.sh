@@ -107,8 +107,8 @@ export PS1="(chroot) $PS1"
 mount /dev/sda2 /boot
 
 # создаем tmpfs
-mkdir /var/tmp/portage
-mount -t tmpfs tmpfs -o size=20G,nr_inodes=1M /var/tmp/portage
+#mkdir /var/tmp/portage
+#mount -t tmpfs tmpfs -o size=20G,nr_inodes=1M /var/tmp/portage
 
 echo -e "\e[31m--- emerge-webrsync ---\e[0m"
 emerge-webrsync
@@ -192,7 +192,7 @@ blkid /dev/sda4 | awk '{print $3" /home btrfs autodefrag,relatime,space_cache,co
 blkid /dev/sda4 | awk '{print $3" /var btrfs autodefrag,relatime,space_cache,compress=zlib,subvol=@var  0 0"}' >> /etc/fstab
 blkid /dev/sda4 | awk '{print $3" /.snapshots btrfs autodefrag,relatime,space_cache,compress=zlib,subvol=@snapshots 0 0"}' >> /etc/fstab
 blkid /dev/sda4 | awk '{print $3" /share btrfs autodefrag,relatime,space_cache,compress=zlib,subvol=@share  0 0"}' >> /etc/fstab
-echo "tmpfs /var/tmp/portage tmpfs size=20G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
+#echo "tmpfs /var/tmp/portage tmpfs size=20G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
 
 #--- службы ---
 emerge app-admin/sysklogd && rc-update add sysklogd default
