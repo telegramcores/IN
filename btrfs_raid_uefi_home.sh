@@ -131,15 +131,6 @@ emerge app-misc/resolve-march-native
 march=`resolve-march-native | head -n1 | awk '{print $1;}'`
 sed -i '/COMMON_FLAGS=/ s/\("[^"]*\)"/\1 '$march'"/' etc/portage/make.conf
 
-# DISTCC
-emerge sys-devel/distcc
-sed -i 's/DISTCCD_OPTS="${DISTCCD_OPTS} --allow 192.168.0.0\/24"/DISTCCD_OPTS="${DISTCCD_OPTS} --allow 192.168.1.0\/24"/g' /etc/conf.d/distccd
-touch /var/log/distccd.log
-chown distcc:root /var/log/distccd.log
-distcc-config --set-hosts "localhost 192.168.1.62"
-echo 'FEATURES="distcc"' >> /etc/portage/make.conf
-rc-update add distccd default
-
 # Московское время
 echo "Europe/Moscow" > /etc/timezone
 emerge --config sys-libs/timezone-data
@@ -284,8 +275,18 @@ echo -e "\e[31m--- set kernel ---\e[0m"
 emerge sys-kernel/linux-firmware
 emerge sys-kernel/gentoo-kernel-bin
 dracut -f --kver 6.1.22-gentoo-dist
-
 eselect kernel set 1
+
+# DISTCC
+emerge sys-devel/distcc
+sed -i 's/DISTCCD_OPTS="${DISTCCD_OPTS} --allow 192.168.0.0\/24"/DISTCCD_OPTS="${DISTCCD_OPTS} --allow 192.168.1.0\/24"/g' /etc/conf.d/distccd
+touch /var/log/distccd.log
+chown distcc:root /var/log/distccd.log
+distcc-config --set-hosts "localhost 192.168.1.62"
+echo 'FEATURES="distcc"' >> /etc/portage/make.conf
+rc-update add distccd default
+
+
 
 echo -e "\e[31m--- create EFI boot ---\e[0m"
 grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot --removable
