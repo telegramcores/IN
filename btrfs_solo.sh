@@ -51,9 +51,6 @@ STAGE3=$(wget $URL/latest-stage3-amd64-openrc.txt -qO - | grep -v '#' | awk '{pr
 wget $URL/$STAGE3
 echo -e "\e[31m--- extract Stage3 ---\e[0m"
 tar xpf stage3-*.tar.* --xattrs-include='*.*' --numeric-owner
-emerge app-misc/resolve-march-native
-march=`resolve-march-native | head -n1 | awk '{print $1;}'`
-sed -i '/COMMON_FLAGS=/ s/\("[^"]*\)"/\1 '$march'"/' etc/portage/make.conf
 
 mkdir --parents /mnt/gentoo/etc/portage/repos.conf
 cp /mnt/gentoo/usr/share/portage/config/repos.conf /mnt/gentoo/etc/portage/repos.conf/gentoo.conf
@@ -68,9 +65,40 @@ chroot $chroot_dir /bin/bash << "CHROOT"
 env-update && source /etc/profile
 export PS1="(chroot) $PS1" 
 mount /dev/sda2 /boot
+
 # создаем tmpfs
 mkdir /var/tmp/portage
-mount -t tmpfs tmpfs -o size=20G,nr_inodes=1M /var/tmp/portage
+#mount -t tmpfs tmpfs -o size=20G,nr_inodes=1M /var/tmp/portage
+
+echo -e "\e[31m--- Обновление emerge-webrsync ---\e[0m"
+emerge-webrsync
+eselect news read && eselect news purge
+
+emerge app-misc/resolve-march-native
+march=`resolve-march-native | head -n1 | awk '{print $1;}'`
+sed -i '/COMMON_FLAGS=/ s/\("[^"]*\)"/\1 '$march'"/' etc/portage/make.conf
+env-update && source /etc/profile
+
+echo '############ бинарные пакеты ##########################'
+cat << EOF >> /etc/portage/binrepos.conf
+[calculate]
+priority = 9999
+sync-uri = https://mirror.yandex.ru/calculate/grp/x86_64/
+[official_test]
+priority = 9998
+sync-uri = https://gentoo.osuosl.org/experimental/amd64/binpkg/default/linux/17.1/x86-64/
+EOF
+# прописываем параметры для бинарных пакетов
+echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-use=y --getbinpkg=y"' >> /etc/portage/make.conf
+#######################################################
+# отключить бинарные пакеты
+# echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
+#######################################################
+#echo 'FEATURES="distcc"' >> /etc/portage/make.conf
+
+# Московское время
+echo "Europe/Moscow" > /etc/timezone
+emerge --config sys-libs/timezone-data
 
 ############ руссификация ############################
 emerge terminus-font freefonts cronyx-fonts corefonts
@@ -104,31 +132,6 @@ DUMPKEYS_CHARSET="koi8-r"
 EOF
 /etc/init.d/keymaps restart && /etc/init.d/consolefont restart
 
-echo '############ бинарные пакеты ##########################'
-cat << EOF >> /etc/portage/binrepos.conf
-[calculate]
-priority = 9999
-sync-uri = https://mirror.yandex.ru/calculate/grp/x86_64/
-[official_test]
-priority = 9998
-sync-uri = https://gentoo.osuosl.org/experimental/amd64/binpkg/default/linux/17.1/x86-64/
-EOF
-# прописываем параметры для бинарных пакетов
-echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-use=y --getbinpkg=y"' >> /etc/portage/make.conf
-#######################################################
-# отключить бинарные пакеты
-# echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
-#######################################################
-#echo 'FEATURES="distcc"' >> /etc/portage/make.conf
-
-echo -e "\e[31m--- Обновление emerge-webrsync ---\e[0m"
-emerge-webrsync
-eselect news read && eselect news purge
-
-# Московское время
-echo "Europe/Moscow" > /etc/timezone
-emerge --config sys-libs/timezone-data
-
 emerge --oneshot sys-apps/portage
 emerge app-portage/gentoolkit
 emerge app-portage/cpuid2cpuflags
@@ -150,7 +153,7 @@ blkid /dev/sda4 | awk '{print $3" /home btrfs autodefrag,relatime,space_cache,co
 blkid /dev/sda4 | awk '{print $3" /var btrfs autodefrag,relatime,space_cache,compress=zlib,subvol=@var  0 0"}' >> /etc/fstab
 blkid /dev/sda4 | awk '{print $3" /.snapshots btrfs autodefrag,relatime,space_cache,compress=zlib,subvol=@snapshots 0 0"}' >> /etc/fstab
 blkid /dev/sda4 | awk '{print $3" /share btrfs autodefrag,relatime,space_cache,compress=zlib,subvol=@share  0 0"}' >> /etc/fstab
-echo "tmpfs /var/tmp/portage tmpfs size=20G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
+#echo "tmpfs /var/tmp/portage tmpfs size=20G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
 
 #--- службы ---
 emerge app-admin/sysklogd && rc-update add sysklogd default
