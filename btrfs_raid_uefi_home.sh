@@ -285,8 +285,8 @@ distcc-config --set-hosts "localhost 192.168.1.62"
 echo 'FEATURES="distcc"' >> /etc/portage/make.conf
 rc-update add distccd default
 
-march=`resolve-march-native | head -n1 | awk '{print $1;}'`
-sed -i 's/COMMON_FLAGS="-O2 -pipe -march=native"/COMMON_FLAGS="-O2 -pipe '$march'"/g' /etc/portage/make.conf
+#march=`resolve-march-native | head -n1 | awk '{print $1;}'`
+#sed -i 's/COMMON_FLAGS="-O2 -pipe -march=native"/COMMON_FLAGS="-O2 -pipe '$march'"/g' /etc/portage/make.conf
 
 echo -e "\e[31m--- create EFI boot ---\e[0m"
 grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot --removable
