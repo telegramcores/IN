@@ -110,6 +110,48 @@ echo -e "\e[31m--- emerge-webrsync ---\e[0m"
 emerge-webrsync
 eselect news read && eselect news purge
 
+################# Настройка bridge ##############################
+echo -e "\e[31m--- bridge ---\e[0m"
+netcard1=`ip link | awk -F: '$0 !~ "lo|vir|wl|^[^0-9]"{print $2;getline}'| awk 'NR==1'| sed -r 's/^ *//'`
+netcard2=`ip link | awk -F: '$0 !~ "lo|vir|wl|^[^0-9]"{print $2;getline}'| awk 'NR==2'| sed -r 's/^ *//'`
+touch /etc/conf.d/net
+# если есть вторая сетевая карта
+if [ "$netcard2" != "" ]
+then
+cat << EOF >> /etc/conf.d/net
+config_$netcard1="null"
+config_$netcard2="null"
+bridge_br0="$netcard1 $netcard2"
+rc_net_$netcard1_need="udev-settle"
+rc_net_$netcard2_need="udev-settle"
+EOF
+rm -f /etc/init.d/net.$netcard1
+rm -f /etc/init.d/net.$netcard2
+else
+# если только одна сетевая карта
+cat << EOF >> /etc/conf.d/net
+config_$netcard1="null"
+bridge_br0="$netcard1"
+rc_net_$netcard1_need="udev-settle"
+EOF
+rm -f /etc/init.d/net.$netcard1
+fi
+cat << EOF >> /etc/conf.d/net
+config_br0="192.168.1.150/24"
+bridge_forward_delay_br0=0
+bridge_hello_time_br0=200
+bridge_stp_state_br0=0
+routes_br0="default gw 192.168.1.1"
+EOF
+ln -s /etc/init.d/net.lo /etc/init.d/net.br0
+rc-update add net.br0
+
+touch /etc/resolv.conf
+cat << EOF >> /etc/resolv.conf
+nameserver 192.168.1.1
+EOF
+/etc/init.d/net.br0 start
+
 echo '############ бинарные пакеты ##########################'
 cat << EOF >> /etc/portage/binrepos.conf
 [calculate]
@@ -207,47 +249,6 @@ rc-update add sshd default
 sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin prohibit-password/g' /etc/ssh/sshd_config
 sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_config
 # sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
-
-################# Настройка bridge ##############################
-echo -e "\e[31m--- bridge ---\e[0m"
-netcard1=`ip link | awk -F: '$0 !~ "lo|vir|wl|^[^0-9]"{print $2;getline}'| awk 'NR==1'| sed -r 's/^ *//'`
-netcard2=`ip link | awk -F: '$0 !~ "lo|vir|wl|^[^0-9]"{print $2;getline}'| awk 'NR==2'| sed -r 's/^ *//'`
-touch /etc/conf.d/net
-# если есть вторая сетевая карта
-if [ "$netcard2" != "" ]
-then
-cat << EOF >> /etc/conf.d/net
-config_$netcard1="null"
-config_$netcard2="null"
-bridge_br0="$netcard1 $netcard2"
-rc_net_$netcard1_need="udev-settle"
-rc_net_$netcard2_need="udev-settle"
-EOF
-rm -f /etc/init.d/net.$netcard1
-rm -f /etc/init.d/net.$netcard2
-else
-# если только одна сетевая карта
-cat << EOF >> /etc/conf.d/net
-config_$netcard1="null"
-bridge_br0="$netcard1"
-rc_net_$netcard1_need="udev-settle"
-EOF
-rm -f /etc/init.d/net.$netcard1
-fi
-cat << EOF >> /etc/conf.d/net
-config_br0="192.168.1.150/24"
-bridge_forward_delay_br0=0
-bridge_hello_time_br0=200
-bridge_stp_state_br0=0
-routes_br0="default gw 192.168.1.1"
-EOF
-ln -s /etc/init.d/net.lo /etc/init.d/net.br0
-rc-update add net.br0
-
-touch /etc/resolv.conf
-cat << EOF >> /etc/resolv.conf
-nameserver 192.168.1.1
-EOF
 
 ###########################
 #-- samba ---
