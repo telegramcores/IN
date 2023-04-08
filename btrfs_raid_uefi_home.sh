@@ -185,7 +185,7 @@ echo 'ACCEPT_LICENSE="*"'     >> /etc/portage/make.conf
 echo 'USE="abi_x86_64 bash-completion unicode"' >> /etc/portage/make.conf
 
 echo -e "\e[31m--- add soft and settings ---\e[0m"
-echo hostname="gentoo_serv" > /etc/conf.d/hostname
+echo hostname="home_s" > /etc/conf.d/hostname
 echo "/dev/sda3 none swap sw 0 0" >> /etc/fstab
 blkid /dev/sda4 | awk '{print $3" / btrfs defaults,noatime,autodefrag,subvol=@  0 0"}' >> /etc/fstab
 blkid /dev/sda4 | awk '{print $3" /home btrfs autodefrag,relatime,space_cache,compress=zlib,subvol=@home  0 0"}' >> /etc/fstab
@@ -234,7 +234,7 @@ EOF
 rm -f /etc/init.d/net.$netcard1
 fi
 cat << EOF >> /etc/conf.d/net
-config_br0="192.168.1.50/24"
+config_br0="192.168.1.150/24"
 bridge_forward_delay_br0=0
 bridge_hello_time_br0=200
 bridge_stp_state_br0=0
@@ -273,6 +273,7 @@ rc-update add samba default
 
 #--- софт ---
 emerge sys-apps/mlocate sys-fs/e2fsprogs app-misc/tmux sys-process/htop app-misc/mc sys-apps/lm-sensors sys-apps/smartmontools app-admin/sudo sys-fs/ntfs3g app-misc/screen app-portage/eix sys-block/parted
+emerge app-eselect/eselect-repository app-portage/layman
 
 echo 'GRUB_PLATFORMS="emu efi-32 efi-64 pc"' >> /etc/portage/make.conf
 echo 'sys-boot/grub:2 device-mapper' >> /etc/portage/package.use/grub2
@@ -282,7 +283,7 @@ echo 'GRUB_CMDLINE_LINUX="iommu=pt intel_iommu=on pcie_acs_override=downstream,m
 echo -e "\e[31m--- set kernel ---\e[0m"
 emerge sys-kernel/linux-firmware
 emerge sys-kernel/gentoo-kernel-bin
-dracut -f --kver 6.1.12-gentoo-dist
+dracut -f --kver 6.1.22-gentoo-dist
 
 eselect kernel set 1
 
