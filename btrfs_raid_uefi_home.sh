@@ -87,6 +87,10 @@ STAGE3=$(wget $URL/latest-stage3-amd64-openrc.txt -qO - | grep -v '#' | awk '{pr
 wget $URL/$STAGE3
 echo -e "\e[31m--- extract Stage3 ---\e[0m"
 tar xpf stage3-*.tar.* --xattrs-include='*.*' --numeric-owner
+# правильный тип процессора в make.conf
+emerge app-misc/resolve-march-native
+march=`resolve-march-native | head -n1 | awk '{print $1;}'`
+sed -i '/COMMON_FLAGS=/ s/\("[^"]*\)"/\1 '$march'"/' etc/portage/make.conf
 
 mkdir --parents /mnt/gentoo/etc/portage/repos.conf
 cp /mnt/gentoo/usr/share/portage/config/repos.conf /mnt/gentoo/etc/portage/repos.conf/gentoo.conf
@@ -125,11 +129,6 @@ echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-us
 # отключить бинарные пакеты
 # echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
 #######################################################
-
-# правильный тип процессора в make.conf
-emerge app-misc/resolve-march-native
-march=`resolve-march-native | head -n1 | awk '{print $1;}'`
-sed -i '/COMMON_FLAGS=/ s/\("[^"]*\)"/\1 '$march'"/' etc/portage/make.conf
 
 # Московское время
 echo "Europe/Moscow" > /etc/timezone
@@ -285,8 +284,6 @@ chown distcc:root /var/log/distccd.log
 distcc-config --set-hosts "localhost 192.168.1.62"
 echo 'FEATURES="distcc"' >> /etc/portage/make.conf
 rc-update add distccd default
-
-
 
 echo -e "\e[31m--- create EFI boot ---\e[0m"
 grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot --removable
