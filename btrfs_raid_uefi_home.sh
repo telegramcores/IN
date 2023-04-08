@@ -139,7 +139,6 @@ chown distcc:root /var/log/distccd.log
 distcc-config --set-hosts "localhost 192.168.1.62"
 echo 'FEATURES="distcc"' >> /etc/portage/make.conf
 rc-update add distccd default
-rc-service distccd start
 
 # Московское время
 echo "Europe/Moscow" > /etc/timezone
