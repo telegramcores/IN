@@ -103,7 +103,7 @@ export PS1="(chroot) $PS1"
 mount /dev/sda2 /boot
 
 # создаем tmpfs
-#mkdir /var/tmp/portage
+mkdir /var/tmp/portage
 #mount -t tmpfs tmpfs -o size=20G,nr_inodes=1M /var/tmp/portage
 
 echo -e "\e[31m--- emerge-webrsync ---\e[0m"
