@@ -59,9 +59,9 @@ mkfs.fat -F32 /dev/sda2
 mkfs.fat -F32 /dev/sdb2
 mkswap /dev/sda3
 swapon /dev/sda3
-mkfs.btrfs -f -L btrfsmirror -m raid1 -d raid1 /dev/sda4 /dev/sdb4
+mkfs.btrfs -f -L btrfsraid10 -m raid10 -d raid10 /dev/sda4 /dev/sdb4
 
-echo "LABEL=btrfsmirror /mnt/gentoo btrfs defaults,noatime  0 0" >> /etc/fstab
+echo "LABEL=btrfsraid10 /mnt/gentoo btrfs defaults,noatime  0 0" >> /etc/fstab
 mount /mnt/gentoo 
 btrfs subvolume create /mnt/gentoo/@ 
 btrfs subvolume create /mnt/gentoo/@home 
@@ -87,7 +87,10 @@ STAGE3=$(wget $URL/latest-stage3-amd64-openrc.txt -qO - | grep -v '#' | awk '{pr
 wget $URL/$STAGE3
 echo -e "\e[31m--- extract Stage3 ---\e[0m"
 tar xpf stage3-*.tar.* --xattrs-include='*.*' --numeric-owner
-sed -i '/COMMON_FLAGS=/ s/\("[^"]*\)"/\1 -march=native"/' etc/portage/make.conf
+# правильный тип процессора в make.conf
+emerge app-misc/resolve-march-native
+march=`resolve-march-native | head -n1 | awk '{print $1;}'`
+sed -i '/COMMON_FLAGS=/ s/\("[^"]*\)"/\1 '$march'"/' etc/portage/make.conf
 
 mkdir --parents /mnt/gentoo/etc/portage/repos.conf
 cp /mnt/gentoo/usr/share/portage/config/repos.conf /mnt/gentoo/etc/portage/repos.conf/gentoo.conf
@@ -106,11 +109,46 @@ mount /dev/sda2 /boot
 mkdir /var/tmp/portage
 mount -t tmpfs tmpfs -o size=20G,nr_inodes=1M /var/tmp/portage
 
-############ бинарные пакеты https://www.linux.org.ru/news/gentoo/16547411 ##########################
+############ руссификация ############################
+emerge terminus-font freefonts cronyx-fonts corefonts
+rm -f /etc/locale.gen
+touch /etc/locale.gen
+cat << EOF >> /etc/locale.gen
+ru_RU.UTF-8 UTF-8
+EOF
+locale-gen
+rm -f /etc/env.d/02locale
+touch /etc/env.d/02locale
+cat << EOF >> /etc/env.d/02locale
+LC_ALL=""
+LANG="ru_RU.UTF-8"
+EOF
+env-update && source /etc/profile
+rm -f /etc/conf.d/consolefont
+touch /etc/conf.d/consolefont
+cat << EOF >> /etc/conf.d/consolefont
+CONSOLEFONT="cyr-sun16"
+EOF
+rm -f /etc/conf.d/keymaps
+touch /etc/conf.d/keymaps
+cat << EOF >> /etc/conf.d/keymaps
+KEYMAP="ru-ms"
+WINDOWKEYS="yes"
+DUMPKEYS_CHARSET="koi8-r"
+EOF
+/etc/init.d/keymaps restart && /etc/init.d/consolefont restart
+
+# DISTCC
+
+
+echo '############ бинарные пакеты ##########################'
 cat << EOF >> /etc/portage/binrepos.conf
-[binhost]
+[calculate]
 priority = 9999
 sync-uri = https://mirror.yandex.ru/calculate/grp/x86_64/
+[official_test]
+priority = 9998
+sync-uri = https://gentoo.osuosl.org/experimental/amd64/binpkg/default/linux/17.1/x86-64/
 EOF
 # прописываем параметры для бинарных пакетов
 echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-use=y --getbinpkg=y"' >> /etc/portage/make.conf
@@ -118,6 +156,7 @@ echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-us
 # отключить бинарные пакеты
 # echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
 #######################################################
+echo 'FEATURES="distcc"' >> /etc/portage/make.conf
 
 echo -e "\e[31m--- emerge-webrsync ---\e[0m"
 emerge-webrsync
