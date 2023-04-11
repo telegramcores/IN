@@ -169,8 +169,7 @@ emerge --oneshot sys-apps/portage
 emerge app-portage/gentoolkit
 emerge app-portage/cpuid2cpuflags
 cpuid2cpuflags | sed 's/: /="/' | sed -e '$s/$/"/' >> /etc/portage/make.conf
-emerge app-shells/bash-completion
-emerge app-shells/gentoo-bashcomp
+emerge app-shells/bash-completion app-shells/gentoo-bashcomp
 
 echo "/dev/sda2 /boot vfat defaults 0 2" >> /etc/fstab
 echo 'ACCEPT_LICENSE="*"'     >> /etc/portage/make.conf
