@@ -31,7 +31,7 @@ parted -a optimal --script $disk name 3 swap
 
 echo "---create sda4 raid1 ---"
 parted -s -- $disk mkpart primary 16GiB 100%
-parted -a optimal --script $disk name 4 raid1
+parted -a optimal --script $disk name 4 raid10
 parted -a optimal --script $disk set 4 raid on
 
 disk="/dev/sdb"
@@ -52,14 +52,14 @@ parted -a optimal --script $disk name 3 swap
 
 echo "---create sdb4 raid1 ---"
 parted -s -- $disk mkpart primary 16GiB 100%
-parted -a optimal --script $disk name 4 raid1
+parted -a optimal --script $disk name 4 raid10
 parted -a optimal --script $disk set 4 raid on
 
 mkfs.fat -F32 /dev/sda2
 mkfs.fat -F32 /dev/sdb2
 mkswap /dev/sda3
 swapon /dev/sda3
-mkfs.btrfs -f -L btrfsraid10 -m raid1 -d raid1 /dev/sda4 /dev/sdb4
+mkfs.btrfs -f -L btrfsraid10 -m raid10 -d raid10 /dev/sda4 /dev/sdb4
 
 echo "LABEL=btrfsraid1 /mnt/gentoo btrfs defaults,noatime  0 0" >> /etc/fstab
 mount /mnt/gentoo 
@@ -110,6 +110,9 @@ mkdir /var/tmp/portage
 echo -e "\e[31m--- emerge-webrsync ---\e[0m"
 emerge-webrsync
 eselect news read && eselect news purge
+
+march=`resolve-march-native | head -n1 | awk '{print $1;}'`
+sed -i 's/COMMON_FLAGS="-O2 -pipe -march=native"/COMMON_FLAGS="-O2 -pipe '$march'"/g' /etc/portage/make.conf
 
 echo '############ бинарные пакеты ##########################'
 cat << EOF >> /etc/portage/binrepos.conf
@@ -284,9 +287,6 @@ chown distcc:root /var/log/distccd.log
 distcc-config --set-hosts "localhost 192.168.1.62"
 #echo 'FEATURES="distcc"' >> /etc/portage/make.conf
 #rc-update add distccd default
-
-#march=`resolve-march-native | head -n1 | awk '{print $1;}'`
-#sed -i 's/COMMON_FLAGS="-O2 -pipe -march=native"/COMMON_FLAGS="-O2 -pipe '$march'"/g' /etc/portage/make.conf
 
 echo -e "\e[31m--- create EFI boot ---\e[0m"
 grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot --removable
