@@ -59,7 +59,7 @@ mkfs.fat -F32 /dev/sda2
 mkfs.fat -F32 /dev/sdb2
 mkswap /dev/sda3
 swapon /dev/sda3
-mkfs.btrfs -f -L btrfsraid -m raid10 -d raid10 /dev/sda4 /dev/sdb4
+mkfs.btrfs -f -L btrfsraid -m raid1 -d raid1 /dev/sda4 /dev/sdb4
 
 echo "LABEL=btrfsraid /mnt/gentoo btrfs defaults,noatime  0 0" >> /etc/fstab
 mount /mnt/gentoo 
