@@ -31,7 +31,7 @@ parted -a optimal --script $disk name 3 swap
 
 echo "---create sda4 raid1 ---"
 parted -s -- $disk mkpart primary 16GiB 100%
-parted -a optimal --script $disk name 4 raid10
+parted -a optimal --script $disk name 4 btrfsraid
 parted -a optimal --script $disk set 4 raid on
 
 disk="/dev/sdb"
@@ -52,16 +52,16 @@ parted -a optimal --script $disk name 3 swap
 
 echo "---create sdb4 raid1 ---"
 parted -s -- $disk mkpart primary 16GiB 100%
-parted -a optimal --script $disk name 4 raid10
+parted -a optimal --script $disk name 4 btrfsraid
 parted -a optimal --script $disk set 4 raid on
 
 mkfs.fat -F32 /dev/sda2
 mkfs.fat -F32 /dev/sdb2
 mkswap /dev/sda3
 swapon /dev/sda3
-mkfs.btrfs -f -L btrfsraid10 -m raid10 -d raid10 /dev/sda4 /dev/sdb4
+mkfs.btrfs -f -L btrfsraid -m raid10 -d raid10 /dev/sda4 /dev/sdb4
 
-echo "LABEL=btrfsraid10 /mnt/gentoo btrfs defaults,noatime  0 0" >> /etc/fstab
+echo "LABEL=btrfsraid /mnt/gentoo btrfs defaults,noatime  0 0" >> /etc/fstab
 mount /mnt/gentoo 
 btrfs subvolume create /mnt/gentoo/@ 
 btrfs subvolume create /mnt/gentoo/@home 
