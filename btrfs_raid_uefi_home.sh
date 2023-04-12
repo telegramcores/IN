@@ -29,7 +29,7 @@ echo "---create sda3 swap ---"
 parted -a optimal --script $disk mkpart primary 259MiB 16GiB
 parted -a optimal --script $disk name 3 swap
 
-echo "---create sda4 raid1 ---"
+echo "---create sda4 raid ---"
 parted -s -- $disk mkpart primary 16GiB 100%
 parted -a optimal --script $disk name 4 btrfsraid
 parted -a optimal --script $disk set 4 raid on
@@ -50,7 +50,7 @@ echo "---create sdb3 swap ---"
 parted -a optimal --script $disk mkpart primary 259MiB 16GiB
 parted -a optimal --script $disk name 3 swap
 
-echo "---create sdb4 raid1 ---"
+echo "---create sdb4 raid ---"
 parted -s -- $disk mkpart primary 16GiB 100%
 parted -a optimal --script $disk name 4 btrfsraid
 parted -a optimal --script $disk set 4 raid on
@@ -59,7 +59,7 @@ mkfs.fat -F32 /dev/sda2
 mkfs.fat -F32 /dev/sdb2
 mkswap /dev/sda3
 swapon /dev/sda3
-mkfs.btrfs -f -L btrfsraid -m raid1 -d raid1 /dev/sda4 /dev/sdb4
+mkfs.btrfs -f -L btrfsraid -m raid10 -d raid10 /dev/sda4 /dev/sdb4
 
 echo "LABEL=btrfsraid /mnt/gentoo btrfs defaults,noatime  0 0" >> /etc/fstab
 mount /mnt/gentoo 
@@ -70,7 +70,7 @@ btrfs subvolume create /mnt/gentoo/@snapshots
 btrfs subvolume create /mnt/gentoo/@share
 umount /mnt/gentoo
 
-mount -o defaults,noatime,autodefrag,subvol=@ /dev/sda4 /mnt/gentoo
+mount -o defaults,noatime,autodefrag,compress=zlib,subvol=@ /dev/sda4 /mnt/gentoo
 mkdir -p /mnt/gentoo/{home,.snapshots,var,share}
 mount -o autodefrag,relatime,space_cache,compress=zlib,subvol=@home /dev/sda4 /mnt/gentoo/home
 mount -o autodefrag,relatime,space_cache,compress=zlib,subvol=@var  /dev/sda4 /mnt/gentoo/var
@@ -105,7 +105,7 @@ mount /dev/sda2 /boot
 
 # создаем tmpfs
 mkdir /var/tmp/portage
-#mount -t tmpfs tmpfs -o size=20G,nr_inodes=1M /var/tmp/portage
+mount -t tmpfs tmpfs -o size=20G,nr_inodes=1M /var/tmp/portage
 
 echo -e "\e[31m--- emerge-webrsync ---\e[0m"
 emerge-webrsync
@@ -178,12 +178,12 @@ echo 'USE="abi_x86_64 bash-completion unicode"' >> /etc/portage/make.conf
 echo -e "\e[31m--- add soft and settings ---\e[0m"
 echo hostname="home_s" > /etc/conf.d/hostname
 echo "/dev/sda3 none swap sw 0 0" >> /etc/fstab
-blkid /dev/sda4 | awk '{print $3" / btrfs defaults,noatime,autodefrag,subvol=@  0 0"}' >> /etc/fstab
+blkid /dev/sda4 | awk '{print $3" / btrfs defaults,noatime,autodefrag,compress=zlib,subvol=@  0 0"}' >> /etc/fstab
 blkid /dev/sda4 | awk '{print $3" /home btrfs autodefrag,relatime,space_cache,compress=zlib,subvol=@home  0 0"}' >> /etc/fstab
 blkid /dev/sda4 | awk '{print $3" /var btrfs autodefrag,relatime,space_cache,compress=zlib,subvol=@var  0 0"}' >> /etc/fstab
 blkid /dev/sda4 | awk '{print $3" /.snapshots btrfs autodefrag,relatime,space_cache,compress=zlib,subvol=@snapshots 0 0"}' >> /etc/fstab
 blkid /dev/sda4 | awk '{print $3" /share btrfs autodefrag,relatime,space_cache,compress=zlib,subvol=@share  0 0"}' >> /etc/fstab
-#echo "tmpfs /var/tmp/portage tmpfs size=20G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
+echo "tmpfs /var/tmp/portage tmpfs size=20G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
 
 #--- службы ---
 emerge app-admin/sysklogd && rc-update add sysklogd default
@@ -276,15 +276,6 @@ emerge sys-kernel/linux-firmware
 emerge sys-kernel/gentoo-kernel-bin
 dracut -f --kver 6.1.22-gentoo-dist
 eselect kernel set 1
-
-# DISTCC
-emerge sys-devel/distcc
-sed -i 's/DISTCCD_OPTS="${DISTCCD_OPTS} --allow 192.168.0.0\/24"/DISTCCD_OPTS="${DISTCCD_OPTS} --allow 192.168.1.0\/24"/g' /etc/conf.d/distccd
-touch /var/log/distccd.log
-chown distcc:root /var/log/distccd.log
-distcc-config --set-hosts "localhost 192.168.1.62"
-#echo 'FEATURES="distcc"' >> /etc/portage/make.conf
-#rc-update add distccd default
 
 echo -e "\e[31m--- create EFI boot ---\e[0m"
 grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot --removable
