@@ -81,11 +81,11 @@ cd /mnt/gentoo
 ntpd -q -g
 echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
 
-echo -e "\e[31m--- load Stage3 ---\e[0m"
+echo -e "\e[32m--- load Stage3 ---\e[0m"
 URL='https://mirror.yandex.ru/gentoo-distfiles/releases/amd64/autobuilds'
 STAGE3=$(wget $URL/latest-stage3-amd64-openrc.txt -qO - | grep -v '#' | awk '{print $1;}')
 wget $URL/$STAGE3
-echo -e "\e[31m--- extract Stage3 ---\e[0m"
+echo -e "\e[32m--- extract Stage3 ---\e[0m"
 tar xpf stage3-*.tar.* --xattrs-include='*.*' --numeric-owner
 sed -i '/COMMON_FLAGS=/ s/\("[^"]*\)"/\1 -march=native"/' etc/portage/make.conf
 
@@ -96,7 +96,7 @@ cp --dereference /etc/resolv.conf /mnt/gentoo/etc/
 # mounting livecd folders
 mount --types proc /proc /mnt/gentoo/proc && mount --rbind /sys /mnt/gentoo/sys && mount --make-rslave /mnt/gentoo/sys && mount --rbind /dev /mnt/gentoo/dev && mount --make-rslave /mnt/gentoo/dev && mount --bind /run /mnt/gentoo/run && mount --make-slave /mnt/gentoo/run
 
-echo -e "\e[31m--- inside chroot ---\e[0m"
+echo -e "\e[32m--- inside chroot ---\e[0m"
 chroot_dir=/mnt/gentoo
 chroot $chroot_dir /bin/bash << "CHROOT"
 env-update && source /etc/profile
@@ -107,8 +107,8 @@ mount /dev/sda2 /boot
 mkdir /var/tmp/portage
 mount -t tmpfs tmpfs -o size=20G,nr_inodes=1M /var/tmp/portage
 
-echo -e "\e[31m--- emerge-webrsync ---\e[0m"
-emerge-webrsync
+echo -e "\e[32m--- emerge-webrsync ---\e[0m"
+emerge-webrsync 
 eselect news read && eselect news purge
 
 echo '############ бинарные пакеты ##########################'
@@ -175,7 +175,7 @@ echo "/dev/sda2 /boot vfat defaults 0 2" >> /etc/fstab
 echo 'ACCEPT_LICENSE="*"'     >> /etc/portage/make.conf
 echo 'USE="abi_x86_64 bash-completion unicode"' >> /etc/portage/make.conf
 
-echo -e "\e[31m--- add soft and settings ---\e[0m"
+echo -e "\e[32m--- add soft and settings ---\e[0m"
 echo hostname="home_s" > /etc/conf.d/hostname
 echo "/dev/sda3 none swap sw 0 0" >> /etc/fstab
 blkid /dev/sda4 | awk '{print $3" / btrfs defaults,noatime,autodefrag,compress=zstd:3,subvol=@  0 0"}' >> /etc/fstab
@@ -199,7 +199,7 @@ sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_co
 # sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
 
 ################# Настройка bridge ##############################
-echo -e "\e[31m--- bridge ---\e[0m"
+echo -e "\e[32m--- bridge ---\e[0m"
 netcard1=`ip link | awk -F: '$0 !~ "lo|vir|wl|^[^0-9]"{print $2;getline}'| awk 'NR==1'| sed -r 's/^ *//'`
 netcard2=`ip link | awk -F: '$0 !~ "lo|vir|wl|^[^0-9]"{print $2;getline}'| awk 'NR==2'| sed -r 's/^ *//'`
 touch /etc/conf.d/net
@@ -272,13 +272,13 @@ echo 'sys-boot/grub:2 device-mapper' >> /etc/portage/package.use/grub2
 emerge sys-boot/grub:2
 echo 'GRUB_CMDLINE_LINUX="iommu=pt intel_iommu=on pcie_acs_override=downstream,multifunction nofb"' >> /etc/default/grub
 
-echo -e "\e[31m--- set kernel ---\e[0m"
+echo -e "\e[32m--- set kernel ---\e[0m"
 emerge sys-kernel/linux-firmware
 emerge sys-kernel/gentoo-kernel-bin
 dracut -f --kver 6.1.22-gentoo-dist
 eselect kernel set 1
 
-echo -e "\e[31m--- create EFI boot ---\e[0m"
+echo -e "\e[32m--- create EFI boot ---\e[0m"
 grub-install --target=$(lscpu | head -n1 | sed 's/^[^:]*:[[:space:]]*//')-efi --efi-directory=/boot --removable
 grub-mkconfig -o /boot/grub/grub.cfg
 
