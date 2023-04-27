@@ -164,8 +164,8 @@ WINDOWKEYS="yes"
 DUMPKEYS_CHARSET="koi8-r"
 EOF
 /etc/init.d/keymaps restart && /etc/init.d/consolefont restart
-rc-update add keymaps default
-rc-update add consolefont default
+rc-update add keymaps boot
+rc-update add consolefont boot
 
 emerge --oneshot sys-apps/portage
 emerge app-portage/gentoolkit
