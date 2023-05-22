@@ -121,7 +121,7 @@ mount -o autodefrag,noatime,space_cache=v2,compress=zstd:3,subvol=@snapshots  /d
 mount -o autodefrag,noatime,space_cache=v2,compress=zstd:3,subvol=@share /dev/sda4 /mnt/gentoo/share
 
 cd /mnt/gentoo
-ntpd -q -g
+#ntpd -q -g
 echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
 
 echo -e "\e[32m--- load Stage3 ---\e[0m"
