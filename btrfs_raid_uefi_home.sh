@@ -12,89 +12,25 @@
 #https://yamadharma.github.io/ru/post/2021/08/27/btrfs-subvolumes/
 #BTRFS TOPIC https://github.com/topics/btrfs
 
-disk="/dev/sda"
-echo "---create sda1 bios_grub ---"
+for disk in /dev/sda /dev/sdb /dev/sdc /dev/sdd
+do
+echo "---create "$disk"1 bios_grub ---"
 parted -a optimal --script $disk mklabel gpt
 parted -a optimal --script $disk mkpart primary 1MiB 3MiB
 parted -a optimal --script $disk name 1 grub
 parted -a optimal --script $disk set 1 bios_grub on
-
-echo "---create sda2 boot ---"
+echo "---create "$disk"2 boot ---"
 parted -a optimal --script $disk mkpart primary 3MiB 259MiB
 parted -a optimal --script $disk name 2 boot
 parted -a optimal --script $disk set 2 boot on
-
-echo "---create sda3 swap ---"
+echo "---create "$disk"3 swap ---"
 parted -a optimal --script $disk mkpart primary 259MiB 16GiB
 parted -a optimal --script $disk name 3 swap
-
-echo "---create sda4 raid ---"
+echo "---create "$disk"4 raid ---"
 parted -s -- $disk mkpart primary 16GiB 100%
 parted -a optimal --script $disk name 4 btrfsraid
 parted -a optimal --script $disk set 4 raid on
-
-disk="/dev/sdb"
-echo "---create sdb1 bios_grub ---"
-parted -a optimal --script $disk mklabel gpt
-parted -a optimal --script $disk mkpart primary 1MiB 3MiB
-parted -a optimal --script $disk name 1 grub
-parted -a optimal --script $disk set 1 bios_grub on
-
-echo "---create sdb2 boot ---"
-parted -a optimal --script $disk mkpart primary 3MiB 259MiB
-parted -a optimal --script $disk name 2 boot
-parted -a optimal --script $disk set 2 boot on
-
-echo "---create sdb3 swap ---"
-parted -a optimal --script $disk mkpart primary 259MiB 16GiB
-parted -a optimal --script $disk name 3 swap
-
-echo "---create sdb4 raid ---"
-parted -s -- $disk mkpart primary 16GiB 100%
-parted -a optimal --script $disk name 4 btrfsraid
-parted -a optimal --script $disk set 4 raid on
-
-disk="/dev/sdc"
-echo "---create sdc1 bios_grub ---"
-parted -a optimal --script $disk mklabel gpt
-parted -a optimal --script $disk mkpart primary 1MiB 3MiB
-parted -a optimal --script $disk name 1 grub
-parted -a optimal --script $disk set 1 bios_grub on
-
-echo "---create sdc2 boot ---"
-parted -a optimal --script $disk mkpart primary 3MiB 259MiB
-parted -a optimal --script $disk name 2 boot
-parted -a optimal --script $disk set 2 boot on
-
-echo "---create sdc3 swap ---"
-parted -a optimal --script $disk mkpart primary 259MiB 16GiB
-parted -a optimal --script $disk name 3 swap
-
-echo "---create sdc4 raid ---"
-parted -s -- $disk mkpart primary 16GiB 100%
-parted -a optimal --script $disk name 4 btrfsraid
-parted -a optimal --script $disk set 4 raid on
-
-disk="/dev/sdd"
-echo "---create sdd1 bios_grub ---"
-parted -a optimal --script $disk mklabel gpt
-parted -a optimal --script $disk mkpart primary 1MiB 3MiB
-parted -a optimal --script $disk name 1 grub
-parted -a optimal --script $disk set 1 bios_grub on
-
-echo "---create sdd2 boot ---"
-parted -a optimal --script $disk mkpart primary 3MiB 259MiB
-parted -a optimal --script $disk name 2 boot
-parted -a optimal --script $disk set 2 boot on
-
-echo "---create sdd3 swap ---"
-parted -a optimal --script $disk mkpart primary 259MiB 16GiB
-parted -a optimal --script $disk name 3 swap
-
-echo "---create sdd4 raid ---"
-parted -s -- $disk mkpart primary 16GiB 100%
-parted -a optimal --script $disk name 4 btrfsraid
-parted -a optimal --script $disk set 4 raid on
+done
 
 mkfs.fat -F32 /dev/sda2
 mkfs.fat -F32 /dev/sdb2
