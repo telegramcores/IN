@@ -244,8 +244,8 @@ rc-update add samba default
 ############################
 
 #--- софт ---
-emerge sys-apps/mlocate sys-fs/e2fsprogs app-misc/tmux sys-process/htop app-misc/mc sys-apps/lm-sensors sys-apps/smartmontools app-admin/sudo sys-fs/ntfs3g app-misc/screen app-portage/eix sys-block/parted
-emerge app-eselect/eselect-repository sys-process/btop sys-fs/bees sys-fs/compsize app-admin/eclean-kernel
+emerge sys-apps/mlocate sys-fs/e2fsprogs app-misc/tmux sys-process/htop app-misc/mc sys-process/iotop sys-apps/lm-sensors sys-apps/smartmontools app-admin/sudo sys-fs/ntfs3g app-misc/screen app-portage/eix sys-block/parted
+emerge app-eselect/eselect-repository sys-process/btop sys-fs/bees sys-fs/compsize app-admin/eclean-kernel 
 
 echo 'GRUB_PLATFORMS="emu efi-32 efi-64 pc"' >> /etc/portage/make.conf
 echo 'sys-boot/grub:2 device-mapper' >> /etc/portage/package.use/grub2
