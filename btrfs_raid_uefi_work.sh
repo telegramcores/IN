@@ -209,7 +209,7 @@ config_br0="192.168.10.221/24"
 bridge_forward_delay_br0=0
 bridge_hello_time_br0=200
 bridge_stp_state_br0=0
-routes_br0="default gw 192.168.0.8"
+routes_br0="default gw 192.168.10.8"
 EOF
 ln -s /etc/init.d/net.lo /etc/init.d/net.br0
 rc-update add net.br0
