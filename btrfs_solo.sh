@@ -36,13 +36,12 @@ umount /mnt/gentoo
 
 mount -o defaults,noatime,autodefrag,subvol=@ /dev/sda4 /mnt/gentoo
 mkdir -p /mnt/gentoo/{home,.snapshots,var,share}
-mount -o autodefrag,relatime,space_cache,compress=zlib,subvol=@home /dev/sda4 /mnt/gentoo/home
-mount -o autodefrag,relatime,space_cache,compress=zlib,subvol=@var  /dev/sda4 /mnt/gentoo/var
-mount -o autodefrag,relatime,space_cache,compress=zlib,subvol=@snapshots  /dev/sda4 /mnt/gentoo/.snapshots
-mount -o autodefrag,relatime,space_cache,compress=zlib,subvol=@share /dev/sda4 /mnt/gentoo/share
+mount -o autodefrag,noatime,space_cache=v2,compress=zstd:3,subvol=@home /dev/sda4 /mnt/gentoo/home
+mount -o autodefrag,noatime,space_cache=v2,compress=zstd:3,subvol=@var  /dev/sda4 /mnt/gentoo/var
+mount -o autodefrag,noatime,space_cache=v2,compress=zstd:3,subvol=@snapshots  /dev/sda4 /mnt/gentoo/.snapshots
+mount -o autodefrag,noatime,space_cache=v2,compress=zstd:3,subvol=@share /dev/sda4 /mnt/gentoo/share
 
 cd /mnt/gentoo
-ntpd -q -g
 echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
 
 echo -e "\e[31m--- load Stage3 ---\e[0m"
@@ -69,7 +68,7 @@ mount /dev/sda2 /boot
 
 # создаем tmpfs
 mkdir /var/tmp/portage
-#mount -t tmpfs tmpfs -o size=20G,nr_inodes=1M /var/tmp/portage
+mount -t tmpfs tmpfs -o size=20G,nr_inodes=1M /var/tmp/portage
 
 echo -e "\e[31m--- Обновление emerge-webrsync ---\e[0m"
 emerge-webrsync
@@ -93,6 +92,8 @@ echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-us
 
 # правильный тип процессора в make.conf
 emerge app-misc/resolve-march-native
+march=`resolve-march-native | head -n1 | awk '{print $1;}'`
+sed -i 's/COMMON_FLAGS="-O2 -pipe -march=native"/COMMON_FLAGS="-O2 -pipe '$march'"/g' /etc/portage/make.conf
 
 # Московское время
 echo "Europe/Moscow" > /etc/timezone
@@ -129,15 +130,14 @@ WINDOWKEYS="yes"
 DUMPKEYS_CHARSET="koi8-r"
 EOF
 /etc/init.d/keymaps restart && /etc/init.d/consolefont restart
+rc-update add keymaps boot
+rc-update add consolefont boot
 
 emerge --oneshot sys-apps/portage
 emerge app-portage/gentoolkit
 emerge app-portage/cpuid2cpuflags
-
-emerge app-shells/bash-completion
-emerge app-shells/gentoo-bashcomp
-
 cpuid2cpuflags | sed 's/: /="/' | sed -e '$s/$/"/' >> /etc/portage/make.conf
+emerge app-shells/bash-completion app-shells/gentoo-bashcomp
 
 echo "/dev/sda2 /boot vfat defaults 0 2" >> /etc/fstab
 echo 'ACCEPT_LICENSE="*"'     >> /etc/portage/make.conf
@@ -146,12 +146,12 @@ echo 'USE="abi_x86_64 bash-completion unicode"' >> /etc/portage/make.conf
 echo -e "\e[31m--- Установка soft and settings ---\e[0m"
 echo hostname="gentoo_serv" > /etc/conf.d/hostname
 echo "/dev/sda3 none swap sw 0 0" >> /etc/fstab
-blkid /dev/sda4 | awk '{print $3" / btrfs defaults,noatime,autodefrag,subvol=@  0 0"}' >> /etc/fstab
-blkid /dev/sda4 | awk '{print $3" /home btrfs autodefrag,relatime,space_cache,compress=zlib,subvol=@home  0 0"}' >> /etc/fstab
-blkid /dev/sda4 | awk '{print $3" /var btrfs autodefrag,relatime,space_cache,compress=zlib,subvol=@var  0 0"}' >> /etc/fstab
-blkid /dev/sda4 | awk '{print $3" /.snapshots btrfs autodefrag,relatime,space_cache,compress=zlib,subvol=@snapshots 0 0"}' >> /etc/fstab
-blkid /dev/sda4 | awk '{print $3" /share btrfs autodefrag,relatime,space_cache,compress=zlib,subvol=@share  0 0"}' >> /etc/fstab
-#echo "tmpfs /var/tmp/portage tmpfs size=20G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
+blkid /dev/sda4 | awk '{print $3" / btrfs defaults,noatime,autodefrag,space_cache=v2,compress=zstd:3,subvol=@  0 0"}' >> /etc/fstab
+blkid /dev/sda4 | awk '{print $3" /home btrfs noatime,autodefrag,space_cache=v2,compress=zstd:3,subvol=@home  0 0"}' >> /etc/fstab
+blkid /dev/sda4 | awk '{print $3" /var btrfs noatime,autodefrag,space_cache=v2,compress=zstd:3,subvol=@var  0 0"}' >> /etc/fstab
+blkid /dev/sda4 | awk '{print $3" /.snapshots btrfs noatime,autodefrag,space_cache=v2,compress=zstd:3,subvol=@snapshots 0 0"}' >> /etc/fstab
+blkid /dev/sda4 | awk '{print $3" /share btrfs noatime,autodefrag,space_cache=v2,compress=zstd:3,subvol=@share  0 0"}' >> /etc/fstab
+echo "tmpfs /var/tmp/portage tmpfs size=20G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
 
 #--- службы ---
 emerge app-admin/sysklogd && rc-update add sysklogd default
@@ -231,8 +231,9 @@ rc-update add samba default
 ############################
 
 #--- софт ---
-emerge sys-apps/mlocate sys-fs/e2fsprogs app-misc/tmux sys-process/htop app-misc/mc sys-apps/lm-sensors sys-apps/smartmontools app-admin/sudo sys-fs/ntfs3g app-misc/screen app-portage/eix sys-block/parted
-emerge app-eselect/eselect-repository app-portage/layman
+emerge sys-apps/mlocate sys-fs/e2fsprogs app-misc/tmux sys-process/htop app-misc/mc sys-process/iotop sys-apps/lm-sensors sys-apps/smartmontools app-admin/sudo sys-fs/ntfs3g app-misc/screen app-portage/eix sys-block/parted
+emerge app-eselect/eselect-repository sys-process/btop sys-fs/bees sys-fs/compsize app-admin/eclean-kernel 
+
 echo 'GRUB_PLATFORMS="emu efi-32 efi-64 pc"' >> /etc/portage/make.conf
 echo 'sys-boot/grub:2 device-mapper' >> /etc/portage/package.use/grub2
 emerge sys-boot/grub:2
@@ -241,7 +242,7 @@ echo 'GRUB_CMDLINE_LINUX="iommu=pt intel_iommu=on pcie_acs_override=downstream,m
 echo -e "\e[31m--- set kernel ---\e[0m"
 emerge sys-kernel/linux-firmware
 emerge sys-kernel/gentoo-kernel-bin
-dracut -f --kver 6.1.22-gentoo-dist
+dracut -f --kver 6.1.31-gentoo-dist
 
 eselect kernel set 1
 
