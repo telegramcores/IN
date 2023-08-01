@@ -255,7 +255,7 @@ echo 'GRUB_CMDLINE_LINUX="iommu=pt intel_iommu=on pcie_acs_override=downstream,m
 echo -e "\e[32m--- set kernel ---\e[0m"
 emerge sys-kernel/linux-firmware
 emerge sys-kernel/gentoo-kernel-bin
-dracut -f --kver 6.1.38-gentoo-dist
+dracut -f --kver 6.1.41-gentoo-dist
 eselect kernel set 1
 
 echo -e "\e[32m--- create EFI boot ---\e[0m"
