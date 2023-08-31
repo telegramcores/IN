@@ -77,9 +77,6 @@ echo -e "\e[31m--- Обновление emerge-webrsync ---\e[0m"
 emerge-webrsync
 eselect news read && eselect news purge
 
-emerge --oneshot sys-apps/portage
-emerge app-portage/gentoolkit
-
 echo '############ бинарные пакеты ##########################'
 cat << EOF >> /etc/portage/binrepos.conf
 [calculate]
@@ -93,7 +90,7 @@ EOF
 #echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-use=y --getbinpkg=y "' >> /etc/portage/make.conf
 #######################################################
 # отключить бинарные пакеты
- echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
+echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
 #######################################################
 
 # правильный тип процессора в make.conf
