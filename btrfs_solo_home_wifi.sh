@@ -136,8 +136,8 @@ EOF
 rc-update add keymaps boot
 rc-update add consolefont boot
 
-emerge --oneshot sys-apps/portage
-emerge app-portage/gentoolkit
+emerge --oneshot --usepkg-exclude sys-apps/portage
+emerge --usepkg-exclude app-portage/gentoolkit
 emerge app-portage/cpuid2cpuflags
 cpuid2cpuflags | sed 's/: /="/' | sed -e '$s/$/"/' >> /etc/portage/make.conf
 emerge app-shells/bash-completion app-shells/gentoo-bashcomp
