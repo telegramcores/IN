@@ -77,6 +77,9 @@ echo -e "\e[31m--- Обновление emerge-webrsync ---\e[0m"
 emerge-webrsync
 eselect news read && eselect news purge
 
+emerge --oneshot sys-apps/portage
+emerge app-portage/gentoolkit
+
 echo '############ бинарные пакеты ##########################'
 cat << EOF >> /etc/portage/binrepos.conf
 [calculate]
@@ -87,7 +90,7 @@ priority = 9998
 sync-uri = https://gentoo.osuosl.org/experimental/amd64/binpkg/default/linux/17.1/x86-64/
 EOF
 # прописываем параметры для бинарных пакетов
-echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-use=y --getbinpkg=y"' >> /etc/portage/make.conf
+echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-use=y --getbinpkg=y "' >> /etc/portage/make.conf
 #######################################################
 # отключить бинарные пакеты
 # echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
@@ -136,8 +139,6 @@ EOF
 rc-update add keymaps boot
 rc-update add consolefont boot
 
-emerge --oneshot --usepkg-exclude sys-apps/portage
-emerge --usepkg-exclude app-portage/gentoolkit
 emerge app-portage/cpuid2cpuflags
 cpuid2cpuflags | sed 's/: /="/' | sed -e '$s/$/"/' >> /etc/portage/make.conf
 emerge app-shells/bash-completion app-shells/gentoo-bashcomp
