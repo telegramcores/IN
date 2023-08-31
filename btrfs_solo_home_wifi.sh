@@ -71,7 +71,7 @@ mount $diskpref"2" /boot
 
 # создаем tmpfs
 mkdir /var/tmp/portage
-mount -t tmpfs tmpfs -o size=20G,nr_inodes=1M /var/tmp/portage
+mount -t tmpfs tmpfs -o size=100G,nr_inodes=1M /var/tmp/portage
 
 echo -e "\e[31m--- Обновление emerge-webrsync ---\e[0m"
 emerge-webrsync
@@ -155,7 +155,7 @@ blkid $diskpref'4' | awk '{print $3" /var btrfs noatime,autodefrag,space_cache=v
 blkid $diskpref'4' | awk '{print $3" /.snapshots btrfs noatime,autodefrag,space_cache=v2,compress=zstd:3,subvol=@snapshots 0 0"}' >> /etc/fstab
 blkid $diskpref'4' | awk '{print $3" /share btrfs noatime,autodefrag,space_cache=v2,compress=zstd:3,subvol=@share  0 0"}' >> /etc/fstab
 blkid $diskpref'4' | awk '{print $3" /admman btrfs noatime,autodefrag,space_cache=v2,compress=zstd:3,subvol=@admman  0 0"}' >> /etc/fstab
-echo "tmpfs /var/tmp/portage tmpfs size=20G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
+echo "tmpfs /var/tmp/portage tmpfs size=100G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
 
 #--- службы ---
 emerge app-admin/sysklogd && rc-update add sysklogd default
