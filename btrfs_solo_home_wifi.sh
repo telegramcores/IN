@@ -94,9 +94,9 @@ echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-us
 #######################################################
 
 # правильный тип процессора в make.conf
-#emerge app-misc/resolve-march-native
-#march=`resolve-march-native | head -n1 | awk '{print $1;}'`
-#sed -i 's/COMMON_FLAGS="-O2 -pipe -march=native"/COMMON_FLAGS="-O2 -pipe '$march'"/g' /etc/portage/make.conf
+emerge app-misc/resolve-march-native
+march=`resolve-march-native | head -n1 | awk '{print $1;}'`
+sed -i 's/COMMON_FLAGS="-O2 -pipe -march=native"/COMMON_FLAGS="-O2 -pipe '$march'"/g' /etc/portage/make.conf
 
 # Московское время
 echo "Europe/Moscow" > /etc/timezone
