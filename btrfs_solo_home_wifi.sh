@@ -67,6 +67,8 @@ chroot_dir=/mnt/gentoo
 chroot $chroot_dir /bin/bash << "CHROOT"
 env-update && source /etc/profile
 export PS1="(chroot) $PS1" 
+disk="/dev/nvme0n1"
+diskpref=$disk"p"
 mount $diskpref"2" /boot
 
 # создаем tmpfs
