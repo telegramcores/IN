@@ -76,8 +76,7 @@ mkdir /var/tmp/portage
 mount -t tmpfs tmpfs -o size=100G,nr_inodes=1M /var/tmp/portage
 
 echo -e "\e[31m--- Обновление emerge-webrsync ---\e[0m"
-#emerge-webrsync
-emerge --sync
+emerge-webrsync
 eselect news read && eselect news purge
 
 echo '############ бинарные пакеты ##########################'
@@ -90,9 +89,9 @@ EOF
 echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-use=y --getbinpkg=y "' >> /etc/portage/make.conf
 #######################################################
 # отключить бинарные пакеты
-#echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
+# echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
 #######################################################
-echo 'GENTOO_MIRRORS="https://gentoo-mirror.alexxy.name/"' >> /etc/portage/make.conf
+# echo 'GENTOO_MIRRORS="https://gentoo-mirror.alexxy.name/"' >> /etc/portage/make.conf
 
 # правильный тип процессора в make.conf
 emerge app-misc/resolve-march-native
