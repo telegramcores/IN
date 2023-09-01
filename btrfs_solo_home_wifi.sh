@@ -48,7 +48,7 @@ cd /mnt/gentoo
 echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
 
 echo -e "\e[31m--- load Stage3 ---\e[0m"
-URL='https://mirror.yandex.ru/gentoo-distfiles/releases/amd64/autobuilds'
+URL='https://gentoo-mirror.alexxy.name/releases/amd64/autobuilds'
 STAGE3=$(wget $URL/latest-stage3-amd64-openrc.txt -qO - | grep -v '#' | awk '{print $1;}')
 wget $URL/$STAGE3
 echo -e "\e[31m--- extract Stage3 ---\e[0m"
@@ -91,9 +91,9 @@ echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-us
 #######################################################
 
 # правильный тип процессора в make.conf
-#emerge app-misc/resolve-march-native
-#march=`resolve-march-native | head -n1 | awk '{print $1;}'`
-#sed -i 's/COMMON_FLAGS="-O2 -pipe -march=native"/COMMON_FLAGS="-O2 -pipe '$march'"/g' /etc/portage/make.conf
+emerge app-misc/resolve-march-native
+march=`resolve-march-native | head -n1 | awk '{print $1;}'`
+sed -i 's/COMMON_FLAGS="-O2 -pipe -march=native"/COMMON_FLAGS="-O2 -pipe '$march'"/g' /etc/portage/make.conf
 
 # Московское время
 echo "Europe/Moscow" > /etc/timezone
