@@ -76,7 +76,8 @@ mkdir /var/tmp/portage
 mount -t tmpfs tmpfs -o size=100G,nr_inodes=1M /var/tmp/portage
 
 echo -e "\e[31m--- Обновление emerge-webrsync ---\e[0m"
-emerge-webrsync
+#emerge-webrsync
+emerge --sync
 eselect news read && eselect news purge
 
 echo '############ бинарные пакеты ##########################'
