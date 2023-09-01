@@ -81,16 +81,13 @@ echo '############ бинарные пакеты ##########################'
 cat << EOF >> /etc/portage/binrepos.conf
 [calculate]
 priority = 9999
-sync-uri = https://mirror.yandex.ru/calculate/grp/x86_64/
-[official_test]
-priority = 9998
-sync-uri = https://gentoo.osuosl.org/experimental/amd64/binpkg/default/linux/17.1/x86-64/
+sync-uri = https://mirror.calculate-linux.org/grp/x86_64/
 EOF
 # прописываем параметры для бинарных пакетов
-#echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-use=y --getbinpkg=y "' >> /etc/portage/make.conf
+echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-use=y --getbinpkg=y "' >> /etc/portage/make.conf
 #######################################################
 # отключить бинарные пакеты
-echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
+# echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
 #######################################################
 
 # правильный тип процессора в make.conf
