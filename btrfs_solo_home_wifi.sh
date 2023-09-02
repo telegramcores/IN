@@ -83,7 +83,7 @@ echo '############ бинарные пакеты ##########################'
 cat << EOF >> /etc/portage/binrepos.conf
 [calculate]
 priority = 9999
-sync-uri = https://mirror.yandex.ru/gentoo-distfiles/releases/amd64/binpackages/17.1/x86-64/
+sync-uri = https://mirror.yandex.ru/gentoo-distfiles/releases/amd64/binpackages/17.1/x86-64//
 EOF
 # прописываем параметры для бинарных пакетов
 echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-use=y --getbinpkg=y "' >> /etc/portage/make.conf
