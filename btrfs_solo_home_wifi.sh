@@ -84,7 +84,7 @@ rm /etc/portage/binrepos.conf
 cat << EOF >> /etc/portage/binrepos.conf
 [calculate]
 priority = 9999
-sync-uri = https://mirror.yandex.ru/calculate/grp/x86_64/
+sync-uri = https://mirror.calculate-linux.org/grp/x86_64/
 EOF
 # прописываем параметры для бинарных пакетов
 echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-use=y --getbinpkg=y "' >> /etc/portage/make.conf
