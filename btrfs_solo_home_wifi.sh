@@ -87,7 +87,7 @@ sync-uri = https://mirror.calculate-linux.org/grp/x86_64/
 EOF
 # прописываем параметры для бинарных пакетов
 # echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-use=y --getbinpkg=y "' >> /etc/portage/make.conf
-echo 'BINPKG_FORMAT="gpkg"' >> /etc/portage/make.conf
+# echo 'BINPKG_FORMAT="gpkg"' >> /etc/portage/make.conf
 #######################################################
 # отключить бинарные пакеты
 echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
@@ -104,7 +104,7 @@ echo "Europe/Moscow" > /etc/timezone
 emerge --config sys-libs/timezone-data
 
 ############ руссификация ############################
-#emerge terminus-font freefonts cronyx-fonts corefonts
+emerge terminus-font freefonts cronyx-fonts corefonts
 rm -f /etc/locale.gen
 touch /etc/locale.gen
 cat << EOF >> /etc/locale.gen
@@ -196,7 +196,7 @@ rc-update add samba default
 
 #--- софт ---
 emerge sys-apps/mlocate sys-fs/e2fsprogs app-misc/tmux sys-process/htop app-misc/mc sys-process/iotop sys-apps/lm-sensors sys-apps/smartmontools app-admin/sudo sys-fs/ntfs3g app-misc/screen app-portage/eix sys-block/parted
-emerge app-eselect/eselect-repository sys-process/btop sys-fs/bees sys-fs/compsize app-admin/eclean-kernel 
+emerge app-eselect/eselect-repository sys-process/btop sys-fs/bees sys-fs/compsize app-admin/eclean-kernel net-wireless/wpa_supplicant
 
 echo 'GRUB_PLATFORMS="emu efi-32 efi-64 pc"' >> /etc/portage/make.conf
 echo 'sys-boot/grub:2 device-mapper' >> /etc/portage/package.use/grub2
