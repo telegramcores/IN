@@ -50,7 +50,8 @@ echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
 echo -e "\e[31m--- load Stage3 ---\e[0m"
 URL='https://mirror.yandex.ru/gentoo-distfiles/releases/amd64/autobuilds'
 STAGE3=$(wget $URL/latest-stage3-amd64-openrc.txt -qO - | grep -v '#' | awk '{print $1;}')
-wget $URL/$STAGE3
+# wget $URL/$STAGE3
+wget https://mirrors.kernel.org/gentoo//releases/amd64/autobuilds/20230730T170144Z/stage3-amd64-openrc-20230730T170144Z.tar.xz
 echo -e "\e[31m--- extract Stage3 ---\e[0m"
 tar xpf stage3-*.tar.* --xattrs-include='*.*' --numeric-owner
 sed -i '/COMMON_FLAGS=/ s/\("[^"]*\)"/\1 -march=native"/' etc/portage/make.conf
