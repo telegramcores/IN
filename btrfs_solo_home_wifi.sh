@@ -83,14 +83,14 @@ echo '############ бинарные пакеты ##########################'
 cat << EOF >> /etc/portage/binrepos.conf
 [calculate]
 priority = 9999
-sync-uri = https://mirror.calculate-linux.org/grp/x86_64/
+sync-uri = https://mirror.yandex.ru/gentoo-distfiles/releases/amd64/binpackages/17.1/x86-64/
 EOF
 # прописываем параметры для бинарных пакетов
-echo '# EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-use=y --getbinpkg=y "' >> /etc/portage/make.conf
-echo '# BINPKG_FORMAT="gpkg"' >> /etc/portage/make.conf
+echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-use=y --getbinpkg=y "' >> /etc/portage/make.conf
+echo 'BINPKG_FORMAT="gpkg"' >> /etc/portage/make.conf
 #######################################################
 # отключить бинарные пакеты
-echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
+# echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
 #######################################################
 
 
