@@ -80,17 +80,18 @@ emerge-webrsync
 eselect news read && eselect news purge
 
 echo '############ бинарные пакеты ##########################'
+rm /etc/portage/binrepos.conf
 cat << EOF >> /etc/portage/binrepos.conf
 [calculate]
 priority = 9999
 sync-uri = https://mirror.yandex.ru/calculate/grp/x86_64/
 EOF
 # прописываем параметры для бинарных пакетов
-echo '# EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-use=y --getbinpkg=y "' >> /etc/portage/make.conf
+echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-use=y --getbinpkg=y "' >> /etc/portage/make.conf
 # echo 'BINPKG_FORMAT="xpak"' >> /etc/portage/make.conf
 #######################################################
 # отключить бинарные пакеты
-echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
+# echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
 #######################################################
 
 
@@ -143,13 +144,13 @@ emerge app-portage/cpuid2cpuflags
 cpuid2cpuflags | sed 's/: /="/' | sed -e '$s/$/"/' >> /etc/portage/make.conf
 emerge app-shells/bash-completion app-shells/gentoo-bashcomp
 
-echo '$diskpref"2" /boot vfat defaults 0 2' >> /etc/fstab
+echo '/dev/nvme0n1p2 /boot vfat defaults 0 2' >> /etc/fstab
 echo 'ACCEPT_LICENSE="*"'     >> /etc/portage/make.conf
 echo 'USE="abi_x86_64 bash-completion unicode"' >> /etc/portage/make.conf
 
 echo -e "\e[31m--- Установка soft and settings ---\e[0m"
 echo hostname="gentoo_serv" > /etc/conf.d/hostname
-echo '$diskpref"3" none swap sw 0 0' >> /etc/fstab
+echo '/dev/nvme0n1p3 none swap sw 0 0' >> /etc/fstab
 blkid $diskpref'4' | awk '{print $3" / btrfs defaults,noatime,autodefrag,space_cache=v2,compress=zstd:3,subvol=@  0 0"}' >> /etc/fstab
 blkid $diskpref'4' | awk '{print $3" /home btrfs noatime,autodefrag,space_cache=v2,compress=zstd:3,subvol=@home  0 0"}' >> /etc/fstab
 blkid $diskpref'4' | awk '{print $3" /var btrfs noatime,autodefrag,space_cache=v2,compress=zstd:3,subvol=@var  0 0"}' >> /etc/fstab
