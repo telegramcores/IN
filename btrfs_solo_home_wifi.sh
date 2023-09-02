@@ -87,11 +87,12 @@ sync-uri = https://mirror.calculate-linux.org/grp/x86_64/
 EOF
 # прописываем параметры для бинарных пакетов
 echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y --binpkg-respect-use=y --getbinpkg=y "' >> /etc/portage/make.conf
+echo 'BINPKG_FORMAT="gpkg"' >> /etc/portage/make.conf
 #######################################################
 # отключить бинарные пакеты
 # echo 'EMERGE_DEFAULT_OPTS="-j --quiet-build=y --with-bdeps=y"' >> /etc/portage/make.conf
 #######################################################
-# echo 'GENTOO_MIRRORS="https://gentoo-mirror.alexxy.name/"' >> /etc/portage/make.conf
+
 
 # правильный тип процессора в make.conf
 emerge app-misc/resolve-march-native
