@@ -107,6 +107,7 @@ mkdir /var/tmp/portage
 mount -t tmpfs tmpfs -o size=20G,nr_inodes=1M /var/tmp/portage
 
 ############ бинарные пакеты https://www.linux.org.ru/news/gentoo/16547411 ##########################
+rm /etc/portage/binrepos.conf
 cat << EOF >> /etc/portage/binrepos.conf
 [binhost]
 priority = 9999
@@ -234,7 +235,7 @@ echo 'GRUB_CMDLINE_LINUX="iommu=pt intel_iommu=on pcie_acs_override=downstream,m
 echo -e "\e[31m--- set kernel ---\e[0m"
 emerge sys-kernel/linux-firmware
 emerge sys-kernel/gentoo-kernel-bin
-dracut -f --kver 6.1.12-gentoo-dist
+dracut -f --kver 6.1.53-gentoo-dist
 
 eselect kernel set 1
 
