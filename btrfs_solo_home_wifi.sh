@@ -31,16 +31,14 @@ mount /mnt/gentoo
 btrfs subvolume create /mnt/gentoo/@ 
 btrfs subvolume create /mnt/gentoo/@home 
 btrfs subvolume create /mnt/gentoo/@var
-btrfs subvolume create /mnt/gentoo/@snapshots
 btrfs subvolume create /mnt/gentoo/@share
 btrfs subvolume create /mnt/gentoo/@admman
 umount /mnt/gentoo
 
 mount -o defaults,noatime,autodefrag,subvol=@ $diskpref"4" /mnt/gentoo
-mkdir -p /mnt/gentoo/{home,.snapshots,var,share,admman}
+mkdir -p /mnt/gentoo/{home,var,share,admman}
 mount -o autodefrag,noatime,space_cache=v2,compress=zstd:3,subvol=@home $diskpref"4" /mnt/gentoo/home
 mount -o autodefrag,noatime,space_cache=v2,compress=zstd:3,subvol=@var  $diskpref"4" /mnt/gentoo/var
-mount -o autodefrag,noatime,space_cache=v2,compress=zstd:3,subvol=@snapshots  $diskpref"4" /mnt/gentoo/.snapshots
 mount -o autodefrag,noatime,space_cache=v2,compress=zstd:3,subvol=@share $diskpref"4" /mnt/gentoo/share
 mount -o autodefrag,noatime,space_cache=v2,compress=zstd:3,subvol=@admman $diskpref"4" /mnt/gentoo/admman
 
@@ -154,7 +152,6 @@ echo '/dev/nvme0n1p3 none swap sw 0 0' >> /etc/fstab
 blkid $diskpref'4' | awk '{print $3" / btrfs defaults,noatime,autodefrag,space_cache=v2,compress=zstd:3,subvol=@  0 0"}' >> /etc/fstab
 blkid $diskpref'4' | awk '{print $3" /home btrfs noatime,autodefrag,space_cache=v2,compress=zstd:3,subvol=@home  0 0"}' >> /etc/fstab
 blkid $diskpref'4' | awk '{print $3" /var btrfs noatime,autodefrag,space_cache=v2,compress=zstd:3,subvol=@var  0 0"}' >> /etc/fstab
-blkid $diskpref'4' | awk '{print $3" /.snapshots btrfs noatime,autodefrag,space_cache=v2,compress=zstd:3,subvol=@snapshots 0 0"}' >> /etc/fstab
 blkid $diskpref'4' | awk '{print $3" /share btrfs noatime,autodefrag,space_cache=v2,compress=zstd:3,subvol=@share  0 0"}' >> /etc/fstab
 blkid $diskpref'4' | awk '{print $3" /admman btrfs noatime,autodefrag,space_cache=v2,compress=zstd:3,subvol=@admman  0 0"}' >> /etc/fstab
 echo "tmpfs /var/tmp/portage tmpfs size=100G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
