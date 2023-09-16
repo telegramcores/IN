@@ -26,3 +26,9 @@ https://devsday.ru/blog/details/7415
 
 если в ВМ не назначаются IP
 iptables -P FORWARD ACCEPT
+
+удалить не смонтированный subvolume
+ sudo btrfs subvolume list /
+найти  номер id
+umount (путь к субволюму)
+sudo btrfs subvolume delete -i 259 /
