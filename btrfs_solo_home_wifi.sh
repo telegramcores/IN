@@ -181,7 +181,7 @@ server role = standalone server
 security = user
 browseable = yes
 map to guest = Bad User
-[share]
+[admman]
 path = /admman
 read only = No
 browseable = yes
