@@ -194,7 +194,8 @@ rc-update add samba default
 
 #--- софт ---
 emerge sys-apps/mlocate sys-fs/e2fsprogs app-misc/tmux sys-process/htop app-misc/mc sys-process/iotop sys-apps/lm-sensors sys-apps/smartmontools app-admin/sudo sys-fs/ntfs3g app-misc/screen app-portage/eix sys-block/parted
-emerge app-eselect/eselect-repository sys-process/btop sys-fs/bees sys-fs/compsize app-admin/eclean-kernel net-wireless/wpa_supplicant
+emerge app-eselect/eselect-repository sys-process/btop sys-fs/bees sys-fs/compsize app-admin/eclean-kernel net-wireless/wpa_supplicant app-backup/snapper
+rc-update add dbus
 
 #настройка wifi
 touch /etc/wpa_supplicant/wpa_supplicant.conf
