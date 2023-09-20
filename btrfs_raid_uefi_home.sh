@@ -45,15 +45,13 @@ mount /mnt/gentoo
 btrfs subvolume create /mnt/gentoo/@ 
 btrfs subvolume create /mnt/gentoo/@home 
 btrfs subvolume create /mnt/gentoo/@var
-btrfs subvolume create /mnt/gentoo/@snapshots
 btrfs subvolume create /mnt/gentoo/@share
 umount /mnt/gentoo
 
 mount -o defaults,autodefrag,noatime,space_cache=v2,compress=zstd:3,subvol=@ /dev/sda4 /mnt/gentoo
-mkdir -p /mnt/gentoo/{home,.snapshots,var,share}
+mkdir -p /mnt/gentoo/{home,var,share}
 mount -o autodefrag,noatime,space_cache=v2,compress=zstd:3,subvol=@home /dev/sda4 /mnt/gentoo/home
 mount -o autodefrag,noatime,space_cache=v2,compress=zstd:3,subvol=@var  /dev/sda4 /mnt/gentoo/var
-mount -o autodefrag,noatime,space_cache=v2,compress=zstd:3,subvol=@snapshots  /dev/sda4 /mnt/gentoo/.snapshots
 mount -o autodefrag,noatime,space_cache=v2,compress=zstd:3,subvol=@share /dev/sda4 /mnt/gentoo/share
 
 cd /mnt/gentoo
@@ -163,7 +161,6 @@ echo "/dev/sda3 none swap sw 0 0" >> /etc/fstab
 blkid /dev/sda4 | awk '{print $3" / btrfs defaults,noatime,autodefrag,space_cache=v2,compress=zstd:3,subvol=@  0 0"}' >> /etc/fstab
 blkid /dev/sda4 | awk '{print $3" /home btrfs noatime,autodefrag,space_cache=v2,compress=zstd:3,subvol=@home  0 0"}' >> /etc/fstab
 blkid /dev/sda4 | awk '{print $3" /var btrfs noatime,autodefrag,space_cache=v2,compress=zstd:3,subvol=@var  0 0"}' >> /etc/fstab
-blkid /dev/sda4 | awk '{print $3" /.snapshots btrfs noatime,autodefrag,space_cache=v2,compress=zstd:3,subvol=@snapshots 0 0"}' >> /etc/fstab
 blkid /dev/sda4 | awk '{print $3" /share btrfs noatime,autodefrag,space_cache=v2,compress=zstd:3,subvol=@share  0 0"}' >> /etc/fstab
 echo "tmpfs /var/tmp/portage tmpfs size=20G,uid=portage,gid=portage,mode=775,nosuid,noatime,nodev 0 0" >> /etc/fstab
 
@@ -246,7 +243,8 @@ rc-update add samba default
 
 #--- софт ---
 emerge sys-apps/mlocate sys-fs/e2fsprogs app-misc/tmux sys-process/htop app-misc/mc sys-process/iotop sys-apps/lm-sensors sys-apps/smartmontools app-admin/sudo sys-fs/ntfs3g app-misc/screen app-portage/eix sys-block/parted
-emerge app-eselect/eselect-repository sys-process/btop sys-fs/bees sys-fs/compsize app-admin/eclean-kernel 
+emerge app-eselect/eselect-repository sys-process/btop sys-fs/bees sys-fs/compsize app-admin/eclean-kernel app-backup/snapper
+rc-update add dbus
 
 echo 'GRUB_PLATFORMS="emu efi-32 efi-64 pc"' >> /etc/portage/make.conf
 echo 'sys-boot/grub:2 device-mapper' >> /etc/portage/package.use/grub2
