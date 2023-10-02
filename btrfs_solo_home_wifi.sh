@@ -1,4 +1,3 @@
-e
 disk="/dev/nvme0n1"
 diskpref=$disk"p"
 echo "---create disk1 bios_grub ---"
